@@ -4,8 +4,13 @@ import PageHeader from '../components/PageHeader';
 import CustomSelect from '../components/CustomSelect';
 import ConfirmModal from '../components/ConfirmModal';
 import { supabase } from '../lib/supabase';
+import { format } from 'date-fns';
 import { formatDate } from '../utils/utils';
 import { toast } from 'react-hot-toast';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { exportToExcel, readExcelFile, downloadExampleTemplate } from '../utils/excelUtils';
+import { PdfIcon } from '../components/BrandedIcons';
 
 const Sales: React.FC = () => {
   const navigate = useNavigate();
@@ -25,6 +30,9 @@ const Sales: React.FC = () => {
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [saleToDelete, setSaleToDelete] = useState<string | null>(null);
+
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [importing, setImporting] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -126,6 +134,157 @@ const Sales: React.FC = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedSales = filteredSales.slice(startIndex, startIndex + itemsPerPage);
 
+  const handleExportExcel = () => {
+    const dataToExport = filteredSales.map(s => ({
+      'Código': s.code,
+      'Data': s.date,
+      'Cliente': s.client?.name || 'Venda Avulsa',
+      'Valor Total': Number(s.value),
+      'Peso (g)': Number(s.weight || 0),
+      'Frete (R$)': Number(s.shipping || 0),
+      'Vendedor': s.seller,
+      'Conta': s.account?.name || '---'
+    }));
+    exportToExcel(dataToExport, 'Vendas_Versix');
+    toast.success('Arquivo Excel de Vendas gerado!');
+  };
+
+  const handleImportExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+    const file = e.target.files[0];
+    setImporting(true);
+    try {
+      const data = await readExcelFile(file);
+      const { data: { user } } = await supabase.auth.getUser();
+
+      // Fetch all contacts to match by name
+      const { data: contacts } = await supabase.from('contacts').select('id, name');
+      const contactMap = new Map((contacts || []).map(c => [c.name.toLowerCase(), c.id]));
+
+      const newSales = data.map((row: any) => {
+        const clientName = row['Cliente'] || row['cliente'] || '';
+        const client_id = contactMap.get(clientName.toLowerCase()) || null;
+
+        return {
+          date: row['Data'] || row['data'] || new Date().toISOString().split('T')[0],
+          value: parseFloat(row['Valor_Total'] || row['Valor Total'] || row['valor_total'] || row['Valor'] || 0),
+          weight: parseFloat(row['Peso_Gramas'] || row['Peso (g)'] || row['peso_gramas'] || row['Peso'] || 0),
+          shipping: parseFloat(row['Frete'] || row['Frete (R$)'] || row['frete'] || 0),
+          seller: row['Vendedor'] || row['vendedor'] || row['Nome Vendedor'] || 'Importado',
+          user_id: user?.id,
+          client_id,
+          account_id: null
+        };
+      });
+
+      const { error } = await supabase.from('sales').insert(newSales);
+      if (error) throw error;
+
+      toast.success(`${newSales.length} vendas importadas!`);
+      fetchSales();
+      setImportModalOpen(false);
+    } catch (err: any) {
+      console.error(err);
+      toast.error('Erro na importação: Verifique as colunas do Excel.');
+    } finally {
+      setImporting(false);
+      e.target.value = '';
+    }
+  };
+
+  const exportToPDF = () => {
+    if (filteredSales.length === 0) return;
+
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 15;
+
+    // Helper: Format Money
+    const fmt = (val: number) => "R$\u00A0" + val.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+
+    // -- HEADER --
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.setTextColor(30, 41, 59);
+    doc.text('Relatório de Vendas', margin, 20);
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100, 116, 139);
+    doc.text('Sistema: Versix ERP', margin, 26);
+
+    // Filter Info (Top Right)
+    doc.setFontSize(9);
+    doc.setTextColor(100, 116, 139);
+    const now = new Date();
+    doc.text(`Gerado em: ${now.toLocaleString('pt-BR')}`, pageWidth - margin, 20, { align: 'right' });
+    doc.text(`Filtros: Periodo: ${filters.period} | Vendedor: ${filters.seller}`, pageWidth - margin, 25, { align: 'right' });
+
+    // -- STATS SUMMARY BOXES --
+    const totalV = filteredSales.reduce((acc, s) => acc + Number(s.value || 0), 0);
+    const totalW = filteredSales.reduce((acc, s) => acc + Number(s.weight || 0), 0);
+    const totalF = filteredSales.reduce((acc, s) => acc + Number(s.shipping || 0), 0);
+
+    const boxWidth = (pageWidth - (margin * 2) - 10) / 3;
+    const boxHeight = 20;
+    const boxY = 35;
+
+    const drawSummaryBox = (x: number, title: string, value: string, color: [number, number, number] = [30, 41, 59]) => {
+      doc.setDrawColor(229, 231, 235);
+      doc.setLineWidth(0.1);
+      doc.roundedRect(x, boxY, boxWidth, boxHeight, 2, 2, 'D');
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100, 116, 139);
+      doc.text(title, x + 5, boxY + 7);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(color[0], color[1], color[2]);
+      doc.text(value, x + 5, boxY + 15);
+    };
+
+    drawSummaryBox(margin, 'Total Faturado', fmt(totalV), [5, 150, 105]);
+    drawSummaryBox(margin + boxWidth + 5, 'Peso Total', `${totalW.toLocaleString('pt-BR')}g`, [30, 41, 59]);
+    drawSummaryBox(margin + (boxWidth + 5) * 2, 'Frete Total', fmt(totalF), [59, 130, 246]);
+
+    // -- TABLE --
+    const tableData = filteredSales.map(s => [
+      s.client?.name || 'Venda Avulsa',
+      formatDate(s.date),
+      fmt(Number(s.value)),
+      s.weight ? `${Number(s.weight).toLocaleString('pt-BR')}g` : '---',
+      fmt(Number(s.shipping || 0)),
+      s.seller || 'Manual'
+    ]);
+
+    autoTable(doc, {
+      startY: 62,
+      head: [['CLIENTE', 'DATA', 'VALOR', 'PESO', 'FRETE', 'VENDEDOR']],
+      body: tableData,
+      theme: 'grid',
+      headStyles: { fillColor: [243, 244, 246], textColor: [30, 41, 59], fontStyle: 'bold', fontSize: 8 },
+      styles: { fontSize: 8, cellPadding: 3, textColor: [30, 41, 59], lineColor: [229, 231, 235] },
+      columnStyles: {
+        2: { halign: 'right', fontStyle: 'bold' },
+        3: { halign: 'center' },
+        4: { halign: 'right' }
+      }
+    });
+
+    // -- FOOTER --
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(156, 163, 175);
+      doc.text(`Relatório de Vendas Versix ERP • Página ${i} de ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+    }
+
+    doc.save(`Vendas_Versix_${format(now, 'dd_MM_yyyy')}.pdf`);
+    toast.success('Relatório PDF gerado com sucesso!');
+  };
+
   const handleDelete = async () => {
     if (!saleToDelete) return;
     try {
@@ -147,12 +306,35 @@ const Sales: React.FC = () => {
         title="Histórico de Vendas"
         description="Gerencie todas as vendas realizadas e acompanhe os recebíveis."
         actions={
-          <div className="flex gap-3">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setImportModalOpen(true)}
+              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              title="Importar Excel"
+            >
+              <span className="material-symbols-outlined text-[24px]">upload_file</span>
+            </button>
+            <button
+              onClick={handleExportExcel}
+              disabled={filteredSales.length === 0}
+              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              title="Exportar Excel"
+            >
+              <span className="material-symbols-outlined text-[24px]">table_view</span>
+            </button>
+            <button
+              onClick={exportToPDF}
+              disabled={filteredSales.length === 0}
+              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-30 shadow-sm"
+              title="Exportar PDF"
+            >
+              <PdfIcon className="size-6" />
+            </button>
             <button
               onClick={fetchSales}
-              className="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-white dark:bg-slate-850 border border-gray-200 dark:border-slate-700 text-sm font-bold hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
             >
-              <span className="material-symbols-outlined text-[20px]">refresh</span>
+              <span className="material-symbols-outlined text-[24px]">refresh</span>
             </button>
             <button
               onClick={() => navigate('/sales/new')}
@@ -164,6 +346,45 @@ const Sales: React.FC = () => {
           </div>
         }
       />
+
+      {/* Import Modal */}
+      {importModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Importar Vendas</h3>
+              <button onClick={() => setImportModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <p className="text-sm text-slate-500">
+              Faça o upload de um arquivo .xlsx com as colunas: <strong>Cliente, Data, Valor_Total, Peso_Gramas, Frete, Vendedor</strong>.
+            </p>
+            <button
+              onClick={() => downloadExampleTemplate('sales')}
+              className="text-xs text-primary font-bold hover:underline flex items-center gap-1"
+            >
+              <span className="material-symbols-outlined text-sm">download</span>
+              Baixar Planilha de Exemplo
+            </button>
+            <div className="flex flex-col gap-4 pt-2">
+              <input
+                type="file"
+                accept=".xlsx"
+                onChange={handleImportExcel}
+                disabled={importing}
+                className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer"
+              />
+              {importing && (
+                <div className="flex items-center gap-2 text-sm text-primary font-bold animate-pulse">
+                  <span className="material-symbols-outlined animate-spin">refresh</span>
+                  Importando dados...
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

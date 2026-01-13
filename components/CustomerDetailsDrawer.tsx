@@ -4,6 +4,7 @@ import { formatDate, formatPhone, formatCpfCnpj } from '../utils/utils';
 import { toast } from 'react-hot-toast';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { PdfIcon } from './BrandedIcons';
 
 interface CustomerDetailsDrawerProps {
     isOpen: boolean;
@@ -264,10 +265,10 @@ const CustomerDetailsDrawer: React.FC<CustomerDetailsDrawerProps> = ({
                         <button
                             onClick={exportToPDF}
                             disabled={history.length === 0}
-                            className="flex items-center justify-center size-9 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-30 tooltip"
+                            className="flex items-center justify-center size-9 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-30 tooltip"
                             title="Exportar Extrato PDF"
                         >
-                            <span className="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+                            <PdfIcon className="size-5" />
                         </button>
                         <button
                             onClick={onClose}

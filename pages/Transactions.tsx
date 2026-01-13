@@ -11,6 +11,8 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { exportToExcel, readExcelFile, downloadExampleTemplate } from '../utils/excelUtils';
+import { PdfIcon } from '../components/BrandedIcons';
 
 const Transactions: React.FC = () => {
   const navigate = useNavigate();
@@ -42,6 +44,10 @@ const Transactions: React.FC = () => {
   // Edit Modal State
   const [transactionToEdit, setTransactionToEdit] = useState<any | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // Import State
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [importing, setImporting] = useState(false);
 
   const fetchTransactions = useCallback(async () => {
     setLoading(true);
@@ -154,7 +160,7 @@ const Transactions: React.FC = () => {
   const exportToPDF = () => {
     if (filteredTransactions.length === 0) return;
 
-    const doc = new jsPDF();
+    const doc = new jsPDF('l', 'mm', 'a4'); // Paisagem para caber mais colunas
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const margin = 15;
@@ -211,58 +217,50 @@ const Transactions: React.FC = () => {
     // Sort transactions oldest to newest for the report
     const sortedForReport = [...filteredTransactions].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-    let runningBalance = 0;
     const tableData = sortedForReport.map(t => {
       const value = Number(t.value);
-      if (t.type === 'income') {
-        runningBalance += value;
-      } else {
-        runningBalance -= value;
-      }
+
+      let typeLabel = 'Despesa';
+      if (t.type === 'income') typeLabel = 'Receita';
+      if (t.type === 'transfer') typeLabel = 'Transferência';
 
       return [
         formatDate(t.date),
+        typeLabel,
+        fmt(value),
         t.description || '---',
         t.categories?.name || '---',
         t.accounts?.name || '---',
-        t.type === 'income' ? 'Entrada' : 'Saída',
-        fmt(value),
-        fmt(runningBalance)
+        t.status === 'confirmed' ? 'Sim' : 'Não',
+        t.contacts?.name || '---'
       ];
     });
 
     autoTable(doc, {
       startY: 62,
-      head: [['DATA', 'DESCRIÇÃO', 'CATEGORIA', 'CONTA', 'TIPO', 'VALOR', 'SALDO']],
+      head: [['DATA', 'TIPO', 'VALOR', 'DESCRIÇÃO', 'CATEGORIA', 'CONTA', 'PAGO', 'CLIENTE']],
       body: tableData,
       theme: 'grid',
       headStyles: { fillColor: [243, 244, 246], textColor: [30, 41, 59], fontStyle: 'bold', fontSize: 8 },
-      styles: { fontSize: 8, cellPadding: 3, textColor: [30, 41, 59], lineColor: [229, 231, 235] },
+      styles: { fontSize: 7.5, cellPadding: 2.5, textColor: [30, 41, 59], lineColor: [229, 231, 235] },
       columnStyles: {
-        5: { halign: 'right', fontStyle: 'bold' },
-        6: { halign: 'right', fontStyle: 'bold' }
+        2: { halign: 'right', fontStyle: 'bold' },
+        6: { halign: 'center' }
       },
       didParseCell: (data) => {
         const rowIndex = data.row.index;
         const tx = sortedForReport[rowIndex];
 
         if (data.section === 'body') {
-          // Color for Value column (Index 5)
-          if (data.column.index === 5) {
+          // Color for Value column (Index 2)
+          if (data.column.index === 2) {
             data.cell.styles.textColor = tx.type === 'income' ? [5, 150, 105] : [220, 38, 38];
           }
 
-          // Color for Running Balance column (Index 6)
+          // Highlight PAGO column (Index 6)
           if (data.column.index === 6) {
-            let rowBalance = 0;
-            for (let i = 0; i <= rowIndex; i++) {
-              const item = sortedForReport[i];
-              const val = Number(item.value);
-              if (item.type === 'income') rowBalance += val;
-              else rowBalance -= val;
-            }
-            if (rowBalance > 0) data.cell.styles.textColor = [220, 38, 38]; // Red if > 0
-            else if (rowBalance < 0) data.cell.styles.textColor = [5, 150, 105]; // Green if < 0
+            data.cell.styles.textColor = tx.status === 'confirmed' ? [5, 150, 105] : [220, 38, 38];
+            data.cell.styles.fontStyle = 'bold';
           }
         }
       }
@@ -280,6 +278,65 @@ const Transactions: React.FC = () => {
     doc.save(`Extrato_Transacoes_${format(now, 'dd_MM_yyyy')}.pdf`);
     toast.success('Extrato PDF gerado com sucesso!');
   };
+  const handleExportExcel = () => {
+    const dataToExport = filteredTransactions.map(t => ({
+      'Data': t.date,
+      'Descrição': t.description,
+      'Valor': Number(t.value),
+      'Tipo': t.type === 'income' ? 'Entrada' : 'Saída',
+      'Conta': t.accounts?.name || '---',
+      'Categoria': t.categories?.name || '---',
+      'Contato': t.contacts?.name || '---',
+      'Status': t.status === 'confirmed' ? 'Realizado' : 'Pendente'
+    }));
+    exportToExcel(dataToExport, 'Transacoes_Versix');
+    toast.success('Arquivo Excel gerado!');
+  };
+
+  const handleImportExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+    const file = e.target.files[0];
+    setImporting(true);
+    try {
+      const data = await readExcelFile(file);
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const newTransactions = data.map((row: any) => {
+        const rowType = (row['Tipo'] || row['tipo'] || 'expense').toLowerCase();
+        let type: 'income' | 'expense' | 'transfer' = 'expense';
+        if (rowType.includes('receita') || rowType.includes('entrada') || rowType === 'income') type = 'income';
+        if (rowType.includes('transfer')) type = 'transfer';
+
+        const rowPaid = (row['Pago'] || row['pago'] || row['Status'] || row['status'] || 'Sim').toLowerCase();
+        const status = (rowPaid === 'sim' || rowPaid === 'confirmed' || rowPaid === 'pago') ? 'confirmed' : 'pending';
+
+        return {
+          description: row['Descricao'] || row['Descrição'] || row['descrição'] || 'Importado via Excel',
+          value: parseFloat(row['Valor'] || row['valor'] || 0),
+          type,
+          date: row['Data'] || row['data'] || new Date().toISOString().split('T')[0],
+          status,
+          user_id: user?.id,
+          // IDs are harder to import via excel without lookup, usually best to leave null or default
+          account_id: accounts[0]?.id || '',
+          category_id: categories[0]?.id || ''
+        };
+      });
+
+      const { error } = await supabase.from('transactions').insert(newTransactions);
+      if (error) throw error;
+
+      toast.success(`${newTransactions.length} transações importadas!`);
+      fetchTransactions();
+      setImportModalOpen(false);
+    } catch (err: any) {
+      console.error(err);
+      toast.error('Erro na importação: Verifique as colunas do Excel.');
+    } finally {
+      setImporting(false);
+      e.target.value = '';
+    }
+  };
 
   return (
     <div className="flex-1 flex flex-col gap-6 animate-in fade-in duration-500">
@@ -287,20 +344,35 @@ const Transactions: React.FC = () => {
         title="Lista de Transações"
         description="Gerencie receitas e despesas de forma centralizada."
         actions={
-          <div className="flex gap-3">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setImportModalOpen(true)}
+              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              title="Importar Excel"
+            >
+              <span className="material-symbols-outlined text-[24px]">upload_file</span>
+            </button>
+            <button
+              onClick={handleExportExcel}
+              disabled={filteredTransactions.length === 0}
+              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              title="Exportar Excel"
+            >
+              <span className="material-symbols-outlined text-[24px]">table_view</span>
+            </button>
             <button
               onClick={exportToPDF}
               disabled={filteredTransactions.length === 0}
-              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-30 shadow-sm"
+              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-30 shadow-sm"
               title="Exportar Extrato PDF"
             >
-              <span className="material-symbols-outlined text-[24px]">picture_as_pdf</span>
+              <PdfIcon className="size-6" />
             </button>
             <button
               onClick={fetchTransactions}
-              className="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-white dark:bg-slate-850 border border-gray-200 dark:border-slate-700 text-sm font-bold hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
             >
-              <span className="material-symbols-outlined text-[20px]">refresh</span>
+              <span className="material-symbols-outlined text-[24px]">refresh</span>
             </button>
             <button
               onClick={() => navigate('/new-transaction')}
@@ -312,6 +384,45 @@ const Transactions: React.FC = () => {
           </div>
         }
       />
+
+      {/* Import Modal */}
+      {importModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Importar Transações</h3>
+              <button onClick={() => setImportModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <p className="text-sm text-slate-500">
+              Faça o upload de um arquivo .xlsx com as colunas: <strong>Data, Tipo, Valor, Descricao, Conta, Pago</strong>.
+            </p>
+            <button
+              onClick={() => downloadExampleTemplate('transactions')}
+              className="text-xs text-primary font-bold hover:underline flex items-center gap-1"
+            >
+              <span className="material-symbols-outlined text-sm">download</span>
+              Baixar Planilha de Exemplo
+            </button>
+            <div className="flex flex-col gap-4 pt-2">
+              <input
+                type="file"
+                accept=".xlsx"
+                onChange={handleImportExcel}
+                disabled={importing}
+                className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer"
+              />
+              {importing && (
+                <div className="flex items-center gap-2 text-sm text-primary font-bold animate-pulse">
+                  <span className="material-symbols-outlined animate-spin">refresh</span>
+                  Importando dados...
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

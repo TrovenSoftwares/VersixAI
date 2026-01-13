@@ -8,6 +8,7 @@ import CustomerDetailsDrawer from '../components/CustomerDetailsDrawer';
 import CustomSelect from '../components/CustomSelect';
 import { toast } from 'react-hot-toast';
 import { formatPhone, formatCpfCnpj } from '../utils/utils';
+import { exportToExcel, readExcelFile, downloadExampleTemplate } from '../utils/excelUtils';
 
 const Contacts: React.FC = () => {
   const navigate = useNavigate();
@@ -28,6 +29,8 @@ const Contacts: React.FC = () => {
   });
   const [tempFilters, setTempFilters] = useState(filters);
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string | null }>({ isOpen: false, id: null });
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [stats, setStats] = useState({
     totalClients: 0,
     totalSales: 0,
@@ -131,6 +134,51 @@ const Contacts: React.FC = () => {
     setCurrentPage(1);
   }, [searchTerm, filters]);
 
+  const handleExport = () => {
+    const dataToExport = filteredContacts.map(c => ({
+      'Nome': c.name,
+      'CPF/CNPJ': c.id_number,
+      'Telefone': c.phone,
+      'Email': c.email,
+      'Saldo': c.balance,
+      'Data de Cadastro': new Date(c.created_at).toLocaleDateString('pt-BR')
+    }));
+    exportToExcel(dataToExport, 'Contatos_Versix');
+    toast.success('Excel exportado com sucesso!');
+  };
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+    const file = e.target.files[0];
+    setImporting(true);
+    try {
+      const data = await readExcelFile(file);
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const newContacts = data.map((row: any) => ({
+        name: row['Nome'] || row['nome'] || 'Sem Nome',
+        id_number: row['CPF_CNPJ'] || row['cpf_cnpj'] || row['CPF/CNPJ'] || null,
+        phone: row['Telefone'] || row['telefone'] || null,
+        email: row['Email'] || row['email'] || null,
+        category: 'Cliente',
+        user_id: user?.id
+      }));
+
+      const { error } = await supabase.from('contacts').insert(newContacts);
+      if (error) throw error;
+
+      toast.success(`${newContacts.length} contatos importados!`);
+      fetchContacts();
+      setImportModalOpen(false);
+    } catch (err: any) {
+      console.error(err);
+      toast.error('Erro na importação: Verifique as colunas do Excel.');
+    } finally {
+      setImporting(false);
+      e.target.value = '';
+    }
+  };
+
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from('contacts').delete().eq('id', id);
     if (error) {
@@ -180,15 +228,30 @@ const Contacts: React.FC = () => {
   return (
     <div className="flex-1 flex flex-col gap-6 animate-in fade-in duration-500">
       <PageHeader
-        title="Gerenciamento de Contatos"
-        description="Administre fornecedores e clientes, visualize históricos e integre com o WhatsApp."
+        title="Contatos"
+        description="Gerencie seus clientes, fornecedores e equipe em um só lugar."
         actions={
-          <div className="flex gap-3">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setImportModalOpen(true)}
+              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              title="Importar Excel"
+            >
+              <span className="material-symbols-outlined text-[24px]">upload_file</span>
+            </button>
+            <button
+              onClick={handleExport}
+              disabled={filteredContacts.length === 0}
+              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              title="Exportar Excel"
+            >
+              <span className="material-symbols-outlined text-[24px]">table_view</span>
+            </button>
             <button
               onClick={fetchContacts}
-              className="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-white dark:bg-slate-850 border border-gray-200 dark:border-slate-700 text-sm font-bold hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
             >
-              <span className="material-symbols-outlined text-[20px]">refresh</span>
+              <span className="material-symbols-outlined text-[24px]">refresh</span>
             </button>
             <button
               onClick={() => navigate('/contacts/new')}
@@ -200,6 +263,45 @@ const Contacts: React.FC = () => {
           </div>
         }
       />
+
+      {/* Import Modal */}
+      {importModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Importar Contatos</h3>
+              <button onClick={() => setImportModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <p className="text-sm text-slate-500">
+              Faça o upload de um arquivo .xlsx com as colunas: <strong>Nome, CPF_CNPJ, Telefone, Email</strong>.
+            </p>
+            <button
+              onClick={() => downloadExampleTemplate('contacts')}
+              className="text-xs text-primary font-bold hover:underline flex items-center gap-1"
+            >
+              <span className="material-symbols-outlined text-sm">download</span>
+              Baixar Planilha de Exemplo
+            </button>
+            <div className="flex flex-col gap-4 pt-2">
+              <input
+                type="file"
+                accept=".xlsx"
+                onChange={handleImport}
+                disabled={importing}
+                className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer"
+              />
+              {importing && (
+                <div className="flex items-center gap-2 text-sm text-primary font-bold animate-pulse">
+                  <span className="material-symbols-outlined animate-spin">refresh</span>
+                  Importando dados...
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

@@ -36,3 +36,9 @@ export const VersixLogo: React.FC<IconProps> = ({ className = "h-12" }) => (
         style={{ objectFit: 'contain' }}
     />
 );
+
+export const PdfIcon: React.FC<IconProps> = ({ className = "size-5" }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 8v8h2a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2zm-7 4h2a2 2 0 1 0 0-4H3v8m14-4h3m1-4h-4v8" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+    </svg>
+);
