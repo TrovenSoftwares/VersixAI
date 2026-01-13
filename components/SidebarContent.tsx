@@ -6,10 +6,10 @@ import { supabase } from '../lib/supabase';
 
 interface SidebarContentProps {
   locationPath: string;
-  navigate: (path: string) => void;
+  onItemClick?: () => void;
 }
 
-const SidebarContent: React.FC<SidebarContentProps> = ({ locationPath, navigate }) => {
+const SidebarContent: React.FC<SidebarContentProps> = ({ locationPath, onItemClick }) => {
   const [reviewCount, setReviewCount] = React.useState(0);
 
   const fetchReviewCount = React.useCallback(async () => {
@@ -52,17 +52,17 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ locationPath, navigate 
 
   return (
     <nav className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-1" role="navigation" aria-label="Menu Principal">
-      <SidebarLink to="/" icon="dashboard" label="Dashboard" currentPath={locationPath} />
+      <SidebarLink to="/" icon="dashboard" label="Dashboard" currentPath={locationPath} onClick={onItemClick} />
 
       <div className="mt-4 mb-2 px-3">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Operacional</span>
       </div>
 
-      <SidebarLink to="/transactions" icon="receipt_long" label="Transações" currentPath={locationPath} />
-      <SidebarLink to="/sales" icon="sell" label="Vendas" currentPath={locationPath} />
-      <SidebarLink to="/sellers" icon="storefront" label="Vendedores" currentPath={locationPath} />
-      <SidebarLink to="/contacts" icon="group" label="Contatos" currentPath={locationPath} />
-      <SidebarLink to="/team" icon="badge" label="Equipe" currentPath={locationPath} />
+      <SidebarLink to="/transactions" icon="receipt_long" label="Transações" currentPath={locationPath} onClick={onItemClick} />
+      <SidebarLink to="/sales" icon="sell" label="Vendas" currentPath={locationPath} onClick={onItemClick} />
+      <SidebarLink to="/sellers" icon="storefront" label="Vendedores" currentPath={locationPath} onClick={onItemClick} />
+      <SidebarLink to="/contacts" icon="group" label="Contatos" currentPath={locationPath} onClick={onItemClick} />
+      <SidebarLink to="/team" icon="badge" label="Equipe" currentPath={locationPath} onClick={onItemClick} />
 
       <div className="mt-4 mb-2 px-3">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Inteligência</span>
@@ -70,6 +70,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ locationPath, navigate 
 
       <Link
         to="/review"
+        onClick={onItemClick}
         aria-current={locationPath.includes('/review') ? 'page' : undefined}
         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group relative ${locationPath.includes('/review')
           ? 'bg-primary text-white shadow-md shadow-primary/20'
@@ -87,13 +88,17 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ locationPath, navigate 
         </div>
       </Link>
 
-      <SidebarLink to="/wallet" icon="wallet" label="Carteira" currentPath={locationPath} />
-      <SidebarLink to="/reports" icon="analytics" label="Relatórios" currentPath={locationPath} />
-      <SidebarLink to="/integration" icon="hub" label="Integrações" currentPath={locationPath} />
+      <SidebarLink to="/wallet" icon="wallet" label="Carteira" currentPath={locationPath} onClick={onItemClick} />
+      <SidebarLink to="/reports" icon="analytics" label="Relatórios" currentPath={locationPath} onClick={onItemClick} />
+
+      {/* Integrações - Somente Desktop */}
+      <div className="hidden lg:block">
+        <SidebarLink to="/integration" icon="hub" label="Integrações" currentPath={locationPath} onClick={onItemClick} />
+      </div>
 
       <div className="my-2 border-t border-slate-100 dark:border-slate-700" />
 
-      <SidebarLink to="/settings" icon="settings" label="Ajustes" currentPath={locationPath} />
+      <SidebarLink to="/settings" icon="settings" label="Ajustes" currentPath={locationPath} onClick={onItemClick} />
     </nav>
   );
 };

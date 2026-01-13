@@ -106,7 +106,7 @@ const NewSale: React.FC = () => {
     if (formData.code) {
       payload.code = formData.code;
     } else if (!isEdit) {
-      payload.code = `MAN-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+      payload.code = `MAN-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
     }
 
 

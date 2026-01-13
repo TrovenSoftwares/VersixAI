@@ -79,24 +79,19 @@ const AppContent = () => {
       {/* Mobile Sidebar Overlay */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-40 xl:hidden"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {/* Mobile Sidebar */}
-      <div className={`fixed inset-y-0 left-0 w-64 bg-white dark:bg-slate-900 z-50 transform transition-transform lg:hidden overflow-hidden flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className={`fixed inset-y-0 left-0 w-64 bg-white dark:bg-slate-900 z-50 transform transition-transform xl:hidden overflow-hidden flex flex-col ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 pb-2">
           <div className="flex items-center">
             <VersixLogo className="h-[55px] w-auto" />
           </div>
         </div>
-        <SidebarContent locationPath={location.pathname} navigate={(path) => {
-          setIsMobileMenuOpen(false);
-          // Navigation is handled inside SidebarContent via SidebarLink (which uses Link)
-          // and for Review/other links via useNavigate if needed.
-          // However, for mobile menu, we want to close it on navigation.
-        }} />
+        <SidebarContent locationPath={location.pathname} onItemClick={() => setIsMobileMenuOpen(false)} />
 
         <div className="p-4 border-t border-[#e7edf3] dark:border-slate-700 mt-auto">
           <button
@@ -114,7 +109,7 @@ const AppContent = () => {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col lg:ml-64 h-full overflow-hidden">
+      <div className="flex-1 flex flex-col xl:ml-64 h-full overflow-hidden">
         <Header onToggleMobileMenu={() => setIsMobileMenuOpen(true)} />
 
         <main className="flex-1 overflow-y-auto p-4 md:p-8">

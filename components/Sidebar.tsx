@@ -15,14 +15,14 @@ const Sidebar: FC = () => {
   };
 
   return (
-    <aside className="w-64 bg-white dark:bg-slate-850 border-r border-[#e7edf3] dark:border-slate-700 flex flex-col h-screen fixed left-0 top-0 z-30 hidden lg:flex shrink-0">
+    <aside className="w-64 bg-white dark:bg-slate-850 border-r border-[#e7edf3] dark:border-slate-700 flex flex-col h-screen fixed left-0 top-0 z-30 hidden xl:flex shrink-0">
       <div className="p-6 pb-2">
         <div className="flex items-center justify-center">
           <VersixLogo className="h-[55px] w-auto px-2" />
         </div>
       </div>
 
-      <SidebarContent locationPath={location.pathname} navigate={navigate} />
+      <SidebarContent locationPath={location.pathname} />
 
       <div className="p-4 border-t border-[#e7edf3] dark:border-slate-700">
         <button

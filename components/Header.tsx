@@ -11,7 +11,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleMobileMenu }) => {
 
   return (
     <header className="h-16 bg-white dark:bg-slate-850 border-b border-[#e7edf3] dark:border-slate-700 flex items-center justify-between px-6 z-10 shrink-0">
-      <div className="flex items-center gap-2 lg:hidden">
+      <div className="flex items-center gap-2 xl:hidden">
         <button
           onClick={onToggleMobileMenu}
           className="text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 p-1"

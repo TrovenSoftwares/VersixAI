@@ -6,13 +6,15 @@ interface SidebarLinkProps {
     icon: string;
     label: string;
     currentPath: string;
+    onClick?: () => void;
 }
 
-const SidebarLink: React.FC<SidebarLinkProps> = ({ to, icon, label, currentPath }) => {
+const SidebarLink: React.FC<SidebarLinkProps> = ({ to, icon, label, currentPath, onClick }) => {
     const isActive = currentPath === to;
     return (
         <Link
             to={to}
+            onClick={onClick}
             aria-current={isActive ? 'page' : undefined}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group ${isActive
                 ? 'bg-primary text-white shadow-md shadow-primary/20'

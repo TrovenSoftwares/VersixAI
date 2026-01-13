@@ -11,7 +11,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { exportToExcel, readExcelFile, downloadExampleTemplate } from '../utils/excelUtils';
+import { exportToExcel, readExcelFile, downloadExampleTemplate, formatExcelDate } from '../utils/excelUtils';
 import { PdfIcon, ExcelIcon, ImportIcon } from '../components/BrandedIcons';
 
 const Transactions: React.FC = () => {
@@ -348,16 +348,7 @@ const Transactions: React.FC = () => {
         };
 
         const rawDate = getVal(['Data', 'data', 'Date', 'date']);
-        let formattedDate = new Date().toISOString().split('T')[0];
-        if (rawDate) {
-          const dateStr = rawDate.toString().trim();
-          if (dateStr.includes('/')) {
-            const [day, month, year] = dateStr.split('/');
-            if (day && month && year) formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-          } else {
-            formattedDate = dateStr;
-          }
-        }
+        const formattedDate = formatExcelDate(rawDate);
 
         const description = getVal(['Descricao', 'Descrição', 'descrição', 'descricao', 'Description', 'description']) || 'Importado via Excel';
 
@@ -403,7 +394,7 @@ const Transactions: React.FC = () => {
           <div className="flex gap-2">
             <button
               onClick={() => setImportModalOpen(true)}
-              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              className="hidden md:flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
               title="Importar Excel"
             >
               <ImportIcon className="size-6 text-slate-600 dark:text-slate-300" />
@@ -411,7 +402,7 @@ const Transactions: React.FC = () => {
             <button
               onClick={handleExportExcel}
               disabled={filteredTransactions.length === 0}
-              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm disabled:opacity-30"
+              className="hidden md:flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm disabled:opacity-30"
               title="Exportar Excel"
             >
               <ExcelIcon className="size-6 text-emerald-600 dark:text-emerald-500" />
@@ -419,7 +410,7 @@ const Transactions: React.FC = () => {
             <button
               onClick={exportToPDF}
               disabled={filteredTransactions.length === 0}
-              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-30 shadow-sm"
+              className="hidden md:flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors disabled:opacity-30 shadow-sm"
               title="Exportar Extrato PDF"
             >
               <PdfIcon className="size-6" />
@@ -432,10 +423,10 @@ const Transactions: React.FC = () => {
             </button>
             <button
               onClick={() => navigate('/new-transaction')}
-              className="flex items-center justify-center gap-2 rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+              className="flex items-center justify-center gap-2 rounded-lg h-10 px-4 md:px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
             >
               <span className="material-symbols-outlined text-[20px]">add</span>
-              <span>Nova Transação</span>
+              <span className="hidden md:inline">Nova Transação</span>
             </button>
           </div>
         }
@@ -576,7 +567,9 @@ const Transactions: React.FC = () => {
         {/* Pagination Footer */}
         <div className="border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 px-6 py-4 flex items-center justify-between">
           <p className="text-sm text-gray-500">
-            Mostrando <span className="font-bold text-gray-900 dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredTransactions.length)}</span> de <span className="font-bold text-gray-900 dark:text-white">{filteredTransactions.length}</span> resultados
+            <span className="hidden sm:inline">Mostrando </span>
+            <span className="font-bold text-gray-900 dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredTransactions.length)}</span> de <span className="font-bold text-gray-900 dark:text-white">{filteredTransactions.length}</span>
+            <span className="hidden sm:inline"> resultados</span>
           </p>
           <div className="flex items-center gap-2">
             <button

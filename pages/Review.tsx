@@ -770,7 +770,7 @@ const Review: React.FC = () => {
         weight: parseFloat(cleanWeight) || null,
         shipping: parseCurrency(msg.editData.shipping || '0'),
         seller: msg.editData.seller || 'WhatsApp IA', // Use selected seller or default
-        code: `WPP-${msg.id.substring(0, 6).toUpperCase()}`
+        code: `WPP-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
       };
 
       const { data: newSale, error: saleError } = await supabase.from('sales').insert([salePayload]).select().single();

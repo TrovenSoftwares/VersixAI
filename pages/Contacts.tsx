@@ -235,7 +235,7 @@ const Contacts: React.FC = () => {
           <div className="flex gap-2">
             <button
               onClick={() => setImportModalOpen(true)}
-              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              className="hidden md:flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
               title="Importar Excel"
             >
               <ImportIcon className="size-6 text-slate-600 dark:text-slate-300" />
@@ -243,7 +243,7 @@ const Contacts: React.FC = () => {
             <button
               onClick={handleExport}
               disabled={filteredContacts.length === 0}
-              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm disabled:opacity-30"
+              className="hidden md:flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm disabled:opacity-30"
               title="Exportar Excel"
             >
               <ExcelIcon className="size-6 text-emerald-600 dark:text-emerald-500" />
@@ -256,10 +256,10 @@ const Contacts: React.FC = () => {
             </button>
             <button
               onClick={() => navigate('/contacts/new')}
-              className="flex items-center justify-center gap-2 rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+              className="flex items-center justify-center gap-2 rounded-lg h-10 px-4 md:px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
             >
               <span className="material-symbols-outlined text-[20px]">add</span>
-              <span>Novo Contato</span>
+              <span className="hidden md:inline">Novo Contato</span>
             </button>
           </div>
         }
@@ -402,7 +402,9 @@ const Contacts: React.FC = () => {
         {/* Pagination Footer */}
         <div className="border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 px-6 py-4 flex items-center justify-between">
           <p className="text-sm text-gray-500">
-            Mostrando <span className="font-bold text-gray-900 dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredContacts.length)}</span> de <span className="font-bold text-gray-900 dark:text-white">{filteredContacts.length}</span> resultados
+            <span className="hidden sm:inline">Mostrando </span>
+            <span className="font-bold text-gray-900 dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredContacts.length)}</span> de <span className="font-bold text-gray-900 dark:text-white">{filteredContacts.length}</span>
+            <span className="hidden sm:inline"> resultados</span>
           </p>
           <div className="flex items-center gap-2">
             <button

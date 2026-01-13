@@ -141,10 +141,10 @@ const Sellers: React.FC = () => {
                         </button>
                         <button
                             onClick={() => navigate('/sellers/new')}
-                            className="flex items-center justify-center gap-2 rounded-lg h-10 px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+                            className="flex items-center justify-center gap-2 rounded-lg h-10 px-4 md:px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
                         >
                             <span className="material-symbols-outlined text-[20px]">add</span>
-                            <span>Novo Vendedor</span>
+                            <span className="hidden md:inline">Novo Vendedor</span>
                         </button>
                     </div>
                 }
@@ -252,7 +252,9 @@ const Sellers: React.FC = () => {
                 {/* Pagination Footer */}
                 <div className="border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 px-6 py-4 flex items-center justify-between">
                     <p className="text-sm text-gray-500">
-                        Mostrando <span className="font-bold text-gray-900 dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredSellers.length)}</span> de <span className="font-bold text-gray-900 dark:text-white">{filteredSellers.length}</span> resultados
+                        <span className="hidden sm:inline">Mostrando </span>
+                        <span className="font-bold text-gray-900 dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredSellers.length)}</span> de <span className="font-bold text-gray-900 dark:text-white">{filteredSellers.length}</span>
+                        <span className="hidden sm:inline"> resultados</span>
                     </p>
                     <div className="flex items-center gap-2">
                         <button

@@ -467,7 +467,7 @@ const Settings: React.FC = () => {
                         ) : (
                           <button
                             onClick={() => {
-                              setNewInstanceName(`wpp-${Math.random().toString(36).substr(2, 6)}`);
+                              setNewInstanceName(`wpp-${Math.random().toString(36).substring(2, 8)}`);
                               setIsInstanceModalOpen(true);
                               setIsEditingInstance(false);
                             }}
