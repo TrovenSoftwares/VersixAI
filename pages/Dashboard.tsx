@@ -75,16 +75,48 @@ const Dashboard: React.FC = () => {
       const revenue = kpiTrans.filter(t => t.type === 'income').reduce((acc, t) => acc + Number(t.value), 0);
       const expenses = kpiTrans.filter(t => t.type === 'expense').reduce((acc, t) => acc + Number(t.value), 0);
 
-      const { count: pendingAi } = await supabase
-        .from('whatsapp_messages')
-        .select('*', { count: 'exact', head: true })
-        .eq('status', 'pending');
+      // Fetch Pending Messages with Monitoring Filter
+      const { data: contactsData } = await supabase
+        .from('contacts')
+        .select('*')
+        .in('category', ['Funcionário', 'Grupo'])
+        .eq('whatsapp_monitoring', true);
+
+      const monitoredJids: string[] = [];
+      (contactsData || []).forEach(c => {
+        if (c.is_group && c.whatsapp_id) {
+          monitoredJids.push(c.whatsapp_id);
+        } else if (!c.is_group && c.phone) {
+          const phoneClean = c.phone.replace(/\D/g, '');
+          monitoredJids.push(`${phoneClean}@s.whatsapp.net`);
+          if (phoneClean.startsWith('55')) {
+            monitoredJids.push(`${phoneClean.substring(2)}@s.whatsapp.net`);
+          } else {
+            monitoredJids.push(`55${phoneClean}@s.whatsapp.net`);
+          }
+        }
+      });
+
+      let pendingAiCount = 0;
+      if (monitoredJids.length > 0) {
+        const { data: pendingMsgs } = await supabase
+          .from('whatsapp_messages')
+          .select('remote_jid')
+          .eq('status', 'pending');
+
+        if (pendingMsgs) {
+          pendingAiCount = pendingMsgs.filter(msg => {
+            const msgJid = msg.remote_jid;
+            return monitoredJids.some(jid => msgJid.includes(jid.split('@')[0]));
+          }).length;
+        }
+      }
 
       setStats({
         revenue,
         expenses,
         balance: revenue - expenses,
-        pendingAi: pendingAi || 0
+        pendingAi: pendingAiCount
       });
 
       // Chart Data Building

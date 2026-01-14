@@ -55,10 +55,17 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ locationPath, onItemCli
       <SidebarLink to="/" icon="dashboard" label="Dashboard" currentPath={locationPath} onClick={onItemClick} />
 
       <div className="mt-4 mb-2 px-3">
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Operacional</span>
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Financeiro</span>
       </div>
 
       <SidebarLink to="/transactions" icon="receipt_long" label="Transações" currentPath={locationPath} onClick={onItemClick} />
+      <SidebarLink to="/bounced-checks" icon="money_off" label="Cheques Devolvidos" currentPath={locationPath} onClick={onItemClick} />
+      <SidebarLink to="/returns" icon="assignment_return" label="Devoluções" currentPath={locationPath} onClick={onItemClick} />
+
+      <div className="mt-4 mb-2 px-3">
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Operacional</span>
+      </div>
+
       <SidebarLink to="/sales" icon="sell" label="Vendas" currentPath={locationPath} onClick={onItemClick} />
       <SidebarLink to="/sellers" icon="storefront" label="Vendedores" currentPath={locationPath} onClick={onItemClick} />
       <SidebarLink to="/contacts" icon="group" label="Contatos" currentPath={locationPath} onClick={onItemClick} />

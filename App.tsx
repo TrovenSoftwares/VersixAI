@@ -32,6 +32,11 @@ import ResetPassword from './pages/ResetPassword';
 import TermsOfUse from './pages/TermsOfUse';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Help from './pages/Help';
+import BouncedChecks from './pages/BouncedChecks';
+import NewBouncedCheck from './pages/NewBouncedCheck';
+import Returns from './pages/Returns';
+import NewReturn from './pages/NewReturn';
+import ReturnReasons from './pages/ReturnReasons';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
@@ -172,6 +177,18 @@ const AppContent = () => {
               <Route path="/new-transaction" element={<ProtectedRoute><NewTransaction /></ProtectedRoute>} />
               <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+
+              {/* Cheques Devolvidos */}
+              <Route path="/bounced-checks" element={<ProtectedRoute><BouncedChecks /></ProtectedRoute>} />
+              <Route path="/bounced-checks/new" element={<ProtectedRoute><NewBouncedCheck /></ProtectedRoute>} />
+              <Route path="/bounced-checks/edit/:id" element={<ProtectedRoute><NewBouncedCheck /></ProtectedRoute>} />
+
+              {/* Devoluções */}
+              <Route path="/returns" element={<ProtectedRoute><Returns /></ProtectedRoute>} />
+              <Route path="/returns/new" element={<ProtectedRoute><NewReturn /></ProtectedRoute>} />
+              <Route path="/returns/edit/:id" element={<ProtectedRoute><NewReturn /></ProtectedRoute>} />
+              <Route path="/returns/reasons" element={<ProtectedRoute><ReturnReasons /></ProtectedRoute>} />
+
               {/* Fallback routes */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

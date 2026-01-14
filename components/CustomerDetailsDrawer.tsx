@@ -40,7 +40,7 @@ const CustomerDetailsDrawer: React.FC<CustomerDetailsDrawerProps> = ({
                     .from('transactions')
                     .select('*')
                     .eq('contact_id', contact.id)
-                    .eq('type', 'income')
+                    .in('type', ['income', 'expense'])
                     .eq('status', 'confirmed')
                     .order('date', { ascending: false })
             ]);
@@ -56,15 +56,22 @@ const CustomerDetailsDrawer: React.FC<CustomerDetailsDrawerProps> = ({
 
             const payments = (transRes.data || []).map(p => ({
                 ...p,
-                type: 'payment',
+                type: p.type === 'income' ? 'payment' : 'chargeback',
                 sortDate: new Date(p.date)
             }));
 
             const combined = [...sales, ...payments].sort((a, b) => b.sortDate.getTime() - a.sortDate.getTime());
             setHistory(combined);
 
-            const totalS = sales.reduce((acc, s) => acc + (Number(s.value) + Number(s.shipping || 0)), 0);
-            const totalP = payments.reduce((acc, p) => acc + Number(p.value), 0);
+            const totalSalesOnly = sales.reduce((acc, s) => acc + (Number(s.value) + Number(s.shipping || 0)), 0);
+
+            // Payments (Income) and Chargebacks (Expense)
+            const incomeSum = payments.filter(p => p.type === 'payment').reduce((acc, p) => acc + Number(p.value), 0);
+            const expenseSum = payments.filter(p => p.type === 'chargeback').reduce((acc, p) => acc + Number(p.value), 0);
+
+            // New Logic: Sales includes Chargebacks (as debt increase). Payments is just Income.
+            const totalS = totalSalesOnly + expenseSum;
+            const totalP = incomeSum;
 
             setStats({
                 totalSales: totalS,
@@ -329,9 +336,14 @@ const CustomerDetailsDrawer: React.FC<CustomerDetailsDrawerProps> = ({
                                 history.map((item, idx) => (
                                     <div key={idx} className="relative pl-12">
                                         {/* Icon */}
-                                        <div className={`absolute left-0 size-10 rounded-full border-4 border-white dark:border-slate-850 flex items-center justify-center z-10 ${item.type === 'sale' ? 'bg-blue-500 text-white' : 'bg-emerald-500 text-white'}`}>
+                                        <div className={`absolute left-0 size-10 rounded-full border-4 border-white dark:border-slate-850 flex items-center justify-center z-10 ${item.type === 'sale' ? 'bg-blue-500 text-white' :
+                                            item.type === 'chargeback' ? 'bg-rose-500 text-white' :
+                                                'bg-emerald-500 text-white'
+                                            }`}>
                                             <span className="material-symbols-outlined text-[18px]">
-                                                {item.type === 'sale' ? 'receipt_long' : 'payments'}
+                                                {item.type === 'sale' ? 'receipt_long' :
+                                                    item.type === 'chargeback' ? 'money_off' :
+                                                        'payments'}
                                             </span>
                                         </div>
 
@@ -340,14 +352,22 @@ const CustomerDetailsDrawer: React.FC<CustomerDetailsDrawerProps> = ({
                                             <div className="flex items-start justify-between mb-2">
                                                 <div>
                                                     <p className="text-xs font-bold text-slate-900 dark:text-white">
-                                                        {item.type === 'sale' ? `Venda #${item.code || '---'}` : 'Pagamento Recebido'}
+                                                        {item.type === 'sale' ? `Venda #${item.code || '---'}` :
+                                                            item.type === 'chargeback' ? (item.description || 'Cheque Devolvido / Estorno') :
+                                                                'Pagamento Recebido'}
                                                     </p>
                                                     <p className="text-[10px] text-slate-400 font-medium">{formatDate(item.date)}</p>
                                                 </div>
-                                                <p className={`text-sm font-bold ${item.type === 'sale' ? 'text-blue-600' : 'text-emerald-600'}`}>
-                                                    {item.type === 'sale' ? '' : '+'} R$ {(item.type === 'sale' ? (Number(item.value) + Number(item.shipping || 0)) : Number(item.value)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                <p className={`text-sm font-bold ${item.type === 'sale' ? 'text-blue-600' :
+                                                    item.type === 'chargeback' ? 'text-rose-600' :
+                                                        'text-emerald-600'
+                                                    }`}>
+                                                    {item.type === 'sale' ? '' : item.type === 'chargeback' ? '-' : '+'} R$ {(item.type === 'sale' ? (Number(item.value) + Number(item.shipping || 0)) : Number(item.value)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                                 </p>
                                             </div>
+                                            {item.type === 'chargeback' && (
+                                                <p className="text-[10px] font-bold text-rose-500 uppercase tracking-wider mb-2">+ cheque devolvido</p>
+                                            )}
                                             {item.type === 'sale' && item.weight && (
                                                 <div className="flex items-center gap-2 text-[10px] text-slate-400">
                                                     <span className="material-symbols-outlined text-[14px]">scale</span>

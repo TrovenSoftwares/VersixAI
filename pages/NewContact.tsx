@@ -54,8 +54,7 @@ const NewContact: React.FC = () => {
             id_number: data.id_number || '',
             category: data.category || 'Cliente',
             phone: data.phone ? (data.phone.startsWith('55') && data.phone.length > 11 ? data.phone.substring(2) : data.phone) : '',
-            email: data.email || '',
-            balance: data.balance.toString()
+            email: data.email || ''
           });
           setContactType(data.category as any);
         }
@@ -76,7 +75,6 @@ const NewContact: React.FC = () => {
       category: contactType,
       phone: formData.phone ? (formData.phone.replace(/\D/g, '').length <= 11 ? `55${formData.phone.replace(/\D/g, '')}` : formData.phone.replace(/\D/g, '')) : null,
       email: formData.email || null,
-      balance: parseFloat(formData.balance.replace(',', '.') || '0'),
       user_id: (await supabase.auth.getUser()).data.user?.id
     };
 
@@ -183,15 +181,6 @@ const NewContact: React.FC = () => {
                     onAccept={(val) => setFormData({ ...formData, id_number: val })}
                     onBlur={handleCnpjBlur}
                     placeholder="000.000.000-00 ou 00.000.000/0000-00"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">Saldo em Aberto (R$)</label>
-                  <InputMask
-                    mask={MASKS.CURRENCY}
-                    value={formData.balance}
-                    onAccept={(val) => setFormData({ ...formData, balance: val })}
-                    placeholder="0,00"
                   />
                 </div>
               </div>

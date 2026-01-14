@@ -64,7 +64,7 @@ const Contacts: React.FC = () => {
         supabase
           .from('transactions')
           .select('contact_id, value, type, status')
-          .eq('type', 'income')
+          .in('type', ['income', 'expense'])
           .eq('status', 'confirmed')
           .not('contact_id', 'is', null)
       ]);
@@ -88,9 +88,15 @@ const Contacts: React.FC = () => {
       });
 
       // 2. Sum received payments per client (Income transactions)
+      // 2. Sum received payments per client (Income - Expense)
       transData.forEach((t: any) => {
         if (!receivedByClient[t.contact_id]) receivedByClient[t.contact_id] = 0;
-        receivedByClient[t.contact_id] += Number(t.value);
+        if (t.type === 'income') {
+          receivedByClient[t.contact_id] += Number(t.value);
+        } else if (t.type === 'expense') {
+          // Expenses (like bounced checks) reduce the Total Received amount
+          receivedByClient[t.contact_id] -= Number(t.value);
+        }
       });
 
       // Calculate balance: Sales - Received
