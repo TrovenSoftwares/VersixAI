@@ -39,6 +39,9 @@ import NewReturn from './pages/NewReturn';
 import ReturnReasons from './pages/ReturnReasons';
 import Landing from './pages/Landing';
 import Documentation from './pages/Documentation';
+import GettingStarted from './pages/help/GettingStarted';
+import FinancialHelp from './pages/help/FinancialHelp';
+import WhatsAppAIHelp from './pages/help/WhatsAppAIHelp';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
@@ -102,7 +105,7 @@ const AppContent = () => {
     );
   }
 
-  if (isAuthPage || location.pathname === '/forgot-password' || location.pathname === '/reset-password' || location.pathname === '/terms' || location.pathname === '/privacy' || location.pathname === '/help') {
+  if (isAuthPage || location.pathname === '/forgot-password' || location.pathname === '/reset-password' || location.pathname === '/terms' || location.pathname === '/privacy' || location.pathname.startsWith('/help') || location.pathname === '/documentation') {
     return (
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
@@ -112,6 +115,10 @@ const AppContent = () => {
         <Route path="/terms" element={<TermsOfUse />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/help" element={<Help />} />
+        <Route path="/help/getting-started" element={<GettingStarted />} />
+        <Route path="/help/financial" element={<FinancialHelp />} />
+        <Route path="/help/whatsapp-ai" element={<WhatsAppAIHelp />} />
+        <Route path="/documentation" element={<Documentation />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     );
@@ -201,7 +208,6 @@ const AppContent = () => {
               <Route path="/returns/new" element={<ProtectedRoute><NewReturn /></ProtectedRoute>} />
               <Route path="/returns/edit/:id" element={<ProtectedRoute><NewReturn /></ProtectedRoute>} />
               <Route path="/returns/reasons" element={<ProtectedRoute><ReturnReasons /></ProtectedRoute>} />
-              <Route path="/documentation" element={<ProtectedRoute><Documentation /></ProtectedRoute>} />
 
               {/* Fallback routes */}
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

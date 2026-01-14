@@ -27,7 +27,7 @@ const TermsOfUse: React.FC = () => {
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">2. Descrição do Serviço</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            O Phyr é um ERP financeiro inteligente que utiliza Inteligência Artificial para automação de processos, integração com WhatsApp e gestão de fluxo de caixa. Reservamo-nos o direito de modificar ou descontinuar o serviço a qualquer momento.
+                            O Phyr é uma plataforma de gestão financeira inteligente que oferece ferramentas de fluxo de caixa, Ponto de Venda (PDV), emissão de relatórios, gestão de contatos e automação via Inteligência Artificial integrada ao WhatsApp. O serviço é fornecido 'como está' e pode ser atualizado para melhorias contínuas.
                         </p>
                     </section>
 
@@ -49,6 +49,13 @@ const TermsOfUse: React.FC = () => {
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">5. Limitação de Responsabilidade</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                             O Phyr não será responsável por quaisquer danos diretos, indiretos, incidentais ou consequentes resultantes do uso ou da incapacidade de usar nossos serviços.
+                        </p>
+                    </section>
+
+                    <section>
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">6. Propriedade Intelectual</h2>
+                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Todo o conteúdo, design, logotipos e software da plataforma Phyr são de propriedade exclusiva e protegidos por leis de propriedade intelectual. O uso da plataforma não concede ao usuário qualquer direito de propriedade sobre o sistema.
                         </p>
                     </section>
                 </div>

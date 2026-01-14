@@ -68,7 +68,7 @@ const Documentation: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
                                 <h3 className="font-bold text-slate-900 dark:text-white mb-2 uppercase text-xs tracking-wider text-primary">01. Autenticação</h3>
-                                <p className="text-sm text-slate-600 dark:text-slate-400">Acesse via e-mail corporativo. A segurança é gerida pelo Supabase Auth, garantindo isolamento total dos seus dados.</p>
+                                <p className="text-sm text-slate-600 dark:text-slate-400">Acesse via e-mail e senha. A segurança é gerida pelo Supabase Auth, garantindo criptografia e isolamento total dos seus dados.</p>
                             </div>
                             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
                                 <h3 className="font-bold text-slate-900 dark:text-white mb-2 uppercase text-xs tracking-wider text-primary">02. Dashboard</h3>
@@ -79,8 +79,8 @@ const Documentation: React.FC = () => {
                                 <p className="text-sm text-slate-600 dark:text-slate-400">Gerencie Contatos, Vendedores e Vendas. O sistema monitora automaticamente o saldo devedor de cada cliente.</p>
                             </div>
                             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
-                                <h3 className="font-bold text-slate-900 dark:text-white mb-2 uppercase text-xs tracking-wider text-primary">04. Cheques & Devoluções</h3>
-                                <p className="text-sm text-slate-600 dark:text-slate-400">Controle total sobre Cheques Devolvidos e Devoluções de Mercadorias, com ajustes automáticos no extrato do cliente.</p>
+                                <h3 className="font-bold text-slate-900 dark:text-white mb-2 uppercase text-xs tracking-wider text-primary">04. PDV e Operacional</h3>
+                                <p className="text-sm text-slate-600 dark:text-slate-400">Ponto de Venda rápido com gestão de Vendas e Devoluções. O sistema monitora comissões e o saldo devedor de cada cliente automaticamente.</p>
                             </div>
                         </div>
                     </section>
@@ -98,8 +98,8 @@ const Documentation: React.FC = () => {
                                     <WhatsAppIcon className="size-8 text-emerald-500" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">WhatsApp (Evolution API)</h3>
-                                    <p className="text-sm text-slate-500 font-medium italic">Seu canal direto com o Phyr</p>
+                                    <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">WhatsApp (Sua Instância)</h3>
+                                    <p className="text-sm text-slate-500 font-medium italic">Integração via Evolution API</p>
                                 </div>
                             </div>
                             <div className="space-y-4 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">

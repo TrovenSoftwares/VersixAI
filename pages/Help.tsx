@@ -36,18 +36,45 @@ const Help: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-                    {categories.map((cat, idx) => (
-                        <button key={idx} className="flex items-start gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-primary/30 hover:shadow-lg transition-all text-left group">
-                            <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                                <span className="material-symbols-outlined">{cat.icon}</span>
-                            </div>
-                            <div>
-                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">{cat.title}</h3>
-                                <p className="text-sm text-slate-600 dark:text-slate-400">{cat.desc}</p>
-                            </div>
-                        </button>
-                    ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+                    <button
+                        onClick={() => navigate('/help/getting-started')}
+                        className="flex items-start gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-primary/30 hover:shadow-xl hover:-translate-y-1 transition-all text-left group active:scale-95"
+                    >
+                        <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                            <span className="material-symbols-outlined transition-transform group-hover:scale-110">rocket_launch</span>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">Primeiros Passos</h3>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">Configuração inicial e conceitos básicos do zero.</p>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => navigate('/help/financial')}
+                        className="flex items-start gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-primary/30 hover:shadow-xl hover:-translate-y-1 transition-all text-left group active:scale-95"
+                    >
+                        <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                            <span className="material-symbols-outlined transition-transform group-hover:scale-110">account_balance</span>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">Gestão Financeira</h3>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">Fluxo de Caixa, PDV e relatórios profissionais.</p>
+                        </div>
+                    </button>
+
+                    <button
+                        onClick={() => navigate('/help/whatsapp-ai')}
+                        className="flex items-start gap-4 p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-primary/30 hover:shadow-xl hover:-translate-y-1 transition-all text-left group active:scale-95"
+                    >
+                        <div className="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                            <span className="material-symbols-outlined transition-transform group-hover:scale-110">psychology</span>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-1">WhatsApp & IA</h3>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">Conectando instâncias e Revisão Inteligente.</p>
+                        </div>
+                    </button>
                 </div>
 
                 <div className="bg-primary rounded-3xl p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8">

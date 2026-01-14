@@ -40,7 +40,7 @@ const PrivacyPolicy: React.FC = () => {
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">3. Integração com WhatsApp</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            Ao utilizar a integração com WhatsApp, o Phyr processa apenas as mensagens e mídias que você envia para o nosso número dedicado. Essas informações são criptografadas e utilizadas exclusivamente para alimentar seu painel financeiro.
+                            O Phyr permite que você conecte sua própria instância de WhatsApp via API dedicada. O sistema processa apenas as mensagens e mídias das conversas que você selecionar para monitoramento ou que forem enviadas para processamento de comprovantes. Essas informações são utilizadas exclusivamente para extração de dados financeiros por Inteligência Artificial e alimentação do seu painel.
                         </p>
                     </section>
 
@@ -55,6 +55,13 @@ const PrivacyPolicy: React.FC = () => {
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">5. Seus Direitos (LGPD)</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
                             De acordo com a Lei Geral de Proteção de Dados, você tem o direito de acessar, corrigir, excluir ou portar seus dados pessoais. Para exercer esses direitos, entre em contato através do nosso suporte.
+                        </p>
+                    </section>
+
+                    <section>
+                        <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">6. Retenção e Exclusão de Dados</h2>
+                        <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Seus dados são armazenados de forma segura enquanto sua conta estiver ativa. Você pode solicitar a exclusão definitiva de todos os seus dados e de sua conta a qualquer momento através das configurações do sistema ou entrando em contato com nosso suporte.
                         </p>
                     </section>
                 </div>
