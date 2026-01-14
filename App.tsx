@@ -5,6 +5,7 @@ import SidebarContent from './components/SidebarContent';
 import Header from './components/Header';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { PhyrLogo } from './components/BrandedIcons';
+import ScrollToTop from './components/ScrollToTop';
 import { Toaster } from 'react-hot-toast';
 import { Navigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
@@ -42,6 +43,7 @@ import Documentation from './pages/Documentation';
 import GettingStarted from './pages/help/GettingStarted';
 import FinancialHelp from './pages/help/FinancialHelp';
 import WhatsAppAIHelp from './pages/help/WhatsAppAIHelp';
+import SecurityHelp from './pages/help/SecurityHelp';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
@@ -118,6 +120,7 @@ const AppContent = () => {
         <Route path="/help/getting-started" element={<GettingStarted />} />
         <Route path="/help/financial" element={<FinancialHelp />} />
         <Route path="/help/whatsapp-ai" element={<WhatsAppAIHelp />} />
+        <Route path="/help/security" element={<SecurityHelp />} />
         <Route path="/documentation" element={<Documentation />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
@@ -238,6 +241,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <ScrollToTop />
       <AuthProvider>
         <Toaster position="top-right" toastOptions={{
           duration: 4000,

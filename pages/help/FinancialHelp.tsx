@@ -3,7 +3,7 @@ import HelpLayout from '../../components/HelpLayout';
 
 const FinancialHelp: React.FC = () => {
     return (
-        <HelpLayout title="Gestão Financeira e PDV" category="Operacional">
+        <HelpLayout title="Gestão Financeira e PDV" category="Tecnologia">
             <section className="space-y-6">
                 <p className="text-lg text-slate-600 dark:text-slate-400">
                     O coração do Phyr é a gestão financeira simplificada. Aprenda a dominar o fluxo de caixa, o Ponto de Venda e as ferramentas de controle de débitos.

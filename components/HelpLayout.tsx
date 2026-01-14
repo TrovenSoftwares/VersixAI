@@ -1,25 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { PhyrLogo } from './BrandedIcons';
+import PublicHeader from './PublicHeader';
 
 const HelpLayout: React.FC<{ children: React.ReactNode; title: string; category: string }> = ({ children, title, category }) => {
     const [feedbackSent, setFeedbackSent] = React.useState(false);
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-display transition-all duration-500">
-            <header className="bg-white dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-50 shadow-sm backdrop-blur-md bg-white/80 dark:bg-slate-850/80">
-                <div className="flex items-center gap-4">
-                    <Link to="/help" className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all hover:scale-110 active:scale-90">
-                        <span className="material-symbols-outlined text-slate-500">arrow_back</span>
-                    </Link>
-                    <PhyrLogo className="h-[35px] w-auto transition-transform hover:scale-105" />
-                </div>
-                <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest hidden md:flex">
-                    <Link to="/help" className="hover:text-primary transition-colors">Ajuda</Link>
-                    <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-                    <span className="text-slate-600 dark:text-slate-300">{category}</span>
-                </div>
-            </header>
+            <PublicHeader
+                showBackButton={true}
+                backLink="/help"
+                backLabel=""
+                pageName={title}
+            />
 
             <main className="max-w-4xl mx-auto py-12 px-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 <div className="mb-10">

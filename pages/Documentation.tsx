@@ -1,6 +1,7 @@
 import React from 'react';
 import PageHeader from '../components/PageHeader';
 import { PhyrLogo, WhatsAppIcon } from '../components/BrandedIcons';
+import PublicHeader from '../components/PublicHeader';
 import { Link } from 'react-router-dom';
 
 const Documentation: React.FC = () => {
@@ -21,13 +22,13 @@ const Documentation: React.FC = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-display">
-            <header className="bg-white dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-50 shadow-sm backdrop-blur-md bg-white/80 dark:bg-slate-850/80">
-                <div className="flex items-center">
-                    <PhyrLogo className="h-[40px] w-auto" />
-                </div>
-                <Link to="/login" className="text-sm font-bold text-primary hover:underline">Voltar ao Login</Link>
-            </header>
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-display transition-all duration-500">
+            <PublicHeader
+                showBackButton={true}
+                backLink="/help"
+                backLabel=""
+                pageName="Documentação"
+            />
 
             <main className="max-w-5xl mx-auto py-12 px-6 animate-in fade-in duration-500">
                 <PageHeader
