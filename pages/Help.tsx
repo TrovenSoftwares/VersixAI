@@ -13,11 +13,11 @@ const Help: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-display">
-            <header className="bg-white dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 py-4 px-6 md:px-10 flex justify-between items-center">
+            <header className="bg-white dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-50 shadow-sm backdrop-blur-md bg-white/80 dark:bg-slate-850/80">
                 <div className="flex items-center">
                     <PhyrLogo className="h-[40px] w-auto" />
                 </div>
-                <Link to="/" className="text-sm font-bold text-primary hover:underline">Ir para Dashboard</Link>
+                <Link to="/login" className="text-sm font-bold text-primary hover:underline transition-all hover:scale-105 active:scale-95">Voltar ao Login</Link>
             </header>
 
             <main className="max-w-5xl mx-auto py-16 px-6">
