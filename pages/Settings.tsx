@@ -41,6 +41,7 @@ const Settings: React.FC = () => {
   const [isEditingInstance, setIsEditingInstance] = React.useState(false);
   const [isDisconnectModalOpen, setIsDisconnectModalOpen] = React.useState(false);
   const [apiError, setApiError] = React.useState<{ title: string; message: string; details?: any } | null>(null);
+  const [systemVersion, setSystemVersion] = useState({ version: '1.0.2', description: 'Beta' });
 
   // Webhook Constants (Same as IntegrationConfig)
   const DEFAULT_WEBHOOK_URL = 'https://workflows.troven.com.br/webhook/financeiro-ai';
@@ -66,6 +67,18 @@ const Settings: React.FC = () => {
         role: 'Administrador',
         avatar_url: user.user_metadata?.avatar_url || ''
       });
+
+      // Fetch System Version
+      const { data: versionData } = await supabase
+        .from('system_versions')
+        .select('version, description')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (versionData) {
+        setSystemVersion(versionData);
+      }
 
       const { data: settings, error } = await supabase
         .from('user_settings')
@@ -217,7 +230,11 @@ const Settings: React.FC = () => {
           : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
         }`}
     >
-      <span className={`material-symbols-outlined text-[20px] ${activeTab === id ? 'fill-current' : ''}`}>{icon}</span>
+      {id === 'whatsapp' ? (
+        <WhatsAppIcon className="size-5" />
+      ) : (
+        <span className={`material-symbols-outlined text-[20px] ${activeTab === id ? 'fill-current' : ''}`}>{icon}</span>
+      )}
       <span className="flex-1">{label}</span>
       {badge && <span className="bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">IA</span>}
       {activeTab === id && <span className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary rounded-l-full"></span>}
@@ -626,7 +643,7 @@ const Settings: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900 dark:text-white">Versix AI ERP</h4>
-                    <p className="text-xs text-slate-500">Versão 1.0.2 (Beta)</p>
+                    <p className="text-xs text-slate-500">Versão {systemVersion.version} ({systemVersion.description || 'Beta'})</p>
                   </div>
                 </div>
                 <div className="mt-6 text-sm text-slate-500 space-y-2">

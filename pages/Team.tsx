@@ -32,7 +32,7 @@ const Team: React.FC = () => {
       const { data: contactsData, error: contactsError } = await supabase
         .from('contacts')
         .select('*')
-        .eq('category', 'Funcionário')
+        .in('category', ['Funcionário', 'Grupo'])
         .order('name');
 
       if (contactsError) throw contactsError;
@@ -300,23 +300,23 @@ const TeamRow = ({ member, onToggleMonitoring, onEdit, onDelete }: any) => {
           {member.photo_url ? (
             <img src={member.photo_url} alt={member.name} className="size-10 rounded-xl object-cover border border-white/20 shadow-sm" />
           ) : (
-            <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 border border-primary/20">
-              <span className="text-primary font-bold text-sm">{member.name.substring(0, 2).toUpperCase()}</span>
+            <div className={`size-10 rounded-xl flex items-center justify-center shrink-0 border transition-all ${member.is_group ? 'bg-indigo-500/10 border-indigo-500/20 text-indigo-500' : 'bg-primary/10 border-primary/20 text-primary'}`}>
+              <span className="material-symbols-outlined font-bold text-[22px]">{member.is_group ? 'groups' : 'person'}</span>
             </div>
           )}
           <div className="flex flex-col">
             <span className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1">{member.name}</span>
-            <span className="text-xs text-slate-400">{member.role || 'Funcionário'}</span>
+            <span className="text-xs text-slate-400">{member.is_group ? 'Grupo de WhatsApp' : (member.role || 'Funcionário')}</span>
           </div>
         </div>
       </td>
       <td className="px-4 py-4">
         <div className="flex flex-col">
           <span className="text-sm text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[16px] text-slate-400">phone</span>
-            {formatPhone(member.phone) || '---'}
+            <span className="material-symbols-outlined text-[16px] text-slate-400">{member.is_group ? 'fingerprint' : 'phone'}</span>
+            {member.is_group ? (member.whatsapp_id || 'ID não informado') : (formatPhone(member.phone) || '---')}
           </span>
-          <span className="text-xs text-slate-400">{member.email || '---'}</span>
+          {!member.is_group && <span className="text-xs text-slate-400">{member.email || '---'}</span>}
         </div>
       </td>
       <td className="px-4 py-4 text-center">

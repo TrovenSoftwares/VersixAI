@@ -20,6 +20,7 @@ interface PendingMessage {
   message_type: string;
   status: string;
   raw_data: any;
+  is_group?: boolean;
   contact_name?: string;
   contact_id?: string;
   contact_avatar?: string;
@@ -57,14 +58,21 @@ const TransactionReviewCard = ({ msg, categories, accounts, clients, onUpdate, o
     <div className="bg-[#fcfdfd] dark:bg-slate-900/30 p-4 sm:p-6 border-b border-[#e7edf3] dark:border-slate-800">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <img src={msg.contact_avatar} className="size-10 rounded-full border border-slate-200" alt={msg.contact_name} />
+          <div className="relative">
+            <img src={msg.contact_avatar} className="size-10 rounded-full border border-slate-200" alt={msg.contact_name} />
+            {msg.is_group && (
+              <div className="absolute -right-1 -bottom-1 bg-primary text-white size-5 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-850 shadow-sm">
+                <span className="material-symbols-outlined text-[12px] font-bold">groups</span>
+              </div>
+            )}
+          </div>
           <div>
             <p className="text-sm font-bold text-slate-900 dark:text-white">{msg.contact_name}</p>
             <p className="text-xs text-slate-500">{new Date(msg.created_at).toLocaleString('pt-BR')}</p>
           </div>
         </div>
-        <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold bg-green-100 text-green-800">
-          WHATSAPP
+        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold ${msg.is_group ? 'bg-indigo-100 text-indigo-800' : 'bg-green-100 text-green-800'}`}>
+          {msg.is_group ? 'GRUPO' : 'WHATSAPP'}
         </span>
       </div>
       <div className="relative max-w-[90%] rounded-2xl rounded-tl-none bg-[#dcf8c6] dark:bg-[#005c4b] p-4 text-slate-800 dark:text-slate-100 shadow-sm border border-black/5">
@@ -108,17 +116,19 @@ const TransactionReviewCard = ({ msg, categories, accounts, clients, onUpdate, o
             </div>
           </div>
 
-          <label className="mb-1 block text-xs font-bold text-slate-500 uppercase tracking-wider">Tipo</label>
-          <div className="relative">
-            <CustomSelect
-              value={msg.editData.type}
-              onChange={(val) => onUpdate(msg.id, 'type', val)}
-              options={[
-                { value: 'income', label: 'Entrada (Receita)', icon: 'arrow_upward' },
-                { value: 'expense', label: 'Saída (Despesa)', icon: 'arrow_downward' }
-              ]}
-              placeholder="Selecione..."
-            />
+          <div className="col-span-1">
+            <label className="mb-1 block text-xs font-bold text-slate-500 uppercase tracking-wider">Tipo</label>
+            <div className="relative">
+              <CustomSelect
+                value={msg.editData.type}
+                onChange={(val) => onUpdate(msg.id, 'type', val)}
+                options={[
+                  { value: 'income', label: 'Entrada (Receita)', icon: 'arrow_upward' },
+                  { value: 'expense', label: 'Saída (Despesa)', icon: 'arrow_downward' }
+                ]}
+                placeholder="Selecione..."
+              />
+            </div>
           </div>
 
           <div className="col-span-1">
@@ -191,14 +201,21 @@ const SaleReviewCard = ({ msg, categories, accounts, clients, sellers, onUpdate,
     <div className="bg-[#fcfdfd] dark:bg-slate-900/30 p-4 sm:p-6 border-b border-[#e7edf3] dark:border-slate-800">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <img src={msg.contact_avatar} className="size-10 rounded-full border border-slate-200" alt={msg.contact_name} />
+          <div className="relative">
+            <img src={msg.contact_avatar} className="size-10 rounded-full border border-slate-200" alt={msg.contact_name} />
+            {msg.is_group && (
+              <div className="absolute -right-1 -bottom-1 bg-primary text-white size-5 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-850 shadow-sm">
+                <span className="material-symbols-outlined text-[12px] font-bold">groups</span>
+              </div>
+            )}
+          </div>
           <div>
             <p className="text-sm font-bold text-slate-900 dark:text-white">{msg.contact_name}</p>
             <p className="text-xs text-slate-500">{new Date(msg.created_at).toLocaleString('pt-BR')}</p>
           </div>
         </div>
-        <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-800 uppercase tracking-wide">
-          POSSÍVEL VENDA
+        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold ${msg.is_group ? 'bg-indigo-100 text-indigo-800' : 'bg-amber-100 text-amber-800'} uppercase tracking-wide`}>
+          {msg.is_group ? 'GRUPO' : 'POSSÍVEL VENDA'}
         </span>
       </div>
       <div className="relative max-w-[90%] rounded-2xl rounded-tl-none bg-[#e8f4fd] dark:bg-[#0c4a6e] p-4 text-slate-800 dark:text-slate-100 shadow-sm border border-black/5">
@@ -346,29 +363,39 @@ const classifyMessage = (content: string): AutoClassification => {
     if (t.includes('recebimento') || t.includes('pagamento') || t.includes('despesa') || t.includes('entrada') || t.includes('saida') || t.includes('saída')) return 'transaction';
   }
 
-  // Priority 1: Payment/receipt keywords = transactions (income)
-  const paymentKeywords = ['pagamento recebido', 'pix recebido', 'cliente pagou', 'recebi o pix', 'pagou a venda', 'recebimento de', 'comprovante de pagamento'];
+  // Priority 1: Payment/receipt keywords = transactions (income) - ESPECÍFICAS
+  const paymentKeywords = [
+    'pagamento recebido', 'pix recebido', 'cliente pagou', 'recebi o pix',
+    'pagou a venda', 'recebimento de', 'comprovante de pagamento', 'transferi para',
+    'fiz o pix', 'pagou o boleto', 'quitou', 'valor recebido', 'valor pago'
+  ];
   if (paymentKeywords.some(w => lower.includes(w))) return 'transaction';
 
-  // Priority 2: Sale keywords - broad detection
+  // Priority 2: Sale keywords - mais específicas (requer contexto financeiro)
   const saleKeywords = [
-    'venda', 'vendas', 'pedido', 'encomenda', 'cliente', 'comprar',
-    'quero', 'gostaria', 'preço', 'quanto', 'gramas', 'gram', 'peso',
-    'frete', 'entrega', 'envio', 'joia', 'peça', 'produto'
+    'venda de', 'vendas do dia', 'pedido de', 'encomenda de', 'cliente comprou',
+    'fechou venda', 'vendi', 'vendido', 'valor da venda', 'total da venda',
+    'orçamento de', 'orçamento para'
   ];
   if (saleKeywords.some(w => lower.includes(w))) return 'sale';
 
-  // Priority 3: Transaction keywords
+  // Priority 3: Transaction keywords - ESPECÍFICAS (evitar 'conta' sozinho)
   const transactionKeywords = [
-    'paguei', 'pagamento', 'transferência', 'pix', 'boleto', 'conta',
-    'recebi', 'recebido', 'nota', 'fatura', 'gasto', 'despesa',
-    'depósito', 'depositou', 'transferi'
+    'paguei', 'pagamento de', 'transferência de', 'pix de', 'boleto de',
+    'recebi de', 'gasto com', 'despesa de', 'depósito de', 'depositei',
+    'transferi', 'nota fiscal', 'fatura de'
   ];
   if (transactionKeywords.some(w => lower.includes(w))) return 'transaction';
 
-  // Default: if has currency value, consider as transaction
-  if (/r\$\s?\d+/i.test(lower) || /\d+,\d{2}/.test(lower)) return 'transaction';
+  // Priority 4: Valor monetário explícito (R$ + número)
+  if (/r\$\s?\d+[.,]?\d*/i.test(lower)) return 'transaction';
 
+  // Priority 5: Valor decimal isolado com contexto financeiro
+  if (/\d+,\d{2}/.test(lower) && (lower.includes('valor') || lower.includes('total') || lower.includes('preço'))) {
+    return 'transaction';
+  }
+
+  // Mensagens sem classificação financeira são descartadas
   return 'discard';
 };
 
@@ -376,7 +403,7 @@ const classifyMessage = (content: string): AutoClassification => {
 const extractFinancialData = (content: string, categories: any[], accounts: any[] = [], clients: any[] = []) => {
   const lower = content?.toLowerCase() || '';
 
-  // Remove date patterns (DD/MM/YYYY or DD-MM-YYYY) to avoid misidentifying day numbers as values
+  // Remove date patterns (DD/MM/YYYY or DD-MM/YYYY) to avoid misidentifying day numbers as values
   const contentWithoutDates = content.replace(/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/g, ' [DATE] ');
 
   let value = '';
@@ -607,7 +634,7 @@ const Review: React.FC = () => {
         if (m.status === 'error') classification = 'discard'; // Keep error messages in discard/error tab
         const extracted = extractFinancialData(m.content || '', cats || [], accs || [], contacts || []);
 
-        // Try to extract date from content (DD/MM/YYYY or DD-MM-YYYY)
+        // Try to extract date from content (DD/MM/YYYY or DD-MM/YYYY)
         const dateRegex = /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/i;
         const dateMatch = (m.content || '').match(dateRegex);
         let formattedDate = '';
@@ -622,7 +649,8 @@ const Review: React.FC = () => {
 
         return {
           ...m,
-          contact_name: contact?.name || 'Desconhecido',
+          is_group: m.is_group || m.remote_jid?.endsWith('@g.us'),
+          contact_name: contact?.name || (m.is_group ? 'Grupo do WhatsApp' : 'Desconhecido'),
           contact_id: contact?.id,
           contact_avatar: contact?.photo_url || `https://ui-avatars.com/api/?name=${contact?.name || '?'}&background=random`,
           classification,
@@ -961,6 +989,12 @@ const Review: React.FC = () => {
             Vendas Pendentes ({saleMessages.length})
           </button>
           <button
+            onClick={() => setActiveType('outros')}
+            className={`px-6 py-3 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${activeType === 'outros' ? 'border-amber-500 text-amber-500' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
+          >
+            Outros ({otherMessages.length})
+          </button>
+          <button
             onClick={() => setActiveType('lixo')}
             className={`px-6 py-3 text-sm font-bold border-b-2 transition-colors whitespace-nowrap ${activeType === 'lixo' ? 'border-rose-500 text-rose-500' : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'}`}
           >
@@ -968,6 +1002,35 @@ const Review: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Action bar for 'Outros' tab */}
+      {activeType === 'outros' && otherMessages.length > 0 && (
+        <div className="flex justify-end">
+          <button
+            onClick={async () => {
+              setLoading(true);
+              try {
+                const ids = otherMessages.map(m => m.id);
+                const { error } = await supabase
+                  .from('whatsapp_messages')
+                  .update({ status: 'error', ignore_reason: 'Ignorado em lote - sem valor financeiro' })
+                  .in('id', ids);
+                if (error) throw error;
+                toast.success(`${ids.length} mensagem(ns) ignorada(s)!`);
+                setMessages(prev => prev.filter(m => !ids.includes(m.id)));
+              } catch (error) {
+                toast.error('Erro ao ignorar mensagens.');
+              }
+              setLoading(false);
+            }}
+            disabled={loading}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-rose-500 text-white font-bold text-sm hover:bg-rose-600 transition-colors shadow-md disabled:opacity-50"
+          >
+            <span className="material-symbols-outlined text-[18px]">delete_sweep</span>
+            Ignorar Todos ({otherMessages.length})
+          </button>
+        </div>
+      )}
 
       {/* Content */}
       <div className="flex flex-col gap-4 min-h-[400px]">
@@ -1010,6 +1073,61 @@ const Review: React.FC = () => {
                 onReject={openIgnoreModal}
                 onAiRefine={handleAiRefine}
               />
+            ) : activeType === 'outros' ? (
+              // Card para mensagens não-financeiras (Outros)
+              <article key={msg.id} className="rounded-xl border border-amber-200 dark:border-amber-900/30 bg-amber-50/50 dark:bg-amber-900/10 p-4 sm:p-5 transition-all">
+                <div className="flex items-start gap-4">
+                  <div className="relative shrink-0">
+                    <img src={msg.contact_avatar} className="size-10 rounded-full border border-slate-200" alt={msg.contact_name} />
+                    {msg.is_group && (
+                      <div className="absolute -right-1 -bottom-1 bg-primary text-white size-5 rounded-full flex items-center justify-center border-2 border-white dark:border-slate-850 shadow-sm">
+                        <span className="material-symbols-outlined text-[12px] font-bold">groups</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{msg.contact_name}</p>
+                      <span className="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold bg-amber-100 text-amber-800 shrink-0">
+                        SEM VALOR FINANCEIRO
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mb-2">{new Date(msg.created_at).toLocaleString('pt-BR')}</p>
+                    <div className="bg-white dark:bg-slate-800 rounded-lg p-3 border border-amber-100 dark:border-amber-900/20">
+                      <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">{msg.content}</p>
+                    </div>
+                    <div className="flex items-center gap-2 mt-3">
+                      <button
+                        onClick={() => {
+                          setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, classification: 'transaction' } : m));
+                          toast.success('Movido para Transações!');
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-primary hover:text-primary transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">swap_horiz</span>
+                        Transação
+                      </button>
+                      <button
+                        onClick={() => {
+                          setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, classification: 'sale' } : m));
+                          toast.success('Movido para Vendas!');
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-primary hover:text-primary transition-colors"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">storefront</span>
+                        Venda
+                      </button>
+                      <button
+                        onClick={() => openIgnoreModal(msg.id)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-rose-600 bg-white dark:bg-slate-800 border border-rose-200 dark:border-rose-900/30 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors ml-auto"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">delete</span>
+                        Ignorar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
             ) : (
               // Discarded / Error View
               <article key={msg.id} className="rounded-xl border border-rose-100 dark:border-rose-900/30 bg-rose-50/50 dark:bg-rose-900/10 p-4 flex justify-between items-center opacity-75 hover:opacity-100 transition-opacity">

@@ -192,5 +192,20 @@ export const evolutionApi = {
             console.error('Error setting webhook:', error);
             throw error;
         }
+    },
+
+    async fetchGroups(instanceName: string) {
+        try {
+            const response = await fetch(`${EVO_URL}/group/fetchAllGroups/${encodeURIComponent(instanceName)}`, {
+                method: 'GET',
+                headers: { 'apikey': EVO_API_KEY }
+            });
+            const data = await response.json();
+            if (!response.ok) throw data;
+            return data;
+        } catch (error) {
+            console.error('Error fetching groups:', error);
+            throw error;
+        }
     }
 };

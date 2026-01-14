@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { evolutionApi } from '../lib/evolution';
 import InputMask from '../components/InputMask';
 import { MASKS } from '../utils/utils';
 import { toast } from 'react-hot-toast';
@@ -20,9 +21,67 @@ const NewTeamMember: React.FC = () => {
         category: 'Funcionário',
         phone: '',
         email: '',
-        ia_status: 'Inativo',
-        whatsapp_monitoring: true
+        whatsapp_monitoring: true,
+        is_group: false,
+        whatsapp_id: ''
     });
+
+    const [groupModalOpen, setGroupModalOpen] = useState(false);
+    const [groupList, setGroupList] = useState<any[]>([]);
+    const [groupSearch, setGroupSearch] = useState('');
+    const [loadingGroups, setLoadingGroups] = useState(false);
+    const [instanceName, setInstanceName] = useState('');
+
+    useEffect(() => {
+        const fetchInstance = async () => {
+            const { data: user } = await supabase.auth.getUser();
+            if (user?.user) {
+                const { data: inst } = await supabase
+                    .from('instances')
+                    .select('name')
+                    .eq('user_id', user.user.id)
+                    .single();
+                if (inst) setInstanceName(inst.name);
+            }
+        };
+        fetchInstance();
+    }, []);
+
+    const handleSearchGroups = async () => {
+        console.log('[DEBUG] handleSearchGroups chamado');
+        console.log('[DEBUG] instanceName:', instanceName);
+        if (!instanceName) {
+            toast.error('Nenhuma instância WhatsApp configurada.');
+            return;
+        }
+        setLoadingGroups(true);
+        setGroupModalOpen(true);
+        try {
+            console.log('[DEBUG] Chamando evolutionApi.fetchGroups com:', instanceName);
+            const groups = await evolutionApi.fetchGroups(instanceName);
+            console.log('[DEBUG] Resposta da API fetchGroups:', groups);
+            setGroupList(Array.isArray(groups) ? groups : []);
+        } catch (error: any) {
+            console.error('[DEBUG] Erro ao buscar grupos:', error);
+            toast.error('Erro ao buscar grupos: ' + (error?.message || 'Falha na API'));
+            setGroupList([]);
+        }
+        setLoadingGroups(false);
+    };
+
+    const handleSelectGroup = (group: any) => {
+        setFormData({
+            ...formData,
+            name: group.subject || group.name || formData.name,
+            whatsapp_id: group.id || group.jid || ''
+        });
+        setGroupModalOpen(false);
+        toast.success('Grupo selecionado!');
+    };
+
+    const filteredGroups = groupList.filter(g =>
+        (g.subject || g.name || '').toLowerCase().includes(groupSearch.toLowerCase())
+    );
 
     useEffect(() => {
         const fetchMember = async () => {
@@ -40,8 +99,9 @@ const NewTeamMember: React.FC = () => {
                         category: 'Funcionário',
                         phone: data.phone ? (data.phone.startsWith('55') && data.phone.length > 11 ? data.phone.substring(2) : data.phone) : '',
                         email: data.email || '',
-                        ia_status: data.ia_status || 'Inativo',
-                        whatsapp_monitoring: data.whatsapp_monitoring ?? true
+                        whatsapp_monitoring: data.whatsapp_monitoring ?? true,
+                        is_group: data.is_group ?? false,
+                        whatsapp_id: data.whatsapp_id || ''
                     });
                 }
                 setFetching(false);
@@ -61,8 +121,9 @@ const NewTeamMember: React.FC = () => {
             category: 'Funcionário',
             phone: formData.phone ? (formData.phone.replace(/\D/g, '').length <= 11 ? `55${formData.phone.replace(/\D/g, '')}` : formData.phone.replace(/\D/g, '')) : null,
             email: formData.email || null,
-            ia_status: formData.ia_status,
             whatsapp_monitoring: formData.whatsapp_monitoring,
+            is_group: formData.is_group,
+            whatsapp_id: formData.is_group ? formData.whatsapp_id : null,
             user_id: (await supabase.auth.getUser()).data.user?.id
         };
 
@@ -117,19 +178,34 @@ const NewTeamMember: React.FC = () => {
                         <div className="bg-white dark:bg-slate-850 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 md:p-8">
                             <h3 className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2 mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
                                 <span className="material-symbols-outlined text-primary">badge</span>
-                                Dados do Colaborador
+                                Dados do Colaborador / Grupo
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="md:col-span-2 flex items-center gap-3 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 mb-4 transition-all hover:bg-white dark:hover:bg-slate-800 cursor-pointer" onClick={() => setFormData({ ...formData, is_group: !formData.is_group })}>
+                                    <div className="flex items-center h-5 pointer-events-none">
+                                        <input
+                                            className="w-5 h-5 text-primary border-gray-300 rounded focus:ring-primary bg-white dark:bg-slate-700 dark:border-slate-600"
+                                            type="checkbox"
+                                            checked={formData.is_group}
+                                            readOnly
+                                        />
+                                    </div>
+                                    <div className="flex flex-col select-none">
+                                        <span className="font-bold text-slate-900 dark:text-white">Este cadastro é um Grupo do WhatsApp?</span>
+                                        <span className="text-xs text-slate-500 dark:text-slate-400">Ative se deseja cadastrar um grupo para monitoramento em vez de uma pessoa.</span>
+                                    </div>
+                                </div>
+
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">Nome Completo</label>
+                                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">{formData.is_group ? 'Nome do Grupo' : 'Nome Completo'}</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <span className="material-symbols-outlined text-slate-400 text-[20px]">person</span>
+                                            <span className="material-symbols-outlined text-slate-400 text-[20px]">{formData.is_group ? 'groups' : 'person'}</span>
                                         </div>
                                         <input
                                             className="w-full pl-10 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white focus:ring-primary focus:border-primary text-sm py-2.5 outline-none transition-all"
-                                            placeholder="Ex: João Silva"
+                                            placeholder={formData.is_group ? "Ex: Grupo de Vendas" : "Ex: João Silva"}
                                             type="text"
                                             required
                                             value={formData.name}
@@ -137,45 +213,78 @@ const NewTeamMember: React.FC = () => {
                                         />
                                     </div>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">CPF</label>
-                                    <InputMask
-                                        mask={MASKS.CPF}
-                                        value={formData.id_number}
-                                        onAccept={(val) => setFormData({ ...formData, id_number: val })}
-                                        placeholder="000.000.000-00"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">E-mail</label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <span className="material-symbols-outlined text-slate-400 text-[18px]">mail</span>
+
+                                {formData.is_group ? (
+                                    <div className="md:col-span-2">
+                                        <div className="flex items-center justify-between mb-1.5">
+                                            <label className="block text-sm font-medium text-slate-500 dark:text-slate-400">Identificador do Grupo (JID)</label>
+                                            <button
+                                                type="button"
+                                                onClick={handleSearchGroups}
+                                                className="flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary/80 transition-colors"
+                                            >
+                                                <span className="material-symbols-outlined text-[16px]">search</span>
+                                                Buscar Grupos
+                                            </button>
                                         </div>
-                                        <input
-                                            className="w-full pl-10 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white focus:ring-primary focus:border-primary text-sm py-2.5 outline-none"
-                                            placeholder="email@trabalho.com"
-                                            type="email"
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">Telefone / WhatsApp</label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
-                                            <span className="material-symbols-outlined text-slate-400 text-[18px]">call</span>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <span className="material-symbols-outlined text-slate-400 text-[20px]">fingerprint</span>
+                                            </div>
+                                            <input
+                                                className="w-full pl-10 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white focus:ring-primary focus:border-primary text-sm py-2.5 outline-none transition-all font-mono"
+                                                placeholder="Ex: 120363297627294331@g.us"
+                                                type="text"
+                                                required={formData.is_group}
+                                                value={formData.whatsapp_id}
+                                                onChange={(e) => setFormData({ ...formData, whatsapp_id: e.target.value })}
+                                            />
                                         </div>
-                                        <InputMask
-                                            mask={MASKS.PHONE}
-                                            value={formData.phone}
-                                            onAccept={(val) => setFormData({ ...formData, phone: val })}
-                                            placeholder="(00) 00000-0000"
-                                            className="pl-10"
-                                        />
+                                        <p className="mt-2 text-xs text-slate-500 italic">Clique em "Buscar Grupos" para encontrar e preencher automaticamente.</p>
                                     </div>
-                                </div>
+                                ) : (
+                                    <>
+                                        <div>
+                                            <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">CPF</label>
+                                            <InputMask
+                                                mask={MASKS.CPF}
+                                                value={formData.id_number}
+                                                onAccept={(val) => setFormData({ ...formData, id_number: val })}
+                                                placeholder="000.000.000-00"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">E-mail</label>
+                                            <div className="relative">
+                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                    <span className="material-symbols-outlined text-slate-400 text-[18px]">mail</span>
+                                                </div>
+                                                <input
+                                                    className="w-full pl-10 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white focus:ring-primary focus:border-primary text-sm py-2.5 outline-none"
+                                                    placeholder="email@trabalho.com"
+                                                    type="email"
+                                                    value={formData.email}
+                                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="md:col-span-2">
+                                            <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">Telefone / WhatsApp</label>
+                                            <div className="relative">
+                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                                    <span className="material-symbols-outlined text-slate-400 text-[18px]">call</span>
+                                                </div>
+                                                <InputMask
+                                                    mask={MASKS.PHONE}
+                                                    value={formData.phone}
+                                                    onAccept={(val) => setFormData({ ...formData, phone: val })}
+                                                    placeholder="(00) 00000-0000"
+                                                    className="pl-10"
+                                                />
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
 
@@ -227,6 +336,75 @@ const NewTeamMember: React.FC = () => {
                     </form>
                 </div>
             </div>
+
+            {/* Modal de Seleção de Grupos */}
+            {groupModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-slate-850 rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] flex flex-col border border-slate-200 dark:border-slate-700 animate-in zoom-in-95 duration-200">
+                        <div className="flex items-center justify-between p-5 border-b border-slate-200 dark:border-slate-700">
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">groups</span>
+                                Selecionar Grupo
+                            </h3>
+                            <button
+                                onClick={() => setGroupModalOpen(false)}
+                                className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            >
+                                <span className="material-symbols-outlined text-slate-500">close</span>
+                            </button>
+                        </div>
+                        <div className="p-4 border-b border-slate-100 dark:border-slate-700">
+                            <div className="relative">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                    <span className="material-symbols-outlined text-[20px]">search</span>
+                                </span>
+                                <input
+                                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 dark:text-white"
+                                    placeholder="Buscar grupo pelo nome..."
+                                    value={groupSearch}
+                                    onChange={(e) => setGroupSearch(e.target.value)}
+                                    autoFocus
+                                />
+                            </div>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-2">
+                            {loadingGroups ? (
+                                <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mb-3"></div>
+                                    <p className="text-sm">Buscando grupos...</p>
+                                </div>
+                            ) : filteredGroups.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                                    <span className="material-symbols-outlined text-4xl mb-2">group_off</span>
+                                    <p className="text-sm">{groupSearch ? 'Nenhum grupo encontrado.' : 'Nenhum grupo disponível.'}</p>
+                                </div>
+                            ) : (
+                                <div className="grid gap-1">
+                                    {filteredGroups.map((group, idx) => (
+                                        <button
+                                            key={group.id || group.jid || idx}
+                                            onClick={() => handleSelectGroup(group)}
+                                            className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-left w-full"
+                                        >
+                                            <div className="size-10 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
+                                                <span className="material-symbols-outlined text-indigo-500 text-[20px]">groups</span>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{group.subject || group.name || 'Sem nome'}</p>
+                                                <p className="text-xs text-slate-400 font-mono truncate">{group.id || group.jid}</p>
+                                            </div>
+                                            <span className="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                        <div className="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                            <p className="text-xs text-slate-500 text-center">{filteredGroups.length} grupo(s) encontrado(s)</p>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
