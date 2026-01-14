@@ -158,7 +158,7 @@ const Reports: React.FC = () => {
       doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(107, 114, 128);
-      doc.text('Sistema: Versix ERP', margin, 26);
+      doc.text('Sistema: Phyr ERP', margin, 26);
 
       // Period Info (Top Right)
       doc.setFontSize(9);

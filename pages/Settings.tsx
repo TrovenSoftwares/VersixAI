@@ -143,7 +143,7 @@ const Settings: React.FC = () => {
         if (error.code === 'PGRST116' || error.message.includes('relation "public.system_changelogs" does not exist')) {
           console.log('Changelogs table not found, using mock data.');
           const mockData = [
-            { id: 1, version: '1.0.3', type: 'new', title: 'Landing Page Premium', description: 'Lançamento da nova página inicial do Versix AI com design ultra-premium, mockups e foco em IA.' },
+            { id: 1, version: '1.0.3', type: 'new', title: 'Landing Page Premium', description: 'Lançamento da nova página inicial do Phyr com design ultra-premium, mockups e foco em IA.' },
             { id: 2, version: '1.0.3', type: 'improvement', title: 'Headers Fixos', description: 'Os cabeçalhos das telas de Login e Cadastro agora ficam fixos no topo durante a rolagem.' },
             { id: 3, version: '1.0.2', type: 'improvement', title: 'Padronização Visual', description: 'Unificação de componentes de botão, input e modais em todo o sistema.' },
             { id: 4, version: '1.0.1', type: 'new', title: 'Revisão Inteligente WhatsApp', description: 'Integração completa com WhatsApp para processamento automático de transações financeiras.' }
@@ -679,7 +679,7 @@ const Settings: React.FC = () => {
                     V
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-bold text-slate-900 dark:text-white text-xl">Versix AI ERP</h4>
+                    <h4 className="font-bold text-slate-900 dark:text-white text-xl">Phyr ERP</h4>
                     <div className="flex flex-wrap items-center gap-2 mt-1">
                       <span className="px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider border border-primary/20">
                         Versão {systemVersion.version}

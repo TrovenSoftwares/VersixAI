@@ -183,7 +183,7 @@ const Transactions: React.FC = () => {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(100, 116, 139);
-    doc.text('Sistema: Versix ERP', margin, 26);
+    doc.text('Sistema: Phyr ERP', margin, 26);
 
     // Filter Info (Top Right)
     doc.setFontSize(9);
@@ -278,7 +278,7 @@ const Transactions: React.FC = () => {
       doc.setPage(i);
       doc.setFontSize(8);
       doc.setTextColor(156, 163, 175);
-      doc.text(`Extrato Versix ERP • Página ${i} de ${pageCount} • Gerado em ${now.toLocaleDateString('pt-BR')}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+      doc.text(`Extrato Phyr ERP • Página ${i} de ${pageCount} • Gerado em ${now.toLocaleDateString('pt-BR')}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
     }
 
     doc.save(`Extrato_Transacoes_${format(now, 'dd_MM_yyyy')}.pdf`);
@@ -295,7 +295,7 @@ const Transactions: React.FC = () => {
       'Contato': t.contacts?.name || '---',
       'Status': t.status === 'confirmed' ? 'Realizado' : 'Pendente'
     }));
-    exportToExcel(dataToExport, 'Transacoes_Versix');
+    exportToExcel(dataToExport, 'Transacoes_Phyr');
     toast.success('Arquivo Excel gerado!');
   };
 

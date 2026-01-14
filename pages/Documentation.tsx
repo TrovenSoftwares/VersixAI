@@ -23,7 +23,7 @@ const Documentation: React.FC = () => {
         <div className="flex-1 flex flex-col gap-8 animate-in fade-in duration-500 max-w-5xl mx-auto">
             <PageHeader
                 title="Documentação do Sistema"
-                description="Guia completo de uso, configurações e integrações do Versix AI."
+                description="Guia completo de uso, configurações e integrações do Phyr."
             />
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -54,7 +54,7 @@ const Documentation: React.FC = () => {
                                 <span className="text-3xl">🚀</span> Visão Geral
                             </h2>
                             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                                O <span className="font-bold">Versix AI</span> é uma plataforma de gestão financeira que utiliza Inteligência Artificial para automatizar processos manuais, permitindo que você controle suas finanças, vendas e contatos diretamente de onde a comunicação acontece: o WhatsApp.
+                                O <span className="font-bold">Phyr</span> é uma plataforma de gestão financeira que utiliza Inteligência Artificial para automatizar processos manuais, permitindo que você controle suas finanças, vendas e contatos diretamente de onde a comunicação acontece: o WhatsApp.
                             </p>
                         </div>
                     </section>
@@ -99,7 +99,7 @@ const Documentation: React.FC = () => {
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">WhatsApp (Evolution API)</h3>
-                                    <p className="text-sm text-slate-500 font-medium italic">Seu canal direto com o Versix AI</p>
+                                    <p className="text-sm text-slate-500 font-medium italic">Seu canal direto com o Phyr</p>
                                 </div>
                             </div>
                             <div className="space-y-4 text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
@@ -175,7 +175,7 @@ const Documentation: React.FC = () => {
                     </section>
 
                     <footer className="pt-10 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-400">
-                        <p>© 2026 Versix AI - Eficiência Financeira Inteligente</p>
+                        <p>© 2026 Phyr - Eficiência Financeira Inteligente</p>
                     </footer>
 
                 </div>

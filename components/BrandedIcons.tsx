@@ -28,10 +28,10 @@ export const WhatsAppIcon: React.FC<IconProps> = ({ className = "size-5" }) => (
     </svg>
 );
 
-export const VersixLogo: React.FC<IconProps> = ({ className = "h-12" }) => (
+export const PhyrLogo: React.FC<IconProps> = ({ className = "h-12" }) => (
     <img
-        src="/logo.png"
-        alt="Versix Logo"
+        src="/logo-phyr.svg"
+        alt="Phyr Logo"
         className={className}
         style={{ objectFit: 'contain' }}
     />

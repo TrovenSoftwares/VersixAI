@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { VersixLogo, WhatsAppIcon } from '../components/BrandedIcons';
+import { PhyrLogo, WhatsAppIcon } from '../components/BrandedIcons';
 
 const Help: React.FC = () => {
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ const Help: React.FC = () => {
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-display">
             <header className="bg-white dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 py-4 px-6 md:px-10 flex justify-between items-center">
                 <div className="flex items-center">
-                    <VersixLogo className="h-[40px] w-auto" />
+                    <PhyrLogo className="h-[40px] w-auto" />
                 </div>
                 <Link to="/" className="text-sm font-bold text-primary hover:underline">Ir para Dashboard</Link>
             </header>

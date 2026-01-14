@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { GoogleIcon, MicrosoftIcon, WhatsAppIcon, VersixLogo } from '../components/BrandedIcons';
+import { GoogleIcon, MicrosoftIcon, WhatsAppIcon, PhyrLogo } from '../components/BrandedIcons';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
@@ -49,7 +49,7 @@ const Login: React.FC = () => {
       {/* Header / Nav */}
       <header className="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap px-6 py-4 md:px-10 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-850/80 backdrop-blur-md">
         <div className="flex items-center">
-          <VersixLogo className="h-[40px] w-auto" />
+          <PhyrLogo className="h-[40px] w-auto" />
         </div>
         <div className="hidden sm:flex gap-2">
           <span className="text-sm text-slate-500 dark:text-slate-400 font-medium self-center">Não tem uma conta?</span>

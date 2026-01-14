@@ -1,13 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { VersixLogo } from '../components/BrandedIcons';
+import { PhyrLogo } from '../components/BrandedIcons';
 
 const TermsOfUse: React.FC = () => {
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-display">
             <header className="bg-white dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 py-4 px-6 md:px-10 flex justify-between items-center">
                 <div className="flex items-center">
-                    <VersixLogo className="h-[40px] w-auto" />
+                    <PhyrLogo className="h-[40px] w-auto" />
                 </div>
                 <Link to="/login" className="text-sm font-bold text-primary hover:underline">Voltar ao Login</Link>
             </header>
@@ -20,14 +20,14 @@ const TermsOfUse: React.FC = () => {
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">1. Aceitação dos Termos</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            Ao acessar e usar o Versix, você concorda em cumprir e estar vinculado a estes Termos de Uso. Se você não concordar com qualquer parte destes termos, você não deve usar nossos serviços.
+                            Ao acessar e usar o Phyr, você concorda em cumprir e estar vinculado a estes Termos de Uso. Se você não concordar com qualquer parte destes termos, você não deve usar nossos serviços.
                         </p>
                     </section>
 
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">2. Descrição do Serviço</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            O Versix é um ERP financeiro inteligente que utiliza Inteligência Artificial para automação de processos, integração com WhatsApp e gestão de fluxo de caixa. Reservamo-nos o direito de modificar ou descontinuar o serviço a qualquer momento.
+                            O Phyr é um ERP financeiro inteligente que utiliza Inteligência Artificial para automação de processos, integração com WhatsApp e gestão de fluxo de caixa. Reservamo-nos o direito de modificar ou descontinuar o serviço a qualquer momento.
                         </p>
                     </section>
 
@@ -41,14 +41,14 @@ const TermsOfUse: React.FC = () => {
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">4. Privacidade e Dados</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            Seu uso do Versix também é regido por nossa Política de Privacidade. Ao usar o Versix, você consente com a coleta e uso de informações conforme detalhado em nossa política.
+                            Seu uso do Phyr também é regido por nossa Política de Privacidade. Ao usar o Phyr, você consente com a coleta e uso de informações conforme detalhado em nossa política.
                         </p>
                     </section>
 
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">5. Limitação de Responsabilidade</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            O Versix não será responsável por quaisquer danos diretos, indiretos, incidentais ou consequentes resultantes do uso ou da incapacidade de usar nossos serviços.
+                            O Phyr não será responsável por quaisquer danos diretos, indiretos, incidentais ou consequentes resultantes do uso ou da incapacidade de usar nossos serviços.
                         </p>
                     </section>
                 </div>

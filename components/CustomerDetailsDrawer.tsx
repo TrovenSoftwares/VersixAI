@@ -119,7 +119,7 @@ const CustomerDetailsDrawer: React.FC<CustomerDetailsDrawerProps> = ({
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(100, 116, 139);
-        doc.text('Sistema: Versix ERP', margin, 26);
+        doc.text('Sistema: Phyr ERP', margin, 26);
 
         // Date Info (Top Right)
         doc.setFontSize(9);

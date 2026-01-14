@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SidebarContent from './SidebarContent';
 import { useAuth } from '../contexts/AuthContext';
-import { VersixLogo } from './BrandedIcons';
+import { PhyrLogo } from './BrandedIcons';
 
 const Sidebar: FC = () => {
   const location = useLocation();
@@ -18,7 +18,7 @@ const Sidebar: FC = () => {
     <aside className="w-64 bg-white dark:bg-slate-850 border-r border-[#e7edf3] dark:border-slate-700 flex flex-col h-screen fixed left-0 top-0 z-30 hidden xl:flex shrink-0">
       <div className="p-6 pb-2">
         <div className="flex items-center justify-center">
-          <VersixLogo className="h-[55px] w-auto px-2" />
+          <PhyrLogo className="h-[55px] w-auto px-2" />
         </div>
       </div>
 

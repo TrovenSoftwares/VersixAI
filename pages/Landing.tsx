@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { VersixLogo } from '../components/BrandedIcons';
+import { PhyrLogo } from '../components/BrandedIcons';
 import Button from '../components/Button';
 
 const Landing: React.FC = () => {
@@ -53,7 +53,7 @@ const Landing: React.FC = () => {
             <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${scrolled ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-slate-200 dark:border-slate-800 py-3 shadow-sm' : 'bg-transparent border-transparent py-5'}`}>
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                     <Link to="/" className="flex items-center">
-                        <VersixLogo className="h-10 md:h-12 w-auto" />
+                        <PhyrLogo className="h-10 md:h-12 w-auto" />
                     </Link>
 
                     <div className="flex items-center gap-4 md:gap-8">
@@ -87,7 +87,7 @@ const Landing: React.FC = () => {
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-slate-900 dark:text-white tracking-tighter leading-[1] mb-10 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-100">
                         A revolução financeira<br />
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 via-teal-500 to-blue-600">
-                            agora é Versix AI.
+                            agora é Phyr.
                         </span>
                     </h1>
 
@@ -110,7 +110,7 @@ const Landing: React.FC = () => {
                         <div className="relative group p-2 rounded-[2.5rem] bg-slate-200/50 dark:bg-slate-800/50 backdrop-blur-xl border border-white/20 dark:border-slate-700/50 shadow-[0_0_100px_-20px_rgba(16,185,129,0.3)]">
                             <img
                                 src="/img/dashboard_showcase.png"
-                                alt="Versix AI Dashboard"
+                                alt="Phyr Dashboard"
                                 className="w-full h-auto rounded-[2rem] shadow-2xl transition-transform duration-700 group-hover:scale-[1.01]"
                             />
 
@@ -164,7 +164,7 @@ const Landing: React.FC = () => {
                                 <div className="absolute -inset-4 bg-emerald-500/20 blur-2xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
                                 <img
                                     src="/img/whatsapp_showcase.png"
-                                    alt="Versix AI WhatsApp"
+                                    alt="Phyr WhatsApp"
                                     className="relative w-full h-auto rounded-[3rem] shadow-2xl border-8 border-white dark:border-slate-800 rotate-2 translate-y-4 hover:rotate-0 hover:translate-y-0 transition-all duration-700"
                                 />
                             </div>
@@ -179,7 +179,7 @@ const Landing: React.FC = () => {
                                 A IA que trabalha por você.
                             </h2>
                             <p className="text-xl text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
-                                Esqueça as planilhas manuais. No Versix AI, a gestão acontece onde você está. Envie uma mensagem e nossa IA organiza tudo em tempo real.
+                                Esqueça as planilhas manuais. No Phyr, a gestão acontece onde você está. Envie uma mensagem e nossa IA organiza tudo em tempo real.
                             </p>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
@@ -213,7 +213,7 @@ const Landing: React.FC = () => {
                     <div className="absolute top-0 right-0 size-[400px] bg-emerald-500/10 blur-[100px] -translate-y-1/2 translate-x-1/2 rounded-full"></div>
                     <div className="relative z-10 space-y-10">
                         <h2 className="text-4xl md:text-7xl font-black text-white leading-tight tracking-tighter">Pronto para elevar sua<br />gestão financeira?</h2>
-                        <p className="text-xl md:text-2xl text-slate-400 font-medium max-w-2xl mx-auto">Junte-se a centenas de empresas que já automatizaram seus processos com o Versix AI.</p>
+                        <p className="text-xl md:text-2xl text-slate-400 font-medium max-w-2xl mx-auto">Junte-se a centenas de empresas que já automatizaram seus processos com o Phyr.</p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                             <Button onClick={() => navigate('/signup')} className="w-full sm:w-auto h-16 px-12 text-xl font-bold bg-emerald-600 hover:bg-emerald-700 border-none text-white shadow-2xl shadow-emerald-600/20">
                                 Criar Minha Conta Grátis
@@ -229,7 +229,7 @@ const Landing: React.FC = () => {
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-20 mb-20 text-center md:text-left">
                         <div className="md:col-span-2 space-y-8">
-                            <VersixLogo className="h-12 w-auto mx-auto md:mx-0" />
+                            <PhyrLogo className="h-12 w-auto mx-auto md:mx-0" />
                             <p className="text-slate-500 dark:text-slate-400 max-w-sm leading-relaxed text-lg font-medium mx-auto md:mx-0">
                                 A revolução na gestão financeira para pequenas e médias empresas. Inteligência, simplicidade e agilidade em um só lugar.
                             </p>
@@ -264,7 +264,7 @@ const Landing: React.FC = () => {
                     </div>
 
                     <div className="pt-10 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row items-center justify-between gap-8">
-                        <p className="text-slate-400 font-bold text-sm leading-none">© 2026 Versix AI. Todos os direitos reservados.</p>
+                        <p className="text-slate-400 font-bold text-sm leading-none">© 2026 Phyr. Todos os direitos reservados.</p>
                         <div className="flex items-center gap-10 text-slate-400 font-black tracking-[0.2em] text-[10px] uppercase">
                             <span>Brasil</span>
                             <span>Inovação</span>

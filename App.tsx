@@ -4,7 +4,7 @@ import Sidebar from './components/Sidebar';
 import SidebarContent from './components/SidebarContent';
 import Header from './components/Header';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { VersixLogo } from './components/BrandedIcons';
+import { PhyrLogo } from './components/BrandedIcons';
 import { Toaster } from 'react-hot-toast';
 import { Navigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
@@ -133,7 +133,7 @@ const AppContent = () => {
       <div className={`fixed inset-y-0 left-0 w-[280px] sm:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-50 transform transition-transform duration-300 xl:hidden overflow-hidden flex flex-col shadow-2xl overscroll-contain ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 pb-2 flex items-center justify-between">
           <div className="flex items-center">
-            <VersixLogo className="h-[55px] w-auto" />
+            <PhyrLogo className="h-[55px] w-auto" />
           </div>
           <button
             onClick={() => setIsMobileMenuOpen(false)}

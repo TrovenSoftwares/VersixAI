@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { GoogleIcon, MicrosoftIcon, VersixLogo } from '../components/BrandedIcons';
+import { GoogleIcon, MicrosoftIcon, PhyrLogo } from '../components/BrandedIcons';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
@@ -95,7 +95,7 @@ const Signup: React.FC = () => {
       {/* Header / Nav */}
       <header className="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap px-6 py-4 md:px-10 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
         <Link to="/" className="flex items-center">
-          <VersixLogo className="h-[40px] w-auto" />
+          <PhyrLogo className="h-[40px] w-auto" />
         </Link>
         <div className="hidden sm:flex gap-2">
           <span className="text-sm text-slate-500 dark:text-slate-400 font-medium self-center">Já tem uma conta?</span>
@@ -258,7 +258,7 @@ const Signup: React.FC = () => {
                 <span className="text-white/80 text-sm font-medium">+2.5k empresas confiam</span>
               </div>
               <h3 className="text-2xl font-bold text-white mb-2 leading-snug">
-                "O Versix AI transformou nosso WhatsApp em uma máquina de controle financeiro."
+                "O Phyr transformou nosso WhatsApp em uma máquina de controle financeiro."
               </h3>
               <div className="mt-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-green-400 filled">check_circle</span>
