@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { GoogleIcon, MicrosoftIcon, WhatsAppIcon, VersixLogo } from '../components/BrandedIcons';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -125,21 +127,16 @@ const Login: React.FC = () => {
               )}
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-bold text-[#0d141b] dark:text-slate-200">E-mail</label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                    <span className="material-symbols-outlined text-[20px]">mail</span>
-                  </div>
-                  <input
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
-                    placeholder="seu@email.com"
-                    required
-                    type="email"
-                    disabled={loading}
-                  />
-                </div>
+                <Input
+                  label="E-mail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="seu@email.com"
+                  required
+                  type="email"
+                  disabled={loading}
+                  leftIcon={<span className="material-symbols-outlined text-[20px]">mail</span>}
+                />
               </div>
 
               <div className="flex flex-col gap-1.5">
@@ -149,43 +146,27 @@ const Login: React.FC = () => {
                     Esqueceu sua senha?
                   </Link>
                 </div>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                    <span className="material-symbols-outlined text-[20px]">lock</span>
-                  </div>
-                  <input
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-10 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
-                    placeholder="••••••••"
-                    required
-                    type={showPassword ? 'text' : 'password'}
-                    disabled={loading}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-[20px]">{showPassword ? 'visibility_off' : 'visibility'}</span>
-                  </button>
-                </div>
+                <Input
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                  type={showPassword ? 'text' : 'password'}
+                  disabled={loading}
+                  leftIcon={<span className="material-symbols-outlined text-[20px]">lock</span>}
+                  rightIcon={<span className="material-symbols-outlined text-[20px] text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">{showPassword ? 'visibility_off' : 'visibility'}</span>}
+                  onRightIconClick={() => setShowPassword(!showPassword)}
+                />
               </div>
 
-              <button
-                className={`mt-4 w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary text-white font-bold py-2.5 px-4 rounded-lg transition-all duration-200 shadow-lg shadow-primary/30 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              <Button
                 type="submit"
-                disabled={loading}
+                isLoading={loading}
+                className="mt-4 w-full h-[46px]"
+                rightIcon={<span className="material-symbols-outlined text-sm">arrow_forward</span>}
               >
-                {loading ? (
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                ) : (
-                  <>
-                    <span>Entrar</span>
-                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                  </>
-                )}
-              </button>
+                Entrar
+              </Button>
             </form>
 
             {/* Social Login Oculto Temporariamente */}

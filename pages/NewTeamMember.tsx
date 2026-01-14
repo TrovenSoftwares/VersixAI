@@ -7,6 +7,8 @@ import { MASKS } from '../utils/utils';
 import { toast } from 'react-hot-toast';
 import PageHeader from '../components/PageHeader';
 import Modal from '../components/Modal';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 const NewTeamMember: React.FC = () => {
     const navigate = useNavigate();
@@ -170,14 +172,13 @@ const NewTeamMember: React.FC = () => {
                         title={isEdit ? 'Editar Membro da Equipe' : 'Novo Membro da Equipe'}
                         description={isEdit ? 'Atualize os dados do colaborador abaixo.' : 'Adicione um novo membro à sua equipe de atendimento e monitoramento.'}
                         actions={
-                            <button
-                                type="button"
+                            <Button
+                                variant="outline"
                                 onClick={() => navigate(-1)}
-                                className="flex items-center justify-center gap-2 h-10 px-4 bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm font-bold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm active:scale-95 transition-all"
+                                leftIcon={<span className="material-symbols-outlined text-[20px]">arrow_back</span>}
                             >
-                                <span className="material-symbols-outlined text-[20px]">arrow_back</span>
-                                <span>Voltar</span>
-                            </button>
+                                Voltar
+                            </Button>
                         }
                     />
                 </div>
@@ -209,20 +210,15 @@ const NewTeamMember: React.FC = () => {
                                 </div>
 
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">{formData.is_group ? 'Nome do Grupo' : 'Nome Completo'}</label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <span className="material-symbols-outlined text-slate-400 text-[20px]">{formData.is_group ? 'groups' : 'person'}</span>
-                                        </div>
-                                        <input
-                                            className="w-full pl-10 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white focus:ring-primary focus:border-primary text-sm py-2.5 outline-none transition-all"
-                                            placeholder={formData.is_group ? "Ex: Grupo de Vendas" : "Ex: João Silva"}
-                                            type="text"
-                                            required
-                                            value={formData.name}
-                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        />
-                                    </div>
+                                    <Input
+                                        label={formData.is_group ? 'Nome do Grupo' : 'Nome Completo'}
+                                        placeholder={formData.is_group ? "Ex: Grupo de Vendas" : "Ex: João Silva"}
+                                        type="text"
+                                        required
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                        leftIcon={<span className="material-symbols-outlined text-slate-400 text-[20px]">{formData.is_group ? 'groups' : 'person'}</span>}
+                                    />
                                 </div>
 
                                 {formData.is_group ? (
@@ -238,19 +234,15 @@ const NewTeamMember: React.FC = () => {
                                                 Buscar Grupos
                                             </button>
                                         </div>
-                                        <div className="relative">
-                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                <span className="material-symbols-outlined text-slate-400 text-[20px]">fingerprint</span>
-                                            </div>
-                                            <input
-                                                className="w-full pl-10 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white focus:ring-primary focus:border-primary text-sm py-2.5 outline-none transition-all font-mono"
-                                                placeholder="Ex: 120363297627294331@g.us"
-                                                type="text"
-                                                required={formData.is_group}
-                                                value={formData.whatsapp_id}
-                                                onChange={(e) => setFormData({ ...formData, whatsapp_id: e.target.value })}
-                                            />
-                                        </div>
+                                        <Input
+                                            placeholder="Ex: 120363297627294331@g.us"
+                                            type="text"
+                                            required={formData.is_group}
+                                            value={formData.whatsapp_id}
+                                            onChange={(e) => setFormData({ ...formData, whatsapp_id: e.target.value })}
+                                            leftIcon={<span className="material-symbols-outlined text-slate-400 text-[20px]">fingerprint</span>}
+                                            className="font-mono"
+                                        />
                                         <p className="mt-2 text-xs text-slate-500 italic">Clique em "Buscar Grupos" para encontrar e preencher automaticamente.</p>
                                     </div>
                                 ) : (
@@ -265,19 +257,14 @@ const NewTeamMember: React.FC = () => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">E-mail</label>
-                                            <div className="relative">
-                                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                    <span className="material-symbols-outlined text-slate-400 text-[18px]">mail</span>
-                                                </div>
-                                                <input
-                                                    className="w-full pl-10 rounded-lg border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 dark:text-white focus:ring-primary focus:border-primary text-sm py-2.5 outline-none"
-                                                    placeholder="email@trabalho.com"
-                                                    type="email"
-                                                    value={formData.email}
-                                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                />
-                                            </div>
+                                            <Input
+                                                label="E-mail"
+                                                placeholder="email@trabalho.com"
+                                                type="email"
+                                                value={formData.email}
+                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                leftIcon={<span className="material-symbols-outlined text-slate-400 text-[18px]">mail</span>}
+                                            />
                                         </div>
                                         <div className="md:col-span-2">
                                             <label className="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-1.5">Telefone / WhatsApp</label>
@@ -322,27 +309,20 @@ const NewTeamMember: React.FC = () => {
                         </div>
 
                         <div className="flex flex-col-reverse md:flex-row justify-end gap-4 mt-2">
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={() => navigate(-1)}
-                                className="px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                                 type="button"
                             >
                                 Cancelar
-                            </button>
-                            <button
-                                disabled={loading}
-                                className="px-8 py-3 rounded-xl bg-primary text-white font-bold shadow-lg shadow-blue-500/30 hover:bg-primary/90 transition-all flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
+                            </Button>
+                            <Button
+                                isLoading={loading}
                                 type="submit"
+                                leftIcon={<span className="material-symbols-outlined">save</span>}
                             >
-                                {loading ? (
-                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                                ) : (
-                                    <>
-                                        <span className="material-symbols-outlined">save</span>
-                                        {isEdit ? 'Atualizar Membro' : 'Salvar Membro'}
-                                    </>
-                                )}
-                            </button>
+                                {isEdit ? 'Atualizar Membro' : 'Salvar Membro'}
+                            </Button>
                         </div>
                     </form>
                 </div>
@@ -361,18 +341,13 @@ const NewTeamMember: React.FC = () => {
             >
                 <div className="flex flex-col gap-4">
                     {/* Campo de Busca */}
-                    <div className="relative">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-                            <span className="material-symbols-outlined text-[20px]">search</span>
-                        </span>
-                        <input
-                            className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary dark:text-white transition-all"
-                            placeholder="Filtrar grupos pelo nome..."
-                            value={groupSearch}
-                            onChange={(e) => setGroupSearch(e.target.value)}
-                            autoFocus
-                        />
-                    </div>
+                    <Input
+                        placeholder="Filtrar grupos pelo nome..."
+                        value={groupSearch}
+                        onChange={(e) => setGroupSearch(e.target.value)}
+                        autoFocus
+                        leftIcon={<span className="material-symbols-outlined text-[20px]">search</span>}
+                    />
 
                     {/* Lista de Grupos */}
                     <div className="max-h-[300px] overflow-y-auto -mx-2">

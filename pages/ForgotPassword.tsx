@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { VersixLogo } from '../components/BrandedIcons';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 const ForgotPassword: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -44,37 +46,26 @@ const ForgotPassword: React.FC = () => {
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-sm font-bold text-slate-700 dark:text-slate-300">E-mail</label>
-                        <div className="relative group">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                                <span className="material-symbols-outlined text-[20px]">mail</span>
-                            </div>
-                            <input
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
-                                placeholder="seu@email.com"
-                                required
-                                type="email"
-                                disabled={loading}
-                            />
-                        </div>
+                        <Input
+                            label="E-mail"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="seu@email.com"
+                            required
+                            type="email"
+                            disabled={loading}
+                            leftIcon={<span className="material-symbols-outlined text-[20px]">mail</span>}
+                        />
                     </div>
 
-                    <button
+                    <Button
                         type="submit"
-                        disabled={loading}
-                        className={`w-full bg-primary hover:bg-primary text-white font-bold py-3 px-4 rounded-lg shadow-lg shadow-primary/30 transition-all flex items-center justify-center gap-2 group ${loading ? 'opacity-70 cursor-not-allowed' : 'active:scale-95'}`}
+                        isLoading={loading}
+                        className="w-full h-[48px]"
+                        leftIcon={<span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>}
                     >
-                        {loading ? (
-                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        ) : (
-                            <>
-                                <span>Enviar Instruções</span>
-                                <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                            </>
-                        )}
-                    </button>
+                        Enviar Instruções
+                    </Button>
                 </form>
 
                 <div className="mt-8 text-center">

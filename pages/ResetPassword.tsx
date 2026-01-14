@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { VersixLogo } from '../components/BrandedIcons';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 const ResetPassword: React.FC = () => {
     const navigate = useNavigate();
@@ -69,55 +71,39 @@ const ResetPassword: React.FC = () => {
                     )}
 
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Nova Senha</label>
-                        <div className="relative group">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                                <span className="material-symbols-outlined text-[20px]">lock</span>
-                            </div>
-                            <input
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
-                                placeholder="********"
-                                required
-                                type="password"
-                                disabled={loading}
-                            />
-                        </div>
+                        <Input
+                            label="Nova Senha"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="********"
+                            required
+                            type="password"
+                            disabled={loading}
+                            leftIcon={<span className="material-symbols-outlined text-[20px]">lock</span>}
+                        />
                     </div>
 
                     <div className="flex flex-col gap-1.5">
-                        <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Confirmar Senha</label>
-                        <div className="relative group">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                                <span className="material-symbols-outlined text-[20px]">lock_reset</span>
-                            </div>
-                            <input
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="block w-full pl-10 pr-3 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all shadow-sm"
-                                placeholder="********"
-                                required
-                                type="password"
-                                disabled={loading}
-                            />
-                        </div>
+                        <Input
+                            label="Confirmar Senha"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="********"
+                            required
+                            type="password"
+                            disabled={loading}
+                            leftIcon={<span className="material-symbols-outlined text-[20px]">lock_reset</span>}
+                        />
                     </div>
 
-                    <button
+                    <Button
                         type="submit"
-                        disabled={loading}
-                        className={`w-full bg-primary hover:bg-primary text-white font-bold py-3 px-4 rounded-lg shadow-lg shadow-primary/30 transition-all flex items-center justify-center gap-2 group ${loading ? 'opacity-70 cursor-not-allowed' : 'active:scale-95'}`}
+                        isLoading={loading}
+                        className="w-full h-[48px]"
+                        leftIcon={<span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">check</span>}
                     >
-                        {loading ? (
-                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        ) : (
-                            <>
-                                <span>Redefinir Senha</span>
-                                <span className="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">check</span>
-                            </>
-                        )}
-                    </button>
+                        Redefinir Senha
+                    </Button>
                 </form>
             </div>
         </div>

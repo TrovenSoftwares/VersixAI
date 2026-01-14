@@ -6,6 +6,20 @@ import ConfirmModal from '../components/ConfirmModal';
 import CustomSelect from '../components/CustomSelect';
 import { toast } from 'react-hot-toast';
 import { formatPhone } from '../utils/utils';
+import Input from '../components/Input';
+import Button from '../components/Button';
+import {
+    Table,
+    TableHeader,
+    TableHeadCell,
+    TableBody,
+    TableRow,
+    TableCell,
+    TableLoadingState,
+    TableEmptyState,
+    TablePagination
+} from '../components/Table';
+import Card from '../components/Card';
 
 const Sellers: React.FC = () => {
     const navigate = useNavigate();
@@ -133,19 +147,19 @@ const Sellers: React.FC = () => {
                 description="Gerencie seus vendedores e acompanhe os indicadores de vendas."
                 actions={
                     <div className="flex gap-3">
-                        <button
+                        <Button
                             onClick={fetchSellers}
-                            className="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-white dark:bg-slate-850 border border-gray-200 dark:border-slate-700 text-sm font-bold hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
-                        >
-                            <span className="material-symbols-outlined text-[20px]">refresh</span>
-                        </button>
-                        <button
+                            variant="outline"
+                            className="bg-white dark:bg-slate-850 h-10 px-4 text-sm font-bold"
+                            leftIcon={<span className="material-symbols-outlined text-[20px]">refresh</span>}
+                        />
+                        <Button
                             onClick={() => navigate('/sellers/new')}
-                            className="flex items-center justify-center gap-2 rounded-lg h-10 px-4 md:px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+                            leftIcon={<span className="material-symbols-outlined text-[20px]">add</span>}
+                            className="h-10 px-4 md:px-6 shadow-lg shadow-primary/20"
                         >
-                            <span className="material-symbols-outlined text-[20px]">add</span>
                             <span className="hidden md:inline">Novo Vendedor</span>
-                        </button>
+                        </Button>
                     </div>
                 }
             />
@@ -184,20 +198,18 @@ const Sellers: React.FC = () => {
                 />
             </div>
 
+
+
             {/* Filters Area */}
-            <div className="bg-white dark:bg-slate-850 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm p-4">
+            <Card className="p-4">
                 <div className="flex flex-col lg:flex-row gap-4">
-                    <div className="relative flex-1">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                            <span className="material-symbols-outlined text-[20px]">search</span>
-                        </span>
-                        <input
-                            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all dark:text-white"
-                            placeholder="Buscar por nome ou telefone..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                    </div>
+                    <Input
+                        placeholder="Buscar por nome ou telefone..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        leftIcon={<span className="material-symbols-outlined text-[20px] text-gray-400">search</span>}
+                        className="bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-primary/50"
+                    />
                     <div className="flex gap-2 flex-wrap sm:flex-nowrap">
                         <CustomSelect
                             className="w-full sm:w-48"
@@ -213,29 +225,27 @@ const Sellers: React.FC = () => {
                         />
                     </div>
                 </div>
-            </div>
+            </Card>
 
             {/* Table Area */}
-            <div className="bg-white dark:bg-slate-850 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[900px]">
-                    <thead>
-                        <tr className="bg-gray-50 dark:bg-slate-900/50 border-b border-gray-200 dark:border-slate-700">
-                            <th className="py-4 pl-6 pr-3 w-12 text-center">
-                                <input className="rounded border-gray-300 dark:border-slate-600 dark:bg-slate-800 text-primary focus:ring-primary/50 size-4" type="checkbox" />
-                            </th>
-                            <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">Vendedor</th>
-                            <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">Contato</th>
-                            <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 text-center">Nº Vendas</th>
-                            <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 text-right">Total Faturado</th>
-                            <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 text-center">Peso Total</th>
-                            <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+            <Card noPadding>
+                <Table>
+                    <TableHeader>
+                        <TableHeadCell width="48px" className="text-center">
+                            <input className="rounded border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-primary focus:ring-primary/50 size-4" type="checkbox" />
+                        </TableHeadCell>
+                        <TableHeadCell>Vendedor</TableHeadCell>
+                        <TableHeadCell>Contato</TableHeadCell>
+                        <TableHeadCell align="center">Nº Vendas</TableHeadCell>
+                        <TableHeadCell align="right">Total Faturado</TableHeadCell>
+                        <TableHeadCell align="center">Peso Total</TableHeadCell>
+                        <TableHeadCell align="right">Ações</TableHeadCell>
+                    </TableHeader>
+                    <TableBody>
                         {loading ? (
-                            <tr><td colSpan={7} className="py-12 text-center text-gray-400 italic">Carregando vendedores...</td></tr>
+                            <TableLoadingState colSpan={7} message="Carregando vendedores..." />
                         ) : paginatedSellers.length === 0 ? (
-                            <tr><td colSpan={7} className="py-12 text-center text-gray-400 italic">Nenhum vendedor encontrado.</td></tr>
+                            <TableEmptyState colSpan={7} message="Nenhum vendedor encontrado." icon="person_off" />
                         ) : (
                             paginatedSellers.map(seller => (
                                 <SellerRow
@@ -246,35 +256,19 @@ const Sellers: React.FC = () => {
                                 />
                             ))
                         )}
-                    </tbody>
-                </table>
+                    </TableBody>
+                </Table>
 
-                {/* Pagination Footer */}
-                <div className="border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 px-6 py-4 flex items-center justify-between">
-                    <p className="text-sm text-gray-500">
-                        <span className="hidden sm:inline">Mostrando </span>
-                        <span className="font-bold text-gray-900 dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredSellers.length)}</span> de <span className="font-bold text-gray-900 dark:text-white">{filteredSellers.length}</span>
-                        <span className="hidden sm:inline"> resultados</span>
-                    </p>
-                    <div className="flex items-center gap-2">
-                        <button
-                            disabled={currentPage === 1}
-                            onClick={() => setCurrentPage(p => p - 1)}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-100 disabled:opacity-30 transition-colors"
-                        >
-                            <span className="material-symbols-outlined text-sm">chevron_left</span>
-                        </button>
-                        <span className="text-sm font-bold text-primary px-2">{currentPage} / {totalPages || 1}</span>
-                        <button
-                            disabled={currentPage === totalPages || totalPages === 0}
-                            onClick={() => setCurrentPage(p => p + 1)}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-100 disabled:opacity-30 transition-colors"
-                        >
-                            <span className="material-symbols-outlined text-sm">chevron_right</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+                <TablePagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                    totalItems={filteredSellers.length}
+                    itemsPerPage={itemsPerPage}
+                    startIndex={startIndex}
+                />
+            </Card>
+
 
             <ConfirmModal
                 isOpen={deleteModal.isOpen}
@@ -303,14 +297,14 @@ const StatCard = ({ label, value, trend, icon, iconColor, valueColor }: any) => 
     </div>
 );
 
-// Seller Row Component - Premium style with sales indicators
+// SellerRow Component
 const SellerRow = ({ seller, onEdit, onDelete }: any) => {
     return (
-        <tr className="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
-            <td className="py-4 pl-6 pr-3 text-center">
-                <input className="rounded border-gray-300 dark:border-slate-600 dark:bg-slate-800 text-primary focus:ring-primary/50 size-4" type="checkbox" />
-            </td>
-            <td className="px-4 py-4">
+        <TableRow>
+            <TableCell align="center">
+                <input className="rounded border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-primary focus:ring-primary/50 size-4" type="checkbox" />
+            </TableCell>
+            <TableCell>
                 <div className="flex items-center gap-3">
                     {seller.photo_url ? (
                         <img src={seller.photo_url} alt={seller.name} className="size-10 rounded-xl object-cover border border-white/20 shadow-sm" />
@@ -324,8 +318,8 @@ const SellerRow = ({ seller, onEdit, onDelete }: any) => {
                         <span className="text-xs text-slate-400">Vendedor</span>
                     </div>
                 </div>
-            </td>
-            <td className="px-4 py-4">
+            </TableCell>
+            <TableCell>
                 <div className="flex flex-col">
                     <span className="text-sm text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                         <span className="material-symbols-outlined text-[16px] text-slate-400">phone</span>
@@ -333,19 +327,19 @@ const SellerRow = ({ seller, onEdit, onDelete }: any) => {
                     </span>
                     <span className="text-xs text-slate-400">{seller.email || '---'}</span>
                 </div>
-            </td>
-            <td className="px-4 py-4 text-center">
+            </TableCell>
+            <TableCell align="center">
                 <span className="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-bold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
                     {seller.salesCount}
                 </span>
-            </td>
-            <td className="px-4 py-4 text-right text-sm font-bold text-emerald-600">
+            </TableCell>
+            <TableCell align="right" className="font-bold text-emerald-600">
                 R$ {seller.totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </td>
-            <td className="px-4 py-4 text-center text-sm font-bold text-slate-500">
+            </TableCell>
+            <TableCell align="center" className="text-slate-500 font-bold">
                 {seller.totalWeight > 0 ? `${seller.totalWeight.toLocaleString('pt-BR')}g` : '---'}
-            </td>
-            <td className="px-4 py-4 text-right">
+            </TableCell>
+            <TableCell align="right">
                 <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button onClick={onEdit} className="p-1.5 text-slate-400 hover:text-primary transition-colors">
                         <span className="material-symbols-outlined text-lg">edit</span>
@@ -354,8 +348,8 @@ const SellerRow = ({ seller, onEdit, onDelete }: any) => {
                         <span className="material-symbols-outlined text-lg">delete</span>
                     </button>
                 </div>
-            </td>
-        </tr>
+            </TableCell>
+        </TableRow>
     );
 };
 

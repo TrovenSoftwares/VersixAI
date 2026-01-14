@@ -4,6 +4,8 @@ import { supabase } from '../lib/supabase';
 import PageHeader from '../components/PageHeader';
 import ConfirmModal from '../components/ConfirmModal';
 import Modal from '../components/Modal';
+import Input from '../components/Input';
+import Button from '../components/Button';
 import { toast } from 'react-hot-toast';
 
 interface ReturnReason {
@@ -104,20 +106,19 @@ const ReturnReasons: React.FC = () => {
                         description="Cadastre os motivos que podem ser usados nas devoluções."
                         actions={
                             <div className="flex gap-3">
-                                <button
+                                <Button
+                                    variant="outline"
                                     onClick={() => navigate('/returns')}
-                                    className="flex items-center gap-2 text-slate-500 hover:text-slate-700 font-medium transition-colors"
+                                    leftIcon={<span className="material-symbols-outlined text-[20px]">arrow_back</span>}
                                 >
-                                    <span className="material-symbols-outlined">arrow_back</span>
                                     Voltar
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     onClick={() => setEditModal({ isOpen: true, id: null, name: '' })}
-                                    className="group flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold py-2.5 px-5 rounded-lg transition-all shadow-lg shadow-primary/30 min-w-max active:scale-95"
+                                    leftIcon={<span className="material-symbols-outlined text-[20px]">add_circle</span>}
                                 >
-                                    <span className="material-symbols-outlined">add_circle</span>
-                                    <span>Novo Motivo</span>
-                                </button>
+                                    Novo Motivo
+                                </Button>
                             </div>
                         }
                     />
@@ -134,12 +135,13 @@ const ReturnReasons: React.FC = () => {
                         <div className="flex flex-col items-center justify-center p-12 text-slate-500 text-center">
                             <span className="material-symbols-outlined text-4xl mb-2">category</span>
                             <p>Nenhum motivo cadastrado.</p>
-                            <button
+                            <Button
+                                variant="ghost"
                                 onClick={() => setEditModal({ isOpen: true, id: null, name: '' })}
                                 className="mt-4 text-primary font-bold hover:underline"
                             >
                                 Cadastrar primeiro motivo
-                            </button>
+                            </Button>
                         </div>
                     ) : (
                         <div className="divide-y divide-slate-200 dark:divide-slate-800">
@@ -152,20 +154,20 @@ const ReturnReasons: React.FC = () => {
                                         <span className="font-bold text-slate-900 dark:text-white">{reason.name}</span>
                                     </div>
                                     <div className="flex items-center gap-1">
-                                        <button
+                                        <Button
                                             onClick={() => setEditModal({ isOpen: true, id: reason.id, name: reason.name })}
-                                            className="text-slate-400 hover:text-primary transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
-                                            title="Editar"
+                                            variant="ghost"
+                                            className="size-9 p-0 rounded-full text-slate-400 hover:text-primary"
                                         >
                                             <span className="material-symbols-outlined text-[20px]">edit</span>
-                                        </button>
-                                        <button
+                                        </Button>
+                                        <Button
                                             onClick={() => setDeleteModal({ isOpen: true, id: reason.id })}
-                                            className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
-                                            title="Excluir"
+                                            variant="ghost"
+                                            className="size-9 p-0 rounded-full text-slate-400 hover:text-red-500"
                                         >
                                             <span className="material-symbols-outlined text-[20px]">delete</span>
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             ))}
@@ -181,31 +183,27 @@ const ReturnReasons: React.FC = () => {
                 title={editModal.id ? 'Editar Motivo' : 'Novo Motivo'}
                 footer={
                     <div className="flex gap-3">
-                        <button
+                        <Button
+                            variant="ghost"
                             onClick={() => setEditModal({ isOpen: false, id: null, name: '' })}
-                            className="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
                         >
                             Cancelar
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             onClick={handleSave}
-                            disabled={saving}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white font-bold shadow-lg shadow-primary/20 transition-all disabled:opacity-50"
+                            isLoading={saving}
+                            leftIcon={<span className="material-symbols-outlined text-[20px]">save</span>}
                         >
-                            {saving ? 'Salvando...' : 'Salvar'}
-                        </button>
+                            Salvar
+                        </Button>
                     </div>
                 }
             >
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300">
-                        Nome do Motivo
-                    </label>
-                    <input
-                        type="text"
+                    <Input
+                        label="Nome do Motivo"
                         value={editModal.name}
                         onChange={(e) => setEditModal({ ...editModal, name: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary dark:text-white transition-all"
                         placeholder="Ex: Produto com defeito"
                         autoFocus
                     />

@@ -13,6 +13,20 @@ import { ExcelIcon, ImportIcon } from '../components/BrandedIcons';
 import { exportToExcel, readExcelFile, downloadExampleTemplate } from '../utils/excelUtils';
 import StatCard from '../components/StatCard';
 import Tooltip from '../components/Tooltip';
+import Input from '../components/Input';
+import Button from '../components/Button';
+import {
+  Table,
+  TableHeader,
+  TableHeadCell,
+  TableBody,
+  TableRow,
+  TableCell,
+  TableLoadingState,
+  TableEmptyState,
+  TablePagination
+} from '../components/Table';
+import Card from '../components/Card';
 
 const Contacts: React.FC = () => {
   const navigate = useNavigate();
@@ -261,19 +275,20 @@ const Contacts: React.FC = () => {
             >
               <ExcelIcon className="size-6 text-emerald-600 dark:text-emerald-500" />
             </button>
-            <button
+            <Button
               onClick={fetchContacts}
-              className="flex items-center justify-center size-10 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm"
+              variant="outline"
+              className="size-10 p-0 text-slate-600 dark:text-slate-300"
             >
               <span className="material-symbols-outlined text-[24px]">refresh</span>
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => navigate('/contacts/new')}
-              className="flex items-center justify-center gap-2 rounded-lg h-10 px-4 md:px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+              leftIcon={<span className="material-symbols-outlined text-[20px]">add</span>}
+              className="h-10 px-4 md:px-6 shadow-lg shadow-primary/20"
             >
-              <span className="material-symbols-outlined text-[20px]">add</span>
               <span className="hidden md:inline">Novo Contato</span>
-            </button>
+            </Button>
           </div>
         }
       />
@@ -347,20 +362,27 @@ const Contacts: React.FC = () => {
         />
       </div>
 
+
+
+      // ... (existing imports, keep them)
+
+      // In the component return:
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* ... stats cards ... */}
+      </div>
+
       {/* Filters Area */}
-      <div className="bg-white dark:bg-slate-850 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm p-4">
+      <Card className="p-4">
         <div className="flex flex-col lg:flex-row gap-4">
-          <div className="relative flex-1">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-              <span className="material-symbols-outlined text-[20px]">search</span>
-            </span>
-            <input
-              className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all dark:text-white"
-              placeholder="Buscar por nome, CPF/CNPJ ou email..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
+          <Input
+            placeholder="Buscar por nome, CPF/CNPJ ou email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            leftIcon={<span className="material-symbols-outlined text-[20px] text-gray-400">search</span>}
+            className="bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-slate-700 focus:ring-primary/50"
+          />
           <div className="flex gap-2 flex-wrap sm:flex-nowrap">
             <button
               onClick={() => { setTempFilters(filters); setIsFilterOpen(true); }}
@@ -371,78 +393,58 @@ const Contacts: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Table Area */}
-      <div className="bg-white dark:bg-slate-850 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[800px]">
-            <thead>
-              <tr className="bg-gray-50 dark:bg-slate-900/50 border-b border-gray-200 dark:border-slate-700">
-                <th className="py-4 pl-6 pr-3 w-12 text-center">
-                  <input className="rounded border-gray-300 dark:border-slate-600 dark:bg-slate-800 text-primary focus:ring-primary/50 size-4" type="checkbox" />
-                </th>
-                <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">Cliente</th>
-                <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500">Contato</th>
-                <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 text-right">
-                  <div className="flex items-center justify-end gap-1 whitespace-nowrap">
-                    Total Vendas
-                    <Tooltip content="Soma das Vendas + Cheques Devolvidos" position="top">
-                      <span className="material-symbols-outlined text-slate-400 hover:text-primary transition-colors text-[14px]">help</span>
-                    </Tooltip>
-                  </div>
-                </th>
-                <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 text-right whitespace-nowrap">Total Recebido</th>
-                <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 text-right">Saldo</th>
-                <th className="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-500 text-right">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-              {loading ? (
-                <tr><td colSpan={7} className="py-12 text-center text-gray-400 italic">Carregando contatos...</td></tr>
-              ) : paginatedContacts.length === 0 ? (
-                <tr><td colSpan={7} className="py-12 text-center text-gray-400 italic">Nenhum contato encontrado.</td></tr>
-              ) : (
-                paginatedContacts.map(contact => (
-                  <ContactRow
-                    key={contact.id}
-                    contact={contact}
-                    onEdit={() => navigate(`/contacts/edit/${contact.id}`)}
-                    onDelete={() => setDeleteModal({ isOpen: true, id: contact.id })}
-                    onView={() => { setSelectedContact(contact); setIsDetailsOpen(true); }}
-                  />
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+      <Card noPadding>
+        <Table>
+          <TableHeader>
+            <TableHeadCell width="48px" className="text-center">
+              <input className="rounded border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-primary focus:ring-primary/50 size-4" type="checkbox" />
+            </TableHeadCell>
+            <TableHeadCell>Cliente</TableHeadCell>
+            <TableHeadCell>Contato</TableHeadCell>
+            <TableHeadCell align="right">
+              <div className="flex items-center justify-end gap-1 whitespace-nowrap">
+                Total Vendas
+                <Tooltip content="Soma das Vendas + Cheques Devolvidos" position="top">
+                  <span className="material-symbols-outlined text-slate-400 hover:text-primary transition-colors text-[14px]">help</span>
+                </Tooltip>
+              </div>
+            </TableHeadCell>
+            <TableHeadCell align="right">Total Recebido</TableHeadCell>
+            <TableHeadCell align="right">Saldo</TableHeadCell>
+            <TableHeadCell align="right">Ações</TableHeadCell>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              <TableLoadingState colSpan={7} message="Carregando contatos..." />
+            ) : paginatedContacts.length === 0 ? (
+              <TableEmptyState colSpan={7} message="Nenhum contato encontrado." icon="person_off" />
+            ) : (
+              paginatedContacts.map(contact => (
+                <ContactRow
+                  key={contact.id}
+                  contact={contact}
+                  onEdit={() => navigate(`/contacts/edit/${contact.id}`)}
+                  onDelete={() => setDeleteModal({ isOpen: true, id: contact.id })}
+                  onView={() => { setSelectedContact(contact); setIsDetailsOpen(true); }}
+                />
+              ))
+            )}
+          </TableBody>
+        </Table>
 
-        {/* Pagination Footer */}
-        <div className="border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 px-6 py-4 flex items-center justify-between">
-          <p className="text-sm text-gray-500">
-            <span className="hidden sm:inline">Mostrando </span>
-            <span className="font-bold text-gray-900 dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredContacts.length)}</span> de <span className="font-bold text-gray-900 dark:text-white">{filteredContacts.length}</span>
-            <span className="hidden sm:inline"> resultados</span>
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(p => p - 1)}
-              className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-100 disabled:opacity-30 transition-colors"
-            >
-              <span className="material-symbols-outlined text-sm">chevron_left</span>
-            </button>
-            <span className="text-sm font-bold text-primary px-2">{currentPage} / {totalPages || 1}</span>
-            <button
-              disabled={currentPage === totalPages || totalPages === 0}
-              onClick={() => setCurrentPage(p => p + 1)}
-              className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-100 disabled:opacity-30 transition-colors"
-            >
-              <span className="material-symbols-outlined text-sm">chevron_right</span>
-            </button>
-          </div>
-        </div>
-      </div>
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+          totalItems={filteredContacts.length}
+          itemsPerPage={itemsPerPage}
+          startIndex={startIndex}
+        />
+      </Card>
+
 
       <FilterDrawer
         isOpen={isFilterOpen}
@@ -510,11 +512,11 @@ const Contacts: React.FC = () => {
 // Contact Row Component - Premium style matching Sales/Transactions
 const ContactRow = ({ contact, onEdit, onDelete, onView }: any) => {
   return (
-    <tr className="group hover:bg-gray-50 dark:hover:bg-slate-800/50 transition-colors">
-      <td className="py-4 pl-6 pr-3 text-center">
-        <input className="rounded border-gray-300 dark:border-slate-600 dark:bg-slate-800 text-primary focus:ring-primary/50 size-4" type="checkbox" />
-      </td>
-      <td className="px-4 py-4">
+    <TableRow>
+      <TableCell align="center">
+        <input className="rounded border-slate-300 dark:border-slate-600 dark:bg-slate-800 text-primary focus:ring-primary/50 size-4" type="checkbox" />
+      </TableCell>
+      <TableCell>
         <div className="flex items-center gap-3">
           {contact.photo_url ? (
             <img src={contact.photo_url} alt={contact.name} className="size-10 rounded-xl object-cover border border-white/20 shadow-sm" />
@@ -528,8 +530,8 @@ const ContactRow = ({ contact, onEdit, onDelete, onView }: any) => {
             <span className="text-xs text-slate-400">{formatCpfCnpj(contact.id_number)}</span>
           </div>
         </div>
-      </td>
-      <td className="px-4 py-4">
+      </TableCell>
+      <TableCell>
         <div className="flex flex-col">
           <span className="text-sm text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
             <span className="material-symbols-outlined text-[16px] text-slate-400">phone</span>
@@ -537,19 +539,19 @@ const ContactRow = ({ contact, onEdit, onDelete, onView }: any) => {
           </span>
           <span className="text-xs text-slate-400">{contact.email || '---'}</span>
         </div>
-      </td>
-      <td className="px-4 py-4 text-right text-sm font-bold text-blue-600">
+      </TableCell>
+      <TableCell align="right" className="font-bold text-blue-600">
         R$ {contact.totalSales.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-      </td>
-      <td className="px-4 py-4 text-right text-sm font-bold text-emerald-600">
+      </TableCell>
+      <TableCell align="right" className="font-bold text-emerald-600">
         R$ {contact.totalReceived.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-      </td>
-      <td className="px-4 py-4 text-right">
+      </TableCell>
+      <TableCell align="right">
         <span className={`text-sm font-bold ${contact.balance > 0 ? 'text-amber-600' : contact.balance < 0 ? 'text-emerald-600' : 'text-slate-400'}`}>
           R$ {contact.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
         </span>
-      </td>
-      <td className="px-4 py-4 text-right">
+      </TableCell>
+      <TableCell align="right">
         <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <button onClick={onView} className="p-1.5 text-slate-400 hover:text-blue-500 transition-colors" title="Ver Detalhes">
             <span className="material-symbols-outlined text-lg">visibility</span>
@@ -561,8 +563,8 @@ const ContactRow = ({ contact, onEdit, onDelete, onView }: any) => {
             <span className="material-symbols-outlined text-lg">delete</span>
           </button>
         </div>
-      </td>
-    </tr>
+      </TableCell>
+    </TableRow>
   );
 };
 

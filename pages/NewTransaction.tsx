@@ -4,6 +4,8 @@ import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
 import InputMask from '../components/InputMask';
 import CustomSelect from '../components/CustomSelect';
+import Input from '../components/Input';
+import Button from '../components/Button';
 import { MASKS } from '../utils/utils';
 
 const NewTransaction: React.FC = () => {
@@ -185,9 +187,12 @@ const NewTransaction: React.FC = () => {
           <p className="text-slate-500 dark:text-slate-400 text-lg">Preencha os dados abaixo para registrar uma movimentação.</p>
         </div>
         <div className="flex gap-3">
-          <button className="text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          <Button
+            variant="ghost"
+            className="hover:bg-slate-100 dark:hover:bg-slate-800"
+          >
             Importar XML
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -260,24 +265,21 @@ const NewTransaction: React.FC = () => {
               </div>
             </div>
             <div className="md:col-span-5 space-y-2">
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Data {transactionMode === 'transfer' ? 'da Transferência' : 'de Pagamento'}</label>
-              <div className="relative">
-                <input
-                  className="block w-full px-4 py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-base text-slate-900 dark:text-white focus:ring-primary focus:border-primary outline-none"
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                />
-              </div>
+              <Input
+                label={transactionMode === 'transfer' ? 'Data da Transferência' : 'Data de Pagamento'}
+                type="date"
+                value={formData.date}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                className="h-[58px]" // Match InputMask height roughly or standard height
+              />
             </div>
           </div>
 
           {/* Description & Optional Contact */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className={`space-y-2 ${transactionMode === 'transfer' || transactionMode === 'expense' ? 'md:col-span-2' : ''}`}>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Descrição</label>
-              <input
-                className="block w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-base text-slate-900 dark:text-white focus:ring-primary focus:border-primary placeholder:text-slate-400 outline-none transition-all"
+            <div className={`space-y-0 ${transactionMode === 'transfer' || transactionMode === 'expense' ? 'md:col-span-2' : ''}`}>
+              <Input
+                label="Descrição"
                 placeholder={transactionMode === 'transfer' ? 'Ex: Transferência para Poupança' : 'Ex: Venda de Produto X'}
                 type="text"
                 value={formData.description}
@@ -427,25 +429,20 @@ const NewTransaction: React.FC = () => {
 
           {/* Footer Actions */}
           <div className="bg-slate-50 dark:bg-slate-950/30 px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3 rounded-b-xl">
-            <button
+            <Button
               onClick={() => navigate(-1)}
-              className="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all font-bold"
+              variant="ghost"
               type="button"
             >
               Cancelar
-            </button>
-            <button
-              className="px-5 py-2.5 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary/90 shadow-md shadow-primary/20 transition-all flex items-center gap-2 disabled:opacity-50 active:scale-95"
+            </Button>
+            <Button
               type="submit"
-              disabled={loading}
+              isLoading={loading}
+              leftIcon={<span className="material-symbols-outlined text-[20px]">check</span>}
             >
-              {loading ? (
-                <span className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-              ) : (
-                <span className="material-symbols-outlined text-[20px]">check</span>
-              )}
-              {loading ? 'Salvando...' : 'Salvar Transação'}
-            </button>
+              Salvar Transação
+            </Button>
           </div>
         </form>
       </div>

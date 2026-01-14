@@ -7,6 +7,8 @@ import { evolutionApi } from '../lib/evolution';
 import { WhatsAppIcon } from '../components/BrandedIcons';
 import ConfirmModal from '../components/ConfirmModal';
 import Modal from '../components/Modal';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState('perfil');
@@ -350,58 +352,46 @@ const Settings: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Nome Completo</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-3 text-slate-400 material-symbols-outlined text-[20px]">person</span>
-                      <input
-                        type="text"
-                        value={profile.name}
-                        onChange={e => setProfile({ ...profile, name: e.target.value })}
-                        className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sm font-medium"
-                        placeholder="Seu nome completo"
-                      />
-                    </div>
+                    <Input
+                      label="Nome Completo"
+                      value={profile.name}
+                      onChange={e => setProfile({ ...profile, name: e.target.value })}
+                      placeholder="Seu nome completo"
+                      leftIcon={<span className="material-symbols-outlined text-[20px]">person</span>}
+                    />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Cargo / Função</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-3 text-slate-400 material-symbols-outlined text-[20px]">work</span>
-                      <input
-                        type="text"
-                        value={profile.role}
-                        onChange={e => setProfile({ ...profile, role: e.target.value })}
-                        className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sm font-medium"
-                        placeholder="Ex: Gerente Financeiro"
-                      />
-                    </div>
+                    <Input
+                      label="Cargo / Função"
+                      value={profile.role}
+                      onChange={e => setProfile({ ...profile, role: e.target.value })}
+                      placeholder="Ex: Gerente Financeiro"
+                      leftIcon={<span className="material-symbols-outlined text-[20px]">work</span>}
+                    />
                   </div>
 
                   <div className="space-y-2 md:col-span-2">
-                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Telefone / WhatsApp</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-3 text-slate-400 material-symbols-outlined text-[20px]">call</span>
-                      <input
-                        type="text"
-                        value={profile.phone}
-                        onChange={e => setProfile({ ...profile, phone: e.target.value })}
-                        className="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-sm font-medium"
-                        placeholder="+55 (00) 00000-0000"
-                      />
-                    </div>
-                    <p className="text-[10px] text-slate-400 ml-1">Usado para notificações de segurança e recuperação de conta.</p>
+                    <Input
+                      label="Telefone / WhatsApp"
+                      value={profile.phone}
+                      onChange={e => setProfile({ ...profile, phone: e.target.value })}
+                      placeholder="+55 (00) 00000-0000"
+                      leftIcon={<span className="material-symbols-outlined text-[20px]">call</span>}
+                      helperText="Usado para notificações de segurança e recuperação de conta."
+                    />
                   </div>
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-end">
-                  <button
+                  <Button
                     onClick={handleSaveProfile}
-                    disabled={saving}
-                    className="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-8 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed flex items-center gap-2"
+                    isLoading={saving}
+                    leftIcon={<span className="material-symbols-outlined text-[20px]">save</span>}
+                    className="px-8"
                   >
-                    {saving ? <span className="material-symbols-outlined animate-spin text-[20px]">sync</span> : <span className="material-symbols-outlined text-[20px]">save</span>}
                     Salvar Alterações
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -709,13 +699,14 @@ const Settings: React.FC = () => {
         title={isEditingInstance ? 'Editar Nome da Instância' : 'Configurar WhatsApp'}
         footer={
           <>
-            <button
+            <Button
               onClick={() => setIsInstanceModalOpen(false)}
-              className="px-4 py-2 rounded-lg text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+              variant="ghost"
+              className="px-4 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
             >
               Cancelar
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={async () => {
                 setSaving(true);
                 try {
@@ -782,23 +773,21 @@ const Settings: React.FC = () => {
                   setSaving(false);
                 }
               }}
-              className="px-6 py-2 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all active:scale-95 disabled:opacity-50 flex items-center gap-2"
+              isLoading={saving}
               disabled={saving || !newInstanceName}
             >
-              {saving ? 'Salvando...' : 'Salvar'}
-            </button>
+              Salvar
+            </Button>
           </>
         }
       >
         <div className="space-y-2">
-          <label className="text-xs font-bold text-slate-500 uppercase tracking-wider ml-1">Nome da Instância</label>
-          <input
-            type="text"
-            autoFocus
+          <Input
+            label="Nome da Instância"
             value={newInstanceName}
+            autoFocus
             onChange={(e) => setNewInstanceName(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
             placeholder="ex: minha-loja"
-            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
           />
         </div>
       </Modal>

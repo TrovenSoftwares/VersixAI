@@ -6,6 +6,8 @@ import CustomSelect from '../components/CustomSelect';
 import InputMask from '../components/InputMask';
 import { MASKS, formatCpfCnpj } from '../utils/utils';
 import { toast } from 'react-hot-toast';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 const NewBouncedCheck: React.FC = () => {
     const navigate = useNavigate();
@@ -189,14 +191,13 @@ const NewBouncedCheck: React.FC = () => {
                         title={isEdit ? 'Editar Cheque Devolvido' : 'Novo Cheque Devolvido'}
                         description={isEdit ? 'Atualize os dados do cheque abaixo.' : 'Preencha os dados abaixo para registrar um novo cheque devolvido.'}
                         actions={
-                            <button
-                                type="button"
+                            <Button
+                                variant="outline"
                                 onClick={() => navigate('/bounced-checks')}
-                                className="flex items-center justify-center gap-2 h-10 px-4 bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm font-bold rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm active:scale-95 transition-all"
+                                leftIcon={<span className="material-symbols-outlined text-[20px]">arrow_back</span>}
                             >
-                                <span className="material-symbols-outlined text-[20px]">arrow_back</span>
-                                <span>Voltar</span>
-                            </button>
+                                Voltar
+                            </Button>
                         }
                     />
                 </div>
@@ -257,35 +258,33 @@ const NewBouncedCheck: React.FC = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Número do Cheque */}
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-slate-900 dark:text-white text-sm font-medium flex gap-1">
-                                        Número do Cheque <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="flex items-center bg-[#f1f5f9] dark:bg-slate-900 rounded-lg h-12 px-4 focus-within:ring-2 focus-within:ring-primary/30 focus-within:bg-white dark:focus-within:bg-slate-950 transition-all border border-transparent">
-                                        <span className="material-symbols-outlined text-slate-400 mr-2">tag</span>
-                                        <input
-                                            className="bg-transparent border-none w-full text-slate-900 dark:text-white font-medium text-base focus:ring-0 p-0"
-                                            placeholder="Ex: 123456"
-                                            type="text"
-                                            value={formData.check_number}
-                                            onChange={(e) => setFormData({ ...formData, check_number: e.target.value })}
-                                        />
-                                    </div>
+                                    <Input
+                                        label={
+                                            <span className="flex gap-1">
+                                                Número do Cheque <span className="text-red-500">*</span>
+                                            </span>
+                                        }
+                                        placeholder="Ex: 123456"
+                                        type="text"
+                                        value={formData.check_number}
+                                        onChange={(e) => setFormData({ ...formData, check_number: e.target.value })}
+                                        leftIcon={<span className="material-symbols-outlined text-slate-400 text-[20px]">tag</span>}
+                                    />
                                 </div>
 
                                 {/* Data do Cheque */}
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-slate-900 dark:text-white text-sm font-medium flex gap-1">
-                                        Data da Movimentação <span className="text-red-500">*</span>
-                                    </label>
-                                    <div className="flex items-center bg-[#f1f5f9] dark:bg-slate-900 rounded-lg h-12 px-4 focus-within:ring-2 focus-within:ring-primary/30 focus-within:bg-white dark:focus-within:bg-slate-950 transition-all border border-transparent">
-                                        <input
-                                            className="bg-transparent border-none w-full text-slate-900 dark:text-white font-medium text-base focus:ring-0 p-0"
-                                            type="date"
-                                            required
-                                            value={formData.check_date}
-                                            onChange={(e) => setFormData({ ...formData, check_date: e.target.value })}
-                                        />
-                                    </div>
+                                    <Input
+                                        label={
+                                            <span className="flex gap-1">
+                                                Data da Movimentação <span className="text-red-500">*</span>
+                                            </span>
+                                        }
+                                        type="date"
+                                        required
+                                        value={formData.check_date}
+                                        onChange={(e) => setFormData({ ...formData, check_date: e.target.value })}
+                                    />
                                 </div>
 
                                 {/* Valor */}
@@ -322,27 +321,22 @@ const NewBouncedCheck: React.FC = () => {
 
                             {/* Form Footer Actions */}
                             <div className="mt-auto pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row gap-4 justify-end items-center">
-                                <button
+                                <Button
                                     type="button"
                                     onClick={() => navigate('/bounced-checks')}
-                                    className="h-12 px-6 rounded-lg border border-[#e7edf3] dark:border-slate-700 text-slate-500 dark:text-slate-300 font-bold bg-white dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors"
+                                    variant="ghost"
+                                    className="h-12 px-6"
                                 >
                                     Cancelar
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="submit"
-                                    disabled={loading}
-                                    className="h-12 px-8 rounded-lg bg-primary hover:bg-primary/90 text-white font-bold shadow-lg shadow-primary/20 dark:shadow-none transition-all flex items-center justify-center gap-2 group active:scale-95 disabled:opacity-50"
+                                    isLoading={loading}
+                                    className="h-12 px-8"
+                                    leftIcon={<span className="material-symbols-outlined group-hover:scale-110 transition-transform">save</span>}
                                 >
-                                    {loading ? (
-                                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                                    ) : (
-                                        <>
-                                            <span className="material-symbols-outlined group-hover:scale-110 transition-transform">save</span>
-                                            {isEdit ? 'Salvar Alterações' : 'Cadastrar Cheque'}
-                                        </>
-                                    )}
-                                </button>
+                                    {isEdit ? 'Salvar Alterações' : 'Cadastrar Cheque'}
+                                </Button>
                             </div>
                         </div>
                     </div>

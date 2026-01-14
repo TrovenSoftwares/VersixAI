@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { GoogleIcon, MicrosoftIcon, VersixLogo } from '../components/BrandedIcons';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 const Signup: React.FC = () => {
   const navigate = useNavigate();
@@ -137,76 +139,50 @@ const Signup: React.FC = () => {
 
               {/* Full Name */}
               <div>
-                <label className="block text-sm font-medium text-slate-900 dark:text-slate-200 mb-1.5" htmlFor="name">
-                  Nome Completo
-                </label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                    <span className="material-symbols-outlined text-[20px]">person</span>
-                  </div>
-                  <input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 pl-10 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary focus:ring-primary sm:text-sm outline-none transition-all"
-                    id="name"
-                    placeholder="Ex: João Silva"
-                    required
-                    type="text"
-                    disabled={loading}
-                  />
-                </div>
+                <Input
+                  label="Nome Completo"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  id="name"
+                  placeholder="Ex: João Silva"
+                  required
+                  type="text"
+                  disabled={loading}
+                  leftIcon={<span className="material-symbols-outlined text-[20px]">person</span>}
+                />
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-slate-900 dark:text-slate-200 mb-1.5" htmlFor="email">
-                  Email Corporativo
-                </label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                    <span className="material-symbols-outlined text-[20px]">mail</span>
-                  </div>
-                  <input
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 pl-10 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary focus:ring-primary sm:text-sm outline-none transition-all"
-                    id="email"
-                    placeholder="nome@empresa.com"
-                    required
-                    type="email"
-                    disabled={loading}
-                  />
-                </div>
+                <Input
+                  label="Email Corporativo"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  id="email"
+                  placeholder="nome@empresa.com"
+                  required
+                  type="email"
+                  disabled={loading}
+                  leftIcon={<span className="material-symbols-outlined text-[20px]">mail</span>}
+                />
               </div>
 
               {/* Password Group */}
               <div className="grid grid-cols-1 gap-5">
                 <div>
-                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-200 mb-1.5" htmlFor="password">
-                    Senha
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                      <span className="material-symbols-outlined text-[20px]">lock</span>
-                    </div>
-                    <input
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 pl-10 pr-10 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary focus:ring-primary sm:text-sm outline-none transition-all"
-                      id="password"
-                      placeholder="********"
-                      required
-                      type={showPassword ? 'text' : 'password'}
-                      disabled={loading}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-slate-400 hover:text-slate-600 transition-colors"
-                    >
-                      <span className="material-symbols-outlined text-[20px]">{showPassword ? 'visibility_off' : 'visibility'}</span>
-                    </button>
-                  </div>
+                  <Input
+                    label="Senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    id="password"
+                    placeholder="********"
+                    required
+                    type={showPassword ? 'text' : 'password'}
+                    disabled={loading}
+                    leftIcon={<span className="material-symbols-outlined text-[20px]">lock</span>}
+                    rightIcon={<button type="button" className="flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"><span className="material-symbols-outlined text-[20px]">{showPassword ? 'visibility_off' : 'visibility'}</span></button>}
+                    onRightIconClick={() => setShowPassword(!showPassword)}
+                  />
                   {/* Strength Meter */}
                   <div className="mt-2 flex gap-1 h-1">
                     <div className={`flex-1 rounded-full transition-colors ${passwordStatus.isLongEnough ? 'bg-green-500' : 'bg-slate-200 dark:bg-slate-700'}`}></div>
@@ -227,24 +203,17 @@ const Signup: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-900 dark:text-slate-200 mb-1.5" htmlFor="confirm-password">
-                    Confirmar Senha
-                  </label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                      <span className="material-symbols-outlined text-[20px]">lock_reset</span>
-                    </div>
-                    <input
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="block w-full rounded-lg border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 pl-10 pr-10 py-3 text-slate-900 dark:text-white placeholder-slate-400 focus:border-primary focus:ring-primary sm:text-sm outline-none transition-all"
-                      id="confirm-password"
-                      placeholder="********"
-                      required
-                      type={showPassword ? 'text' : 'password'}
-                      disabled={loading}
-                    />
-                  </div>
+                  <Input
+                    label="Confirmar Senha"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    id="confirm-password"
+                    placeholder="********"
+                    required
+                    type={showPassword ? 'text' : 'password'}
+                    disabled={loading}
+                    leftIcon={<span className="material-symbols-outlined text-[20px]">lock_reset</span>}
+                  />
                 </div>
               </div>
 
@@ -262,22 +231,14 @@ const Signup: React.FC = () => {
 
               {/* Submit Button */}
               <div>
-                <button
-                  className={`group relative flex w-full justify-center rounded-lg border border-transparent bg-primary py-3 px-4 text-sm font-bold text-white hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all shadow-lg shadow-primary/30 active:scale-95 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                <Button
                   type="submit"
-                  disabled={loading}
+                  isLoading={loading}
+                  className="w-full h-[46px]"
+                  leftIcon={<span className="material-symbols-outlined">arrow_forward</span>}
                 >
-                  {loading ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  ) : (
-                    <>
-                      <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                        <span className="material-symbols-outlined text-white/70 group-hover:text-white transition-colors">arrow_forward</span>
-                      </span>
-                      Criar minha conta
-                    </>
-                  )}
-                </button>
+                  Criar minha conta
+                </Button>
               </div>
             </form>
 
