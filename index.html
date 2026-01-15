@@ -109,17 +109,7 @@
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
     <script>
-        window.chatwootSettings = {
-            hideMessageBubble: true,
-            position: 'right',
-            locale: 'pt_BR',
-            type: 'standard',
-            onSDKReady: () => {
-                console.log('Chatwoot SDK READY');
-                window.isChatwootReady = true;
-            }
-        };
-
+        window.chatwootSettings = { "position": "right", "type": "standard", "launcherTitle": "Fale conosco no chat 💬", "hideMessageBubble": true };
         (function (d, t) {
             var BASE_URL = "https://cw.troven.com.br";
             var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
@@ -127,7 +117,6 @@
             g.async = true;
             s.parentNode.insertBefore(g, s);
             g.onload = function () {
-                console.log('Chatwoot Script Loaded');
                 window.chatwootSDK.run({
                     websiteToken: 'waz3bLLs7QqkpYkcgnx4zKRg',
                     baseUrl: BASE_URL

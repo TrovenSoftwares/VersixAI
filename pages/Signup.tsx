@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { GoogleIcon, MicrosoftIcon, PhyrLogo } from '../components/BrandedIcons';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import PublicHeader from '../components/PublicHeader';
 
 const RequirementItem = ({ met, label }: { met: boolean; label: string }) => (
   <div className="flex items-center gap-1.5 transition-all">
@@ -93,17 +94,11 @@ const Signup: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-200">
       {/* Header / Nav */}
-      <header className="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap px-6 py-4 md:px-10 border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
-        <Link to="/" className="flex items-center">
-          <PhyrLogo className="h-[40px] w-auto" />
-        </Link>
-        <div className="hidden sm:flex gap-2">
-          <span className="text-sm text-slate-500 dark:text-slate-400 font-medium self-center">Já tem uma conta?</span>
-          <Link to="/login" className="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary/10 text-primary hover:bg-primary/20 transition-colors text-sm font-bold">
-            Fazer login
-          </Link>
-        </div>
-      </header>
+      <PublicHeader
+        showBackButton={true}
+        backLink="/login"
+        backLabel="Voltar ao Login"
+      />
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col md:flex-row h-full">

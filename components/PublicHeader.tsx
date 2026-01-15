@@ -11,8 +11,8 @@ interface PublicHeaderProps {
 }
 
 const PublicHeader: React.FC<PublicHeaderProps> = ({
-    backLink = "/login",
-    backLabel = "Voltar ao Login",
+    backLink = "/",
+    backLabel = "Voltar ao Início",
     showBackButton = false,
     pageName,
     showHelpBreadcrumb = true
@@ -29,7 +29,9 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({
                         <span className="material-symbols-outlined text-slate-500">arrow_back</span>
                     </Link>
                 )}
-                <PhyrLogo className="h-[35px] md:h-[40px] w-auto transition-transform hover:scale-105" />
+                <Link to="/" className="flex items-center">
+                    <PhyrLogo id="public-header" className="h-[35px] md:h-[40px] w-auto transition-transform hover:scale-105" />
+                </Link>
             </div>
 
             <div className="flex items-center gap-4">

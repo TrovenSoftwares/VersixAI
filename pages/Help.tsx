@@ -42,7 +42,12 @@ const Help: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-display transition-all duration-500">
-            <PublicHeader />
+            <PublicHeader
+                showBackButton={true}
+                backLink="/"
+                backLabel="Voltar ao Início"
+                showHelpBreadcrumb={false}
+            />
 
             <main className="max-w-5xl mx-auto py-16 px-6">
                 <div className="text-center mb-16 animate-in fade-in slide-in-from-top-4 duration-700">

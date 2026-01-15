@@ -26,8 +26,8 @@ const Documentation: React.FC = () => {
         <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-display transition-all duration-500">
             <PublicHeader
                 showBackButton={true}
-                backLink="/help"
-                backLabel=""
+                backLink="/"
+                backLabel="Voltar ao Início"
                 pageName="Documentação"
             />
 

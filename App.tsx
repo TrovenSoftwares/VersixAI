@@ -6,7 +6,6 @@ import Header from './components/Header';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { PhyrLogo } from './components/BrandedIcons';
 import ScrollToTop from './components/ScrollToTop';
-import WhatsAppChat from './components/WhatsAppChat';
 import { Toaster } from 'react-hot-toast';
 import { Navigate } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
@@ -144,7 +143,7 @@ const AppContent = () => {
       <div className={`fixed inset-y-0 left-0 w-[280px] sm:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 z-50 transform transition-transform duration-300 xl:hidden overflow-hidden flex flex-col shadow-2xl overscroll-contain ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 pb-2 flex items-center justify-between">
           <div className="flex items-center">
-            <PhyrLogo className="h-[55px] w-auto" />
+            <PhyrLogo id="mobile-sidebar" className="h-[55px] w-auto" />
           </div>
           <button
             onClick={() => setIsMobileMenuOpen(false)}
@@ -266,7 +265,6 @@ const App: React.FC = () => {
             },
           },
         }} />
-        <WhatsAppChat />
         <AppContent />
       </AuthProvider>
     </Router>

@@ -7,6 +7,7 @@ import Button from '../components/Button';
 const Landing: React.FC = () => {
     const navigate = useNavigate();
     const [scrolled, setScrolled] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -15,6 +16,67 @@ const Landing: React.FC = () => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Bloquear scroll do body quando o menu mobile estiver aberto
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isMenuOpen]);
+
+    // Controlar visibilidade do Chatwoot (apenas na Landing Page)
+    useEffect(() => {
+        const toggleChatwoot = (show: boolean) => {
+            if (window.$chatwoot && typeof window.$chatwoot.toggleBubbleVisibility === 'function') {
+                try {
+                    window.$chatwoot.toggleBubbleVisibility(show ? 'show' : 'hide');
+                } catch (e) {
+                    console.error('Erro ao alternar Chatwoot:', e);
+                }
+            } else if (window.$chatwoot && typeof window.$chatwoot.toggle === 'function' && !show) {
+                // Fallback for hiding if toggleBubbleVisibility is not available
+                try {
+                    // Se não tiver o método de bubble, ao menos tentamos fechar o chat se estiver aberto
+                    const isExpanded = document.querySelector('.woot-widget-holder:not(.woot-widget-holder--closed)');
+                    if (isExpanded) window.$chatwoot.toggle('close');
+                } catch (e) { }
+            }
+        };
+
+        // Tentar mostrar ao entrar (com retry pois o SDK carrega async)
+        let count = 0;
+        const interval = setInterval(() => {
+            count++;
+            if (window.$chatwoot && typeof window.$chatwoot.toggleBubbleVisibility === 'function') {
+                toggleChatwoot(true);
+                clearInterval(interval);
+            }
+            if (count > 20) clearInterval(interval); // cansar após 10s
+        }, 500);
+
+        return () => {
+            clearInterval(interval);
+            toggleChatwoot(false);
+        };
+    }, []);
+    const scrollToSection = (sectionId: string) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            const offset = 80; // altura do header
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = element.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            });
+        }
+    };
 
     const features = [
         {
@@ -90,12 +152,22 @@ const Landing: React.FC = () => {
             <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${scrolled ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-slate-200 dark:border-slate-800 py-3 shadow-sm' : 'bg-transparent border-transparent py-5'}`}>
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                     <Link to="/" className="flex items-center">
-                        <PhyrLogo className="h-10 md:h-12 w-auto" />
+                        <PhyrLogo id="header" className="h-10 md:h-12 w-auto" />
                     </Link>
 
                     <div className="hidden md:flex items-center gap-8">
-                        <a href="#features" className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors">Produtos</a>
-                        <a href="#pricing" className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors">Preços</a>
+                        <button
+                            onClick={() => scrollToSection('features')}
+                            className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors outline-none"
+                        >
+                            Produtos
+                        </button>
+                        <button
+                            onClick={() => scrollToSection('pricing')}
+                            className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors outline-none"
+                        >
+                            Preços
+                        </button>
                         <Link to="/documentation" className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors">Documentação</Link>
                         <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-700"></div>
                         <Link to="/login" className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center gap-1">
@@ -106,8 +178,79 @@ const Landing: React.FC = () => {
                         </Button>
                     </div>
 
-                    <div className="md:hidden">
-                        <span className="material-symbols-outlined cursor-pointer" onClick={() => navigate('/login')}>menu</span>
+                    <div className="md:hidden flex items-center">
+                        <button
+                            onClick={() => setIsMenuOpen(true)}
+                            className="p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors outline-none"
+                            aria-label="Abrir menu"
+                        >
+                            <span className="material-symbols-outlined text-3xl">menu</span>
+                        </button>
+                    </div>
+                </div>
+
+                {/* Mobile Menu Drawer */}
+                <div className={`fixed inset-0 z-[60] xl:hidden transition-all duration-500 ${isMenuOpen ? 'visible' : 'invisible'}`}>
+                    {/* Overlay */}
+                    <div
+                        className={`absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity duration-500 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}
+                        onClick={() => setIsMenuOpen(false)}
+                    />
+
+                    {/* Drawer Content */}
+                    <div className={`absolute right-0 top-0 bottom-0 w-[300px] bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-500 transform ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}>
+                        <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
+                            <PhyrLogo id="mobile-drawer" className="h-8 w-auto" />
+                            <button
+                                onClick={() => setIsMenuOpen(false)}
+                                className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                            >
+                                <span className="material-symbols-outlined">close</span>
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto py-8 px-6 space-y-6">
+                            <div className="flex flex-col gap-4">
+                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Navegação</h4>
+                                <button
+                                    onClick={() => { setIsMenuOpen(false); scrollToSection('features'); }}
+                                    className="text-lg font-bold text-slate-900 dark:text-white hover:text-primary transition-colors flex items-center gap-3 outline-none"
+                                >
+                                    <span className="material-symbols-outlined text-primary">inventory_2</span>
+                                    Produtos
+                                </button>
+                                <button
+                                    onClick={() => { setIsMenuOpen(false); scrollToSection('pricing'); }}
+                                    className="text-lg font-bold text-slate-900 dark:text-white hover:text-primary transition-colors flex items-center gap-3 outline-none"
+                                >
+                                    <span className="material-symbols-outlined text-primary">payments</span>
+                                    Preços
+                                </button>
+                                <Link to="/documentation" className="text-lg font-bold text-slate-900 dark:text-white hover:text-primary transition-colors flex items-center gap-3">
+                                    <span className="material-symbols-outlined text-primary">description</span>
+                                    Documentação
+                                </Link>
+                                <Link to="/help" className="text-lg font-bold text-slate-900 dark:text-white hover:text-primary transition-colors flex items-center gap-3">
+                                    <span className="material-symbols-outlined text-primary">help</span>
+                                    Ajuda
+                                </Link>
+                            </div>
+
+                            <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-4">
+                                <Link to="/login" className="flex items-center justify-center h-14 rounded-2xl border-2 border-slate-100 dark:border-slate-800 text-slate-900 dark:text-white font-bold text-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-all">
+                                    Entrar
+                                </Link>
+                                <Button onClick={() => { setIsMenuOpen(false); navigate('/signup'); }} className="h-14 rounded-2xl font-bold text-lg shadow-xl shadow-primary/20">
+                                    Criar Conta Grátis
+                                </Button>
+                            </div>
+                        </div>
+
+                        <div className="p-8 bg-slate-50 dark:bg-slate-900/50 mt-auto">
+                            <p className="text-xs text-slate-500 font-medium text-center">
+                                Phyr © 2026 - Gestão Inteligente
+                            </p>
+                        </div>
                     </div>
                 </div>
             </nav>

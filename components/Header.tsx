@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleMobileMenu }) => {
         >
           <span className="material-symbols-outlined">menu</span>
         </button>
-        <PhyrLogo className="h-[32px] xs:h-[40px] w-auto" />
+        <PhyrLogo id="internal-header" className="h-[32px] xs:h-[40px] w-auto" />
       </div>
 
       <div className="flex-1"></div>
