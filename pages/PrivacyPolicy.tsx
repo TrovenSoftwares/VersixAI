@@ -32,7 +32,7 @@ const PrivacyPolicy: React.FC = () => {
                             Seus dados são utilizados para:
                         </p>
                         <ul className="list-disc pl-6 text-slate-600 dark:text-slate-300 space-y-2 mt-2">
-                            <li>Fornecer e manter os serviços do Phyr;</li>
+                            <li>Fornecer e manter os serviços do Flowy;</li>
                             <li>Processar transações e enviar notificações;</li>
                             <li>Personalizar sua experiência com Inteligência Artificial;</li>
                             <li>Melhorar nossa segurança e prevenir fraudes.</li>
@@ -42,7 +42,7 @@ const PrivacyPolicy: React.FC = () => {
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">3. Integração com WhatsApp</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            O Phyr permite que você conecte sua própria instância de WhatsApp via API dedicada. O sistema processa apenas as mensagens e mídias das conversas que você selecionar para monitoramento ou que forem enviadas para processamento de comprovantes. Essas informações são utilizadas exclusivamente para extração de dados financeiros por Inteligência Artificial e alimentação do seu painel.
+                            O Flowy permite que você conecte sua própria instância de WhatsApp via API dedicada. O sistema processa apenas as mensagens e mídias das conversas que você selecionar para monitoramento ou que forem enviadas para processamento de comprovantes. Essas informações são utilizadas exclusivamente para extração de dados financeiros por Inteligência Artificial e alimentação do seu painel.
                         </p>
                     </section>
 

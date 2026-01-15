@@ -22,14 +22,14 @@ const TermsOfUse: React.FC = () => {
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">1. Aceitação dos Termos</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            Ao acessar e usar o Phyr, você concorda em cumprir e estar vinculado a estes Termos de Uso. Se você não concordar com qualquer parte destes termos, você não deve usar nossos serviços.
+                            Ao acessar e usar o Flowy, você concorda em cumprir e estar vinculado a estes Termos de Uso. Se você não concordar com qualquer parte destes termos, você não deve usar nossos serviços.
                         </p>
                     </section>
 
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">2. Descrição do Serviço</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            O Phyr é uma plataforma de gestão financeira inteligente que oferece ferramentas de fluxo de caixa, Ponto de Venda (PDV), emissão de relatórios, gestão de contatos e automação via Inteligência Artificial integrada ao WhatsApp. O serviço é fornecido 'como está' e pode ser atualizado para melhorias contínuas.
+                            O Flowy é uma plataforma de gestão financeira inteligente que oferece ferramentas de fluxo de caixa, Ponto de Venda (PDV), emissão de relatórios, gestão de contatos e automação via Inteligência Artificial integrada ao WhatsApp. O serviço é fornecido 'como está' e pode ser atualizado para melhorias contínuas.
                         </p>
                     </section>
 
@@ -43,21 +43,21 @@ const TermsOfUse: React.FC = () => {
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">4. Privacidade e Dados</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            Seu uso do Phyr também é regido por nossa Política de Privacidade. Ao usar o Phyr, você consente com a coleta e uso de informações conforme detalhado em nossa política.
+                            Seu uso do Flowy também é regido por nossa Política de Privacidade. Ao usar o Flowy, você consente com a coleta e uso de informações conforme detalhado em nossa política.
                         </p>
                     </section>
 
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">5. Limitação de Responsabilidade</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            O Phyr não será responsável por quaisquer danos diretos, indiretos, incidentais ou consequentes resultantes do uso ou da incapacidade de usar nossos serviços.
+                            O Flowy não será responsável por quaisquer danos diretos, indiretos, incidentais ou consequentes resultantes do uso ou da incapacidade de usar nossos serviços.
                         </p>
                     </section>
 
                     <section>
                         <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">6. Propriedade Intelectual</h2>
                         <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            Todo o conteúdo, design, logotipos e software da plataforma Phyr são de propriedade exclusiva e protegidos por leis de propriedade intelectual. O uso da plataforma não concede ao usuário qualquer direito de propriedade sobre o sistema.
+                            Todo o conteúdo, design, logotipos e software da plataforma Flowy são de propriedade exclusiva e protegidos por leis de propriedade intelectual. O uso da plataforma não concede ao usuário qualquer direito de propriedade sobre o sistema.
                         </p>
                     </section>
                 </div>

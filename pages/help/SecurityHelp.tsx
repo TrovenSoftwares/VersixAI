@@ -6,7 +6,7 @@ const SecurityHelp: React.FC = () => {
         <HelpLayout title="Segurança e Proteção de Dados" category="Tecnologia">
             <section className="space-y-6">
                 <p className="text-lg text-slate-600 dark:text-slate-400">
-                    A segurança dos seus dados financeiros é nossa prioridade número um. O Phyr utiliza tecnologias de ponta para garantir que suas informações estejam sempre protegidas, isoladas e acessíveis apenas por você.
+                    A segurança dos seus dados financeiros é nossa prioridade número um. O Flowy utiliza tecnologias de ponta para garantir que suas informações estejam sempre protegidas, isoladas e acessíveis apenas por você.
                 </p>
 
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mt-10 mb-4">🔐 Infraestrutura e Autenticação</h2>
@@ -21,7 +21,7 @@ const SecurityHelp: React.FC = () => {
 
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mt-10 mb-4">🛡️ Isolamento de Dados (Multi-tenancy)</h2>
                 <p>
-                    Diferente de sistemas simplistas, o Phyr foi construído com arquitetura de <strong>Isolamento Lógico Estrito</strong>. Isso significa que as informações de uma empresa nunca "vazam" para outra, mesmo estando no mesmo banco de dados.
+                    Diferente de sistemas simplistas, o Flowy foi construído com arquitetura de <strong>Isolamento Lógico Estrito</strong>. Isso significa que as informações de uma empresa nunca "vazam" para outra, mesmo estando no mesmo banco de dados.
                 </p>
                 <div className="bg-slate-100 dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700">
                     <h4 className="font-bold mb-2 flex items-center gap-2">
@@ -52,7 +52,7 @@ const SecurityHelp: React.FC = () => {
                 <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6 mt-12">
                     <h3 className="font-bold text-primary flex items-center gap-2 mb-2">
                         <span className="material-symbols-outlined">verified_user</span>
-                        Compromisso Phyr
+                        Compromisso Flowy
                     </h3>
                     <p className="text-sm text-slate-700 dark:text-slate-300 font-medium">
                         Não vendemos seus dados para terceiros. Nosso modelo de negócio é baseado na sua assinatura de software, não na exploração de suas informações.

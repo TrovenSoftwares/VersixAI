@@ -3,10 +3,10 @@ import HelpLayout from '../../components/HelpLayout';
 
 const GettingStarted: React.FC = () => {
     return (
-        <HelpLayout title="Primeiros Passos no Phyr" category="Tecnologia">
+        <HelpLayout title="Primeiros Passos no Flowy" category="Tecnologia">
             <section className="space-y-6">
                 <p className="text-lg text-slate-600 dark:text-slate-400">
-                    Bem-vindo ao Phyr! Este guia ajudará você a configurar sua conta e entender os conceitos fundamentais para começar a gerir suas finanças com inteligência.
+                    Bem-vindo ao Flowy! Este guia ajudará você a configurar sua conta e entender os conceitos fundamentais para começar a gerir suas finanças com inteligência.
                 </p>
 
                 <div className="bg-primary/5 border border-primary/10 rounded-2xl p-6 my-8">
@@ -15,7 +15,7 @@ const GettingStarted: React.FC = () => {
                         Dica Rápida
                     </h3>
                     <p className="text-sm text-slate-700 dark:text-slate-300">
-                        O Phyr foi desenhado para ser intuitivo. Quase tudo pode ser feito via WhatsApp, mas o painel web é onde você tem a visão estratégica completa.
+                        O Flowy foi desenhado para ser intuitivo. Quase tudo pode ser feito via WhatsApp, mas o painel web é onde você tem a visão estratégica completa.
                     </p>
                 </div>
 

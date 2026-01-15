@@ -127,7 +127,7 @@ export const downloadExampleTemplate = (type: 'contacts' | 'transactions' | 'sal
     const url = window.URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `${name}_phyr.xlsx`);
+    link.setAttribute('download', `${name}_flowy.xlsx`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PhyrLogo } from './BrandedIcons';
+import { FlowyLogo } from './BrandedIcons';
 
 interface HeaderProps {
   onToggleMobileMenu?: () => void;
@@ -19,7 +19,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleMobileMenu }) => {
         >
           <span className="material-symbols-outlined">menu</span>
         </button>
-        <PhyrLogo id="internal-header" className="h-[32px] xs:h-[40px] w-auto" />
+        <FlowyLogo id="internal-header" className="h-[32px] xs:h-[40px] w-auto" />
       </div>
 
       <div className="flex-1"></div>

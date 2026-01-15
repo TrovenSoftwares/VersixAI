@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { GoogleIcon, MicrosoftIcon, WhatsAppIcon, PhyrLogo } from '../components/BrandedIcons';
+import { GoogleIcon, MicrosoftIcon, WhatsAppIcon, FlowyLogo } from '../components/BrandedIcons';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import PublicHeader from '../components/PublicHeader';

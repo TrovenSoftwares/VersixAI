@@ -147,7 +147,7 @@ const Sales: React.FC = () => {
       'Vendedor': s.seller,
       'Conta': s.account?.name || '---'
     }));
-    exportToExcel(dataToExport, 'Vendas_Phyr');
+    exportToExcel(dataToExport, 'Vendas_Flowy');
     toast.success('Arquivo Excel de Vendas gerado!');
   };
 
@@ -269,7 +269,7 @@ const Sales: React.FC = () => {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(100, 116, 139);
-    doc.text('Sistema: Phyr ERP', margin, 26);
+    doc.text('Sistema: Flowy ERP', margin, 26);
 
     // Filter Info (Top Right)
     doc.setFontSize(9);
@@ -335,10 +335,10 @@ const Sales: React.FC = () => {
       doc.setPage(i);
       doc.setFontSize(8);
       doc.setTextColor(156, 163, 175);
-      doc.text(`Relatório de Vendas Phyr ERP • Página ${i} de ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+      doc.text(`Relatório de Vendas Flowy ERP • Página ${i} de ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
     }
 
-    doc.save(`Vendas_Phyr_${format(now, 'dd_MM_yyyy')}.pdf`);
+    doc.save(`Vendas_Flowy_${format(now, 'dd_MM_yyyy')}.pdf`);
     toast.success('Relatório PDF gerado com sucesso!');
   };
 

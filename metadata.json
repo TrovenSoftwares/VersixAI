@@ -1,5 +1,5 @@
 {
-  "name": "Financeiro AI ERP",
+  "name": "Flowy ERP",
   "description": "Um sistema completo de gestão financeira com inteligência artificial integrada para monitoramento de WhatsApp, conciliação automática e relatórios inteligentes.",
   "requestFramePermissions": [
     "camera",

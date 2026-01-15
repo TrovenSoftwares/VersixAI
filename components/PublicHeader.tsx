@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { PhyrLogo } from './BrandedIcons';
+import { FlowyLogo } from './BrandedIcons';
 
 interface PublicHeaderProps {
     backLink?: string;
@@ -30,7 +30,7 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({
                     </Link>
                 )}
                 <Link to="/" className="flex items-center">
-                    <PhyrLogo id="public-header" className="h-[35px] md:h-[40px] w-auto transition-transform hover:scale-105" />
+                    <FlowyLogo id="public-header" className="h-[35px] md:h-[40px] w-auto transition-transform hover:scale-105" />
                 </Link>
             </div>
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { PhyrLogo } from '../components/BrandedIcons';
+import { FlowyLogo } from '../components/BrandedIcons';
 import PublicFooter from '../components/PublicFooter';
 import Button from '../components/Button';
 
@@ -152,7 +152,7 @@ const Landing: React.FC = () => {
             <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b ${scrolled ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-slate-200 dark:border-slate-800 py-3 shadow-sm' : 'bg-transparent border-transparent py-5'}`}>
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                     <Link to="/" className="flex items-center">
-                        <PhyrLogo id="header" className="h-10 md:h-12 w-auto" />
+                        <FlowyLogo id="header" className="h-10 md:h-12 w-auto" />
                     </Link>
 
                     <div className="hidden md:flex items-center gap-8">
@@ -200,7 +200,7 @@ const Landing: React.FC = () => {
                     {/* Drawer Content */}
                     <div className={`absolute right-0 top-0 bottom-0 w-[300px] bg-white dark:bg-slate-950 shadow-2xl transition-transform duration-500 transform ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'} flex flex-col`}>
                         <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
-                            <PhyrLogo id="mobile-drawer" className="h-8 w-auto" />
+                            <FlowyLogo id="mobile-drawer" className="h-8 w-auto" />
                             <button
                                 onClick={() => setIsMenuOpen(false)}
                                 className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
@@ -248,7 +248,7 @@ const Landing: React.FC = () => {
 
                         <div className="p-8 bg-slate-50 dark:bg-slate-900/50 mt-auto">
                             <p className="text-xs text-slate-500 font-medium text-center">
-                                Phyr © 2026 - Gestão Inteligente
+                                Flowy © 2026 - Gestão Inteligente
                             </p>
                         </div>
                     </div>
@@ -290,7 +290,7 @@ const Landing: React.FC = () => {
                         <div className="relative group p-2 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden transition-all duration-700">
                             <img
                                 src="/assets/landing/hero-showcase.png"
-                                alt="Phyr Dashboard Showcase"
+                                alt="Flowy Dashboard Showcase"
                                 className="w-full h-auto rounded-2xl shadow-sm transition-transform duration-700 group-hover:scale-[1.01]"
                             />
                         </div>

@@ -6,7 +6,7 @@ const FinancialHelp: React.FC = () => {
         <HelpLayout title="Gestão Financeira e PDV" category="Tecnologia">
             <section className="space-y-6">
                 <p className="text-lg text-slate-600 dark:text-slate-400">
-                    O coração do Phyr é a gestão financeira simplificada. Aprenda a dominar o fluxo de caixa, o Ponto de Venda e as ferramentas de controle de débitos.
+                    O coração do Flowy é a gestão financeira simplificada. Aprenda a dominar o fluxo de caixa, o Ponto de Venda e as ferramentas de controle de débitos.
                 </p>
 
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mt-10 mb-4">🕹️ Ponto de Venda (PDV)</h2>

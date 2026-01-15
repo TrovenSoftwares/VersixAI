@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { GoogleIcon, MicrosoftIcon, PhyrLogo } from '../components/BrandedIcons';
+import { GoogleIcon, MicrosoftIcon, FlowyLogo } from '../components/BrandedIcons';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import PublicHeader from '../components/PublicHeader';
@@ -253,7 +253,7 @@ const Signup: React.FC = () => {
                 <span className="text-white/80 text-sm font-medium">+2.5k empresas confiam</span>
               </div>
               <h3 className="text-2xl font-bold text-white mb-2 leading-snug">
-                "O Phyr transformou nosso WhatsApp em uma máquina de controle financeiro."
+                "O Flowy transformou nosso WhatsApp em uma máquina de controle financeiro."
               </h3>
               <div className="mt-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-green-400 filled">check_circle</span>

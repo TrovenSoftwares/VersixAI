@@ -1,6 +1,6 @@
 import React from 'react';
 import PageHeader from '../components/PageHeader';
-import { PhyrLogo, WhatsAppIcon } from '../components/BrandedIcons';
+import { FlowyLogo, WhatsAppIcon } from '../components/BrandedIcons';
 import PublicHeader from '../components/PublicHeader';
 import PublicFooter from '../components/PublicFooter';
 import { Link } from 'react-router-dom';
@@ -34,7 +34,7 @@ const Documentation: React.FC = () => {
             <main className="max-w-5xl mx-auto py-12 px-6 animate-in fade-in duration-500">
                 <PageHeader
                     title="Documentação do Sistema"
-                    description="Guia completo de uso, configurações e integrações do Phyr."
+                    description="Guia completo de uso, configurações e integrações do Flowy."
                 />
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -65,7 +65,7 @@ const Documentation: React.FC = () => {
                                     <span className="text-3xl">🚀</span> Visão Geral
                                 </h2>
                                 <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                                    O <span className="font-bold">Phyr</span> é uma plataforma de gestão financeira que utiliza Inteligência Artificial para automatizar processos manuais, permitindo que você controle suas finanças, vendas e contatos diretamente de onde a comunicação acontece: o WhatsApp.
+                                    O <span className="font-bold">Flowy</span> é uma plataforma de gestão financeira que utiliza Inteligência Artificial para automatizar processos manuais, permitindo que você controle suas finanças, vendas e contatos diretamente de onde a comunicação acontece: o WhatsApp.
                                 </p>
                             </div>
                         </section>
@@ -186,7 +186,7 @@ const Documentation: React.FC = () => {
                         </section>
 
                         <footer className="pt-10 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-400">
-                            <p>© 2026 Phyr - Eficiência Financeira Inteligente</p>
+                            <p>© 2026 Flowy - Eficiência Financeira Inteligente</p>
                         </footer>
 
                     </div>

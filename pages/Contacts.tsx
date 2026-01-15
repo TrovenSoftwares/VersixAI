@@ -171,7 +171,7 @@ const Contacts: React.FC = () => {
       'Saldo': c.balance,
       'Data de Cadastro': new Date(c.created_at).toLocaleDateString('pt-BR')
     }));
-    exportToExcel(dataToExport, 'Contatos_Phyr');
+    exportToExcel(dataToExport, 'Contatos_Flowy');
     toast.success('Excel exportado com sucesso!');
   };
 

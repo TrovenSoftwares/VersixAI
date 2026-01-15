@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { PhyrLogo } from '../components/BrandedIcons';
+import { FlowyLogo } from '../components/BrandedIcons';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import PublicHeader from '../components/PublicHeader';
@@ -39,7 +39,7 @@ const ForgotPassword: React.FC = () => {
             <div className="flex-1 flex items-center justify-center p-4">
                 <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-xl p-8 border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in duration-500">
                     <div className="flex flex-col items-center mb-8 text-center">
-                        <PhyrLogo className="h-[40px] w-auto mb-4" />
+                        <FlowyLogo className="h-[40px] w-auto mb-4" />
                         <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Recuperar Senha</h2>
                         <p className="text-slate-500 dark:text-slate-400 text-center mt-2">
                             Digite seu e-mail para receber as instruções de recuperação.

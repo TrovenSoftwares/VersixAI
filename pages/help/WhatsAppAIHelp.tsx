@@ -6,7 +6,7 @@ const WhatsAppAIHelp: React.FC = () => {
         <HelpLayout title="WhatsApp e Inteligência Artificial" category="Tecnologia">
             <section className="space-y-6">
                 <p className="text-lg text-slate-600 dark:text-slate-400">
-                    A maior inovação do Phyr é a capacidade de entender conversas e documentos via WhatsApp. Aprenda como configurar e tirar o máximo proveito da nossa IA.
+                    A maior inovação do Flowy é a capacidade de entender conversas e documentos via WhatsApp. Aprenda como configurar e tirar o máximo proveito da nossa IA.
                 </p>
 
                 <h2 className="text-2xl font-bold text-slate-900 dark:text-white mt-10 mb-4">🟢 Conectando seu WhatsApp</h2>
@@ -25,7 +25,7 @@ const WhatsAppAIHelp: React.FC = () => {
                         Importante
                     </h4>
                     <p className="text-sm text-amber-700 dark:text-amber-400">
-                        O Phyr é passivo. Ele não lê todas as suas conversas pessoais. Ele processa apenas arquivos (fotos de comprovantes) ou mensagens enviadas especificamente para fins de registro financeiro.
+                        O Flowy é passivo. Ele não lê todas as suas conversas pessoais. Ele processa apenas arquivos (fotos de comprovantes) ou mensagens enviadas especificamente para fins de registro financeiro.
                     </p>
                 </div>
 
@@ -67,7 +67,7 @@ const WhatsAppAIHelp: React.FC = () => {
                         <p className="text-xs text-slate-500 mt-2">O sistema parará de receber novas mensagens instantaneamente. Basta escanear o QR Code novamente para reativar.</p>
                     </details>
                     <details className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700">
-                        <summary className="font-bold text-sm cursor-pointer outline-none">Quais modelos de IA o Phyr utiliza?</summary>
+                        <summary className="font-bold text-sm cursor-pointer outline-none">Quais modelos de IA o Flowy utiliza?</summary>
                         <p className="text-xs text-slate-500 mt-2">Utilizamos um sistema de "fallback" inteligente. Tentamos primeiro o Claude 3.5 Sonnet pela sua precisão, seguido pelo Gemini 1.5 e GPT-4o, garantindo que você nunca fique sem resposta.</p>
                     </details>
                 </div>
