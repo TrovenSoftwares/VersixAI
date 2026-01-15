@@ -9,6 +9,7 @@ import ScrollToTop from './components/ScrollToTop';
 import { Toaster } from 'react-hot-toast';
 import { Navigate } from 'react-router-dom';
 import CommandPalette from './components/CommandPalette';
+import ShortcutsModal from './components/ShortcutsModal';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import Dashboard from './pages/Dashboard';
 import Review from './pages/Review';
@@ -46,6 +47,7 @@ import GettingStarted from './pages/help/GettingStarted';
 import FinancialHelp from './pages/help/FinancialHelp';
 import WhatsAppAIHelp from './pages/help/WhatsAppAIHelp';
 import SecurityHelp from './pages/help/SecurityHelp';
+import { OnboardingTutorial } from './components/OnboardingTutorial';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
@@ -68,14 +70,22 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const AppContent = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isShortcutsModalOpen, setIsShortcutsModalOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { signOut } = useAuth();
 
   // Initialize keyboard shortcuts
   useKeyboardShortcuts({
-    onOpenCommandPalette: () => setIsCommandPaletteOpen(true),
+    onOpenCommandPalette: () => {
+      setIsShortcutsModalOpen(false);
+      setIsCommandPaletteOpen(true);
+    },
     onCloseCommandPalette: () => setIsCommandPaletteOpen(false),
+    onOpenHelpModal: () => {
+      setIsCommandPaletteOpen(false);
+      setIsShortcutsModalOpen(prev => !prev);
+    },
     enabled: true
   });
 
@@ -142,6 +152,11 @@ const AppContent = () => {
       {/* Command Palette */}
       <CommandPalette isOpen={isCommandPaletteOpen} onClose={() => setIsCommandPaletteOpen(false)} />
 
+      {/* Shortcuts Help Modal */}
+      <ShortcutsModal isOpen={isShortcutsModalOpen} onClose={() => setIsShortcutsModalOpen(false)} />
+
+      <OnboardingTutorial />
+
       <Sidebar />
 
       {/* Mobile Sidebar Overlay */}
@@ -185,7 +200,10 @@ const AppContent = () => {
       </div>
 
       <div className="flex-1 flex flex-col xl:ml-64 h-full overflow-hidden">
-        <Header onToggleMobileMenu={() => setIsMobileMenuOpen(true)} />
+        <Header
+          onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
+          onOpenShortcuts={() => setIsShortcutsModalOpen(true)}
+        />
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-8">
           <div className="max-w-[1400px] mx-auto">

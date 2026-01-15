@@ -193,54 +193,34 @@ export const TablePagination: React.FC<TablePaginationProps> = ({
     itemsPerPage,
     startIndex
 }) => {
+    const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+
     return (
-        <div className="border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 px-6 py-4 flex items-center justify-between">
-            <div className="flex-1 flex justify-between sm:hidden">
+        <div className="border-t border-[#e7edf3] dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 px-6 py-4 flex items-center justify-between">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+                Mostrando <span className="font-bold text-slate-900 dark:text-white">{totalItems === 0 ? 0 : startIndex + 1}-{endIndex}</span> de <span className="font-bold text-slate-900 dark:text-white">{totalItems}</span> resultados
+            </p>
+
+            <div className="flex items-center gap-4">
                 <button
-                    onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    onClick={() => onPageChange(currentPage - 1)}
+                    className="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-20 transition-all active:scale-95 shadow-sm"
                 >
-                    Anterior
+                    <span className="material-symbols-outlined text-[20px]">chevron_left</span>
                 </button>
+
+                <div className="text-sm font-bold text-primary dark:text-blue-400 min-w-[44px] text-center tracking-tight">
+                    {currentPage} / {totalPages || 1}
+                </div>
+
                 <button
+                    disabled={currentPage === totalPages || totalPages === 0}
                     onClick={() => onPageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                    className="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-20 transition-all active:scale-95 shadow-sm"
                 >
-                    Próxima
+                    <span className="material-symbols-outlined text-[20px]">chevron_right</span>
                 </button>
-            </div>
-            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                <div>
-                    <p className="text-sm text-gray-700 dark:text-slate-400">
-                        Mostrando <span className="font-medium">{startIndex + 1}</span> até <span className="font-medium">{Math.min(startIndex + itemsPerPage, totalItems)}</span> de{' '}
-                        <span className="font-medium">{totalItems}</span> resultados
-                    </p>
-                </div>
-                <div>
-                    <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                        <button
-                            onClick={() => onPageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium text-gray-500 hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50"
-                        >
-                            <span className="sr-only">Anterior</span>
-                            <span className="material-symbols-outlined text-sm">chevron_left</span>
-                        </button>
-                        <span className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700">
-                            {currentPage} / {totalPages}
-                        </span>
-                        <button
-                            onClick={() => onPageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium text-gray-500 hover:bg-gray-50 dark:hover:bg-slate-700 disabled:opacity-50"
-                        >
-                            <span className="sr-only">Próxima</span>
-                            <span className="material-symbols-outlined text-sm">chevron_right</span>
-                        </button>
-                    </nav>
-                </div>
             </div>
         </div>
     );

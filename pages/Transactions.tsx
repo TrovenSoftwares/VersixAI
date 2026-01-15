@@ -14,6 +14,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { exportToExcel, readExcelFile, downloadExampleTemplate, formatExcelDate } from '../utils/excelUtils';
 import { SkeletonTable } from '../components/Skeleton';
+import Pagination from '../components/Pagination';
 import { PdfIcon, ExcelIcon, ImportIcon } from '../components/BrandedIcons';
 
 const Transactions: React.FC = () => {
@@ -570,30 +571,13 @@ const Transactions: React.FC = () => {
         </div>
 
         {/* Pagination Footer */}
-        <div className="border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 px-6 py-4 flex items-center justify-between">
-          <p className="text-sm text-gray-500">
-            <span className="hidden sm:inline">Mostrando </span>
-            <span className="font-bold text-gray-900 dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredTransactions.length)}</span> de <span className="font-bold text-gray-900 dark:text-white">{filteredTransactions.length}</span>
-            <span className="hidden sm:inline"> resultados</span>
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(prev => prev - 1)}
-              className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-100 disabled:opacity-30 transition-colors"
-            >
-              <span className="material-symbols-outlined text-sm">chevron_left</span>
-            </button>
-            <span className="text-sm font-bold text-primary px-2">{currentPage} / {totalPages || 1}</span>
-            <button
-              disabled={currentPage === totalPages || totalPages === 0}
-              onClick={() => setCurrentPage(prev => prev + 1)}
-              className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-100 disabled:opacity-30 transition-colors"
-            >
-              <span className="material-symbols-outlined text-sm">chevron_right</span>
-            </button>
-          </div>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalResults={filteredTransactions.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       <ConfirmModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onConfirm={handleDelete} title="Excluir Transação" message="Tem certeza que deseja excluir esta transação? Esta ação não pode ser desfeita." confirmLabel="Excluir" type="danger" />

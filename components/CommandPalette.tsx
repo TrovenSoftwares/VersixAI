@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Input from './Input';
+import { supabase } from '../lib/supabase';
+import { formatDate } from '../utils/utils';
 
 interface CommandItem {
     id: string;
@@ -21,6 +23,8 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
     const navigate = useNavigate();
     const [query, setQuery] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [isSearching, setIsSearching] = useState(false);
+    const [dynamicResults, setDynamicResults] = useState<CommandItem[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
     const listRef = useRef<HTMLDivElement>(null);
 
@@ -42,10 +46,77 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
         { id: 'action-help', label: 'Central de Ajuda', description: 'Tutoriais e documentação', icon: 'help', category: 'action', action: () => navigate('/help') },
     ];
 
-    const filteredCommands = commands.filter(cmd =>
+    const staticFiltered = commands.filter(cmd =>
         cmd.label.toLowerCase().includes(query.toLowerCase()) ||
         cmd.description?.toLowerCase().includes(query.toLowerCase())
     );
+
+    const filteredCommands = [...staticFiltered, ...dynamicResults];
+
+    // Dynamic Search Logic with Debounce
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            if (query.length < 2) {
+                setDynamicResults([]);
+                return;
+            }
+
+            setIsSearching(true);
+            try {
+                const [contactsRes, transactionsRes, salesRes] = await Promise.all([
+                    supabase.from('contacts').select('id, name').ilike('name', `%${query}%`).limit(3),
+                    supabase.from('transactions').select('id, description, value').ilike('description', `%${query}%`).limit(3),
+                    supabase.from('sales').select('id, description, value').ilike('description', `%${query}%`).limit(3)
+                ]);
+
+                const results: CommandItem[] = [];
+
+                // Format Contacts
+                contactsRes.data?.forEach(c => {
+                    results.push({
+                        id: `contact-${c.id}`,
+                        label: c.name,
+                        description: 'Contato',
+                        icon: 'person',
+                        category: 'search',
+                        action: () => navigate(`/contacts`) // Could be refined to open details
+                    });
+                });
+
+                // Format Transactions
+                transactionsRes.data?.forEach(t => {
+                    results.push({
+                        id: `transaction-${t.id}`,
+                        label: t.description,
+                        description: `Transação • R$ ${Number(t.value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+                        icon: 'receipt_long',
+                        category: 'search',
+                        action: () => navigate(`/transactions`)
+                    });
+                });
+
+                // Format Sales
+                salesRes.data?.forEach(s => {
+                    results.push({
+                        id: `sale-${s.id}`,
+                        label: s.description || `Venda #${s.id.slice(0, 5)}`,
+                        description: `Venda • R$ ${Number(s.value).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+                        icon: 'point_of_sale',
+                        category: 'search',
+                        action: () => navigate(`/sales`)
+                    });
+                });
+
+                setDynamicResults(results);
+            } catch (err) {
+                console.error('Search error:', err);
+            } finally {
+                setIsSearching(false);
+            }
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [query, navigate]);
 
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
         if (!isOpen) return;
@@ -127,9 +198,12 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
                         placeholder="Buscar páginas, ações..."
                         leftIcon={<span className="material-symbols-outlined text-xl">search</span>}
                         rightIcon={
-                            <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-                                ESC
-                            </kbd>
+                            <div className="flex items-center gap-2">
+                                {isSearching && <div className="size-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />}
+                                <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-1 text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                                    ESC
+                                </kbd>
+                            </div>
                         }
                         className="text-base font-medium"
                     />
@@ -197,6 +271,36 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
                                                     <p className="font-bold text-sm truncate">{cmd.label}</p>
                                                     <p className="text-xs text-slate-400 truncate">{cmd.description}</p>
                                                 </div>
+                                            </button>
+                                        );
+                                    })}
+                                </>
+                            )}
+
+                            {dynamicResults.length > 0 && (
+                                <>
+                                    <div className="px-3 py-2 mt-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">Resultados da Busca</div>
+                                    {dynamicResults.map((cmd) => {
+                                        const globalIdx = filteredCommands.indexOf(cmd);
+                                        return (
+                                            <button
+                                                key={cmd.id}
+                                                onClick={() => { cmd.action(); onClose(); }}
+                                                className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all ${globalIdx === selectedIndex
+                                                    ? 'bg-primary/10 text-primary'
+                                                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                                                    }`}
+                                            >
+                                                <div className={`size-10 rounded-lg flex items-center justify-center transition-colors ${globalIdx === selectedIndex ? 'bg-primary/20' : 'bg-slate-100 dark:bg-slate-800'}`}>
+                                                    <span className={`material-symbols-outlined text-xl ${globalIdx === selectedIndex ? 'text-primary' : 'text-slate-400'}`}>
+                                                        {cmd.icon}
+                                                    </span>
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="font-bold text-sm truncate">{cmd.label}</p>
+                                                    <p className="text-xs text-slate-400 truncate font-medium">{cmd.description}</p>
+                                                </div>
+                                                <span className="material-symbols-outlined text-base opacity-0 group-hover:opacity-100 transition-opacity text-primary">arrow_forward</span>
                                             </button>
                                         );
                                     })}

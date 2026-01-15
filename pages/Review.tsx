@@ -8,6 +8,7 @@ import CustomSelect from '../components/CustomSelect';
 import PageHeader from '../components/PageHeader';
 import { extractFinancialDataWithAI } from '../lib/groq';
 import { SkeletonCard } from '../components/Skeleton';
+import Pagination from '../components/Pagination';
 
 // --- Global Type Definitions ---
 type AutoClassification = 'transaction' | 'sale' | 'discard';
@@ -1025,7 +1026,7 @@ const Review: React.FC = () => {
       </div>
 
       {/* Content */}
-      <div className="flex flex-col gap-4 min-h-[400px]">
+      <div className="flex flex-col gap-4 min-h-[400px]" data-tour="review-content">
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {Array(4).fill(0).map((_, i) => <SkeletonCard key={i} />)}
@@ -1087,27 +1088,13 @@ const Review: React.FC = () => {
       </div>
 
       {/* Pagination */}
-      {currentList.length > itemsPerPage && (
-        <div className="flex justify-between items-center bg-white dark:bg-slate-850 p-4 rounded-lg border border-slate-200 dark:border-slate-800">
-          <span className="text-sm text-slate-500">Página {currentPage} de {totalPages}</span>
-          <div className="flex gap-2">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(p => p - 1)}
-              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 disabled:opacity-50"
-            >
-              <span className="material-symbols-outlined text-sm">chevron_left</span>
-            </button>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage(p => p + 1)}
-              className="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 disabled:opacity-50"
-            >
-              <span className="material-symbols-outlined text-sm">chevron_right</span>
-            </button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalResults={currentList.length}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+      />
 
       {/* Clear Trash Action */}
       {activeType === 'lixo' && discardedMessages.length > 0 && (

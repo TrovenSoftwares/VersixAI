@@ -31,7 +31,8 @@ export const useKeyboardShortcuts = (options: UseKeyboardShortcutsOptions = {}) 
     const shortcuts: ShortcutConfig[] = [
         // Global
         { key: 'k', ctrl: true, action: () => onOpenCommandPalette?.(), description: 'Abrir Busca Rápida', category: 'global' },
-        { key: '/', action: () => onOpenHelpModal?.(), description: 'Mostrar Atalhos', category: 'global' },
+        { key: '/', ctrl: true, action: () => onOpenHelpModal?.(), description: 'Mostrar Atalhos', category: 'global' },
+        { key: '?', ctrl: true, action: () => onOpenHelpModal?.(), description: 'Mostrar Atalhos', category: 'global' },
 
         // Navigation (Alt + Number)
         { key: '1', alt: true, action: () => { onCloseCommandPalette?.(); navigate('/dashboard'); }, description: 'Ir para Dashboard', category: 'navigation' },

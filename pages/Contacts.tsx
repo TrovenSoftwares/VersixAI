@@ -16,6 +16,7 @@ import Tooltip from '../components/Tooltip';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import { SkeletonTable, SkeletonCard } from '../components/Skeleton';
+import Pagination from '../components/Pagination';
 import {
   Table,
   TableHeader,

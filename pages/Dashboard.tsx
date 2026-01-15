@@ -6,6 +6,37 @@ import PageHeader from '../components/PageHeader';
 import { supabase } from '../lib/supabase';
 import { formatDate } from '../utils/utils';
 import { SkeletonCard, SkeletonChart, SkeletonTable } from '../components/Skeleton';
+import { PieChart, Pie, Cell, ResponsiveContainer, Sector } from 'recharts';
+
+const renderActiveShape = (props: any) => {
+  const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+
+  return (
+    <g>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius + 6}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+        className="drop-shadow-lg transition-all duration-500 ease-out"
+      />
+      <Sector
+        cx={cx}
+        cy={cy}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        innerRadius={outerRadius + 8}
+        outerRadius={outerRadius + 10}
+        fill={fill}
+        opacity={0}
+        className="animate-pulse opacity-20 transition-all duration-700"
+      />
+    </g>
+  );
+};
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -15,11 +46,14 @@ const Dashboard: React.FC = () => {
     revenue: 0,
     expenses: 0,
     balance: 0,
-    pendingAi: 0
+    pendingAi: 0,
+    prevRevenue: 0,
+    prevExpenses: 0
   });
   const [recentTransactions, setRecentTransactions] = React.useState<any[]>([]);
   const [chartData, setChartData] = React.useState<any[]>([]);
   const [expenseCategories, setExpenseCategories] = React.useState<any[]>([]);
+  const [activeIndex, setActiveIndex] = React.useState<number | null>(null);
 
   const fetchDashboardData = React.useCallback(async () => {
     setLoading(true);
@@ -46,59 +80,67 @@ const Dashboard: React.FC = () => {
         monthsToFetch = 6;
       }
 
-      // Fetch transactions
+      // Fetch transactions for comparison
+      // kpiStart: Beginning of previous month for trend comparison
+      const kpiStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+
       const { data: allTrans, error: transError } = await supabase
         .from('transactions')
         .select(`
           id, value, type, date, status, description,
           categories (name, color, icon)
         `)
-        .eq('status', 'confirmed') // Only confirmed transactions
-        .gte('date', startDate.toISOString().split('T')[0])
+        .eq('status', 'confirmed')
+        .gte('date', (filter === 'monthly' ? kpiStart : startDate).toISOString().split('T')[0])
         .lte('date', endDate.toISOString().split('T')[0])
         .order('date', { ascending: true });
 
       if (transError) throw transError;
 
-      // KPI Calculations - Filter specific range for KPIs
-      let kpiTrans = allTrans || [];
-
-      if (filter === 'monthly') {
-        kpiTrans = (allTrans || []).filter(t => {
-          const d = new Date(t.date);
-          return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-        });
-      }
-
-      // Logic Swap: 
-      // Revenue (Receita) = Income (excluding Returns) + Bounced Checks (from Expense)
-      // Expenses (Despesa) = Expenses (excluding Bounced Checks) + Returns (from Income)
-
-      const revenue = kpiTrans.reduce((acc, t) => {
-        // Safe category access
+      // Helper for classification
+      const classifyTransaction = (t: any) => {
         const catList: any = t.categories;
         const catName = Array.isArray(catList) ? catList[0]?.name : catList?.name;
-
         const isReturn = catName === 'Devolução';
         const isBouncedCheck = t.description?.includes('Cheque Devolvido');
 
-        if (t.type === 'income' && !isReturn) return acc + Number(t.value);
-        if (t.type === 'expense' && isBouncedCheck) return acc + Number(t.value);
-        return acc;
-      }, 0);
+        let type: 'income' | 'expense' = t.type;
+        // Swap logic logic
+        let finalType = type;
+        if (type === 'income' && isReturn) finalType = 'expense';
+        if (type === 'expense' && isBouncedCheck) finalType = 'income';
 
-      const expenses = kpiTrans.reduce((acc, t) => {
-        // Safe category access
-        const catList: any = t.categories;
-        const catName = Array.isArray(catList) ? catList[0]?.name : catList?.name;
+        return { type: finalType, value: Number(t.value) };
+      };
 
-        const isReturn = catName === 'Devolução';
-        const isBouncedCheck = t.description?.includes('Cheque Devolvido');
+      // Current Period Stats
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+      const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+      const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
 
-        if (t.type === 'expense' && !isBouncedCheck) return acc + Number(t.value);
-        if (t.type === 'income' && isReturn) return acc + Number(t.value);
-        return acc;
-      }, 0);
+      const currentPeriodTrans = (allTrans || []).filter(t => {
+        const d = new Date(t.date);
+        if (filter === 'monthly') return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+        return true; // Quarterly/Annual already handles its logic in kpiTrans or similar
+      });
+
+      const previousPeriodTrans = (allTrans || []).filter(t => {
+        const d = new Date(t.date);
+        return d.getMonth() === prevMonth && d.getFullYear() === prevYear;
+      });
+
+      const calcStats = (transList: any[]) => {
+        return transList.reduce((acc, t) => {
+          const { type, value } = classifyTransaction(t);
+          if (type === 'income') acc.income += value;
+          else acc.expense += value;
+          return acc;
+        }, { income: 0, expense: 0 });
+      };
+
+      const currStats = calcStats(currentPeriodTrans);
+      const prevStats = calcStats(previousPeriodTrans);
 
       // Fetch Pending Messages with Monitoring Filter
       const { data: contactsData } = await supabase
@@ -138,10 +180,12 @@ const Dashboard: React.FC = () => {
       }
 
       setStats({
-        revenue,
-        expenses,
-        balance: revenue - expenses,
-        pendingAi: pendingAiCount
+        revenue: currStats.income,
+        expenses: currStats.expense,
+        balance: currStats.income - currStats.expense,
+        pendingAi: pendingAiCount,
+        prevRevenue: prevStats.income,
+        prevExpenses: prevStats.expense
       });
 
       // Chart Data Building
@@ -188,9 +232,11 @@ const Dashboard: React.FC = () => {
       }));
       setChartData(normalizedCharts);
 
-      // Category Data: Group by Category only for Expenses in KPI range
       const catMap = new Map();
-      kpiTrans.filter(t => t.type === 'expense').forEach((t: any) => {
+      currentPeriodTrans.filter(t => {
+        const { type } = classifyTransaction(t);
+        return type === 'expense';
+      }).forEach((t: any) => {
         const catName = t.categories?.name || 'Outros';
         const catColor = t.categories?.color || 'bg-slate-300';
         const val = Number(t.value);
@@ -200,7 +246,7 @@ const Dashboard: React.FC = () => {
         catMap.get(catName).value += val;
       });
 
-      const totalExpensesKPI = expenses || 1;
+      const totalExpensesKPI = currStats.expense || 1;
       const cats = Array.from(catMap.values())
         .sort((a, b) => b.value - a.value)
         .slice(0, 4)
@@ -237,40 +283,6 @@ const Dashboard: React.FC = () => {
     fetchDashboardData();
   }, [fetchDashboardData]);
 
-  // Helper for Conic Gradient
-  const getConicGradient = () => {
-    if (expenseCategories.length === 0) return 'conic-gradient(#cbd5e1 0% 100%)';
-
-    let gradient = 'conic-gradient(';
-    let currentDeg = 0;
-
-    expenseCategories.forEach((cat, i) => {
-      const deg = (cat.value / (stats.expenses || 1)) * 360;
-      // Map tailwind classes to hex for gradient (approximate)
-      let color = '#cbd5e1'; // default slate-300
-      // Enhanced color mapping for premium aesthetics
-      if (cat.color.includes('emerald') || cat.color.includes('green')) color = '#10b981';
-      else if (cat.color.includes('blue') || cat.color.includes('sky')) color = '#0ea5e9';
-      else if (cat.color.includes('indigo')) color = '#6366f1';
-      else if (cat.color.includes('violet') || cat.color.includes('purple')) color = '#8b5cf6';
-      else if (cat.color.includes('rose') || cat.color.includes('red')) color = '#f43f5e';
-      else if (cat.color.includes('amber') || cat.color.includes('orange')) color = '#f59e0b';
-      else if (cat.color.includes('pink')) color = '#ec4899';
-      else if (cat.color.includes('slate')) color = '#64748b';
-      else color = '#3b82f6'; // Fallback to a nice blue
-
-      gradient += `${color} ${currentDeg}deg ${currentDeg + deg}deg${i === expenseCategories.length - 1 ? '' : ', '}`;
-      currentDeg += deg;
-    });
-
-    // Fill rest with slate if needed
-    if (currentDeg < 360) {
-      gradient += `, #f1f5f9 ${currentDeg}deg 360deg`;
-    }
-
-    gradient += ')';
-    return gradient;
-  };
 
   return (
     <div className="flex-1 flex flex-col">
@@ -308,7 +320,7 @@ const Dashboard: React.FC = () => {
       <div className="space-y-6 pt-6">
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4" data-tour="dashboard-stats">
           {loading ? (
             <>
               <SkeletonCard />
@@ -318,23 +330,41 @@ const Dashboard: React.FC = () => {
             </>
           ) : (
             <>
-              <StatCard
-                label="Receita Período"
-                value={`R$\u00A0${stats.revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-                trend="0% vs mês anterior"
-                icon="trending_up"
-                iconColor="text-emerald-500 bg-emerald-500/10"
-              />
+              {(() => {
+                const getTrend = (curr: number, prev: number) => {
+                  if (prev === 0) return curr === 0 ? "0% vs mês anterior" : "+100% vs mês anterior";
+                  const p = ((curr - prev) / prev) * 100;
+                  const sign = p >= 0 ? '+' : '';
+                  return `${sign}${p.toFixed(1)}% vs mês anterior`;
+                };
 
-              <StatCard
-                label="Despesas Período"
-                value={`R$\u00A0${stats.expenses.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-                trend="0% vs mês anterior"
-                icon="trending_down"
-                iconColor="text-red-500 bg-red-500/10"
-                valueColor="text-red-500"
-                trendColor="text-red-500"
-              />
+                const revenueTrend = getTrend(stats.revenue, stats.prevRevenue);
+                const expenseTrend = getTrend(stats.expenses, stats.prevExpenses);
+                const isExpenseBetter = stats.expenses <= stats.prevExpenses;
+
+                return (
+                  <>
+                    <StatCard
+                      label="Receita Período"
+                      value={`R$\u00A0${stats.revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                      trend={revenueTrend}
+                      icon="trending_up"
+                      iconColor="text-emerald-500 bg-emerald-500/10"
+                      trendColor={stats.revenue >= stats.prevRevenue ? 'text-emerald-500' : 'text-red-500'}
+                    />
+
+                    <StatCard
+                      label="Despesas Período"
+                      value={`R$\u00A0${stats.expenses.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                      trend={expenseTrend}
+                      icon="trending_down"
+                      iconColor="text-red-500 bg-red-500/10"
+                      valueColor="text-red-500"
+                      trendColor={isExpenseBetter ? 'text-emerald-500' : 'text-red-500'}
+                    />
+                  </>
+                );
+              })()}
 
               <StatCard
                 label="Saldo Líquido"
@@ -429,24 +459,114 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Expense Categories */}
-          <div className="bg-white dark:bg-slate-850 p-6 rounded-xl border border-[#e7edf3] dark:border-slate-800 shadow-sm flex flex-col">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Despesas por Categoria</h3>
-            <div className="flex-1 flex flex-col items-center justify-center relative min-h-[200px]">
-              {/* CSS Donut Chart */}
-              <div className="w-48 h-48 rounded-full relative flex items-center justify-center shadow-lg transform transition-all hover:scale-105" style={{ background: getConicGradient() }}>
-                <div className="w-32 h-32 bg-white dark:bg-slate-850 rounded-full flex flex-col items-center justify-center z-10 shadow-inner">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Total</span>
-                  <span className="text-xl font-bold text-slate-800 dark:text-white">R$ {stats.expenses.toLocaleString('pt-BR', { notation: 'compact' })}</span>
-                </div>
-              </div>
+          <div className="bg-white dark:bg-slate-850 p-6 rounded-xl border border-[#e7edf3] dark:border-slate-800 shadow-sm flex flex-col min-h-[420px]">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Despesas por Categoria</h3>
+              <span className="material-symbols-outlined text-slate-300 dark:text-slate-600">donut_large</span>
             </div>
-            <div className="space-y-3 mt-4">
+            <p className="text-xs text-slate-500 mb-2 font-medium">Análise volumétrica por setor</p>
+
+            <div className="flex-1 flex flex-col items-center justify-center relative">
               {expenseCategories.length > 0 ? (
-                expenseCategories.map((cat, i) => (
-                  <CategoryLabel key={i} name={cat.name} percentage={cat.percentage} amount={cat.formatted} color={cat.color} />
-                ))
+                <>
+                  <div className="w-full h-64 relative">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          activeIndex={activeIndex !== null ? activeIndex : undefined}
+                          activeShape={renderActiveShape}
+                          data={expenseCategories}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={70}
+                          outerRadius={85}
+                          dataKey="value"
+                          onMouseEnter={(_, index) => setActiveIndex(index)}
+                          onMouseLeave={() => setActiveIndex(null)}
+                          paddingAngle={5}
+                          stroke="none"
+                          animationBegin={0}
+                          animationDuration={1000}
+                          animationEasing="ease-in-out"
+                        >
+                          {expenseCategories.map((cat, index) => {
+                            let color = '#3b82f6';
+                            if (cat.color.includes('emerald')) color = '#10b981';
+                            else if (cat.color.includes('blue')) color = '#3b82f6';
+                            else if (cat.color.includes('indigo')) color = '#6366f1';
+                            else if (cat.color.includes('violet')) color = '#8b5cf6';
+                            else if (cat.color.includes('rose')) color = '#f43f5e';
+                            else if (cat.color.includes('amber')) color = '#f59e0b';
+                            else if (cat.color.includes('slate')) color = '#64748b';
+                            return <Cell key={`cell-${index}`} fill={color} />;
+                          })}
+                        </Pie>
+                      </PieChart>
+                    </ResponsiveContainer>
+
+                    {/* Highly Polished Center Text */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                      <div className="w-32 h-32 flex flex-col items-center justify-center text-center">
+                        {activeIndex !== null ? (
+                          <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-0.5">
+                              {expenseCategories[activeIndex].name}
+                            </span>
+                            <span className="text-xl font-black text-slate-900 dark:text-white leading-tight">
+                              R${expenseCategories[activeIndex].value >= 1000 ? (expenseCategories[activeIndex].value / 1000).toFixed(1) + 'k' : expenseCategories[activeIndex].value.toFixed(0)}
+                            </span>
+                            <div className="mt-1 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
+                              <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">
+                                {expenseCategories[activeIndex].percentage}%
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="animate-in fade-in duration-500">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-0.5">Total Mês</span>
+                            <span className="text-2xl font-black text-slate-900 dark:text-white">
+                              R${stats.expenses >= 1000 ? (stats.expenses / 1000).toFixed(1) + 'k' : stats.expenses.toFixed(0)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Legend Grid - Elegant and functional */}
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-3 w-full mt-2">
+                    {expenseCategories.slice(0, 4).map((cat, i) => {
+                      let color = 'bg-primary';
+                      if (cat.color.includes('emerald')) color = 'bg-emerald-500';
+                      else if (cat.color.includes('blue')) color = 'bg-blue-500';
+                      else if (cat.color.includes('indigo')) color = 'bg-indigo-500';
+                      else if (cat.color.includes('violet')) color = 'bg-violet-500';
+                      else if (cat.color.includes('rose')) color = 'bg-rose-500';
+                      else if (cat.color.includes('amber')) color = 'bg-amber-500';
+                      else if (cat.color.includes('slate')) color = 'bg-slate-500';
+
+                      return (
+                        <div
+                          key={i}
+                          className={`flex items-center gap-2 p-1.5 rounded-lg border transition-all duration-300 ease-in-out cursor-default ${activeIndex === i ? 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm translate-x-1' : 'border-transparent'}`}
+                          onMouseEnter={() => setActiveIndex(i)}
+                          onMouseLeave={() => setActiveIndex(null)}
+                        >
+                          <span className={`size-2 rounded-full ring-2 ring-white dark:ring-slate-900 ${color}`}></span>
+                          <div className="flex flex-col min-w-0">
+                            <span className="text-[10px] font-bold text-slate-500 truncate uppercase tracking-tighter">{cat.name}</span>
+                            <span className="text-xs font-bold text-slate-900 dark:text-white truncate">R$ {cat.formatted}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
               ) : (
-                <p className="text-center text-xs text-slate-400 py-4">Nenhuma despesa este mês.</p>
+                <div className="flex flex-col items-center text-slate-400 gap-2">
+                  <span className="material-symbols-outlined text-4xl opacity-20">pie_chart</span>
+                  <p className="text-xs italic">Nenhuma despesa para exibir.</p>
+                </div>
               )}
             </div>
           </div>
@@ -541,15 +661,6 @@ const ChartBar = ({ label, income, expense, highlighted }: any) => (
   </div>
 );
 
-const CategoryLabel = ({ name, percentage, amount, color }: any) => (
-  <div className="flex items-center justify-between gap-4">
-    <div className="flex items-center gap-2 min-w-0">
-      <span className={`w-3 h-3 rounded-full shrink-0 ${color}`}></span>
-      <span className="text-sm text-slate-600 dark:text-slate-300 truncate">{name} ({percentage}%)</span>
-    </div>
-    <span className="text-sm font-bold text-slate-900 dark:text-white whitespace-nowrap shrink-0">{"R$\u00A0"}{amount}</span>
-  </div>
-);
 
 const TransactionRow = ({ title, subtitle, category, categoryIcon, categoryColor, bankIcon, bankColor, origin, originIcon, date, value, status, iconColor, valueColor, rowBg }: any) => {
   const navigate = useNavigate();

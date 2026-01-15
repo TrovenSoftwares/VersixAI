@@ -14,6 +14,7 @@ import { exportToExcel, readExcelFile, downloadExampleTemplate, formatExcelDate 
 import { PdfIcon, ExcelIcon, ImportIcon, WeightIcon } from '../components/BrandedIcons';
 import StatCard from '../components/StatCard';
 import { SkeletonTable } from '../components/Skeleton';
+import Pagination from '../components/Pagination';
 
 const Sales: React.FC = () => {
   const navigate = useNavigate();
@@ -559,30 +560,13 @@ const Sales: React.FC = () => {
         </div>
 
         {/* Pagination Footer */}
-        <div className="border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 px-6 py-4 flex items-center justify-between">
-          <p className="text-sm text-gray-500">
-            <span className="hidden sm:inline">Mostrando </span>
-            <span className="font-bold text-gray-900 dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredSales.length)}</span> de <span className="font-bold text-gray-900 dark:text-white">{filteredSales.length}</span>
-            <span className="hidden sm:inline"> resultados</span>
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(p => p - 1)}
-              className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-100 disabled:opacity-30 transition-colors"
-            >
-              <span className="material-symbols-outlined text-sm">chevron_left</span>
-            </button>
-            <span className="text-sm font-bold text-primary px-2">{currentPage} / {totalPages || 1}</span>
-            <button
-              disabled={currentPage === totalPages || totalPages === 0}
-              onClick={() => setCurrentPage(p => p + 1)}
-              className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-100 disabled:opacity-30 transition-colors"
-            >
-              <span className="material-symbols-outlined text-sm">chevron_right</span>
-            </button>
-          </div>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalResults={filteredSales.length}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       <ConfirmModal

@@ -4,9 +4,10 @@ import { FlowyLogo } from './BrandedIcons';
 
 interface HeaderProps {
   onToggleMobileMenu?: () => void;
+  onOpenShortcuts?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onToggleMobileMenu }) => {
+const Header: React.FC<HeaderProps> = ({ onToggleMobileMenu, onOpenShortcuts }) => {
   const navigate = useNavigate();
 
   return (
@@ -34,6 +35,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleMobileMenu }) => {
           <span className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 size-2 bg-red-500 rounded-full border border-white dark:border-slate-850"></span>
         </button>
         <button
+          onClick={onOpenShortcuts}
           className="flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
           aria-label="Ajuda"
         >

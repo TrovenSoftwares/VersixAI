@@ -58,9 +58,11 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ locationPath, onItemCli
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Financeiro</span>
       </div>
 
-      <SidebarLink to="/transactions" icon="receipt_long" label="Transações" currentPath={locationPath} onClick={onItemClick} />
-      <SidebarLink to="/bounced-checks" icon="money_off" label="Cheques Devolvidos" currentPath={locationPath} onClick={onItemClick} />
-      <SidebarLink to="/returns" icon="assignment_return" label="Devoluções" currentPath={locationPath} onClick={onItemClick} />
+      <div data-tour="sidebar-financial">
+        <SidebarLink to="/transactions" icon="receipt_long" label="Transações" currentPath={locationPath} onClick={onItemClick} />
+        <SidebarLink to="/bounced-checks" icon="money_off" label="Cheques Devolvidos" currentPath={locationPath} onClick={onItemClick} />
+        <SidebarLink to="/returns" icon="assignment_return" label="Devoluções" currentPath={locationPath} onClick={onItemClick} />
+      </div>
 
       <div className="mt-4 mb-2 px-3">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Operacional</span>
@@ -75,31 +77,33 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ locationPath, onItemCli
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Inteligência</span>
       </div>
 
-      <Link
-        to="/review"
-        onClick={onItemClick}
-        aria-current={locationPath.includes('/review') ? 'page' : undefined}
-        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group relative ${locationPath.includes('/review')
-          ? 'bg-primary text-white shadow-md shadow-primary/20'
-          : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
-          }`}
-      >
-        <span className={`material-symbols-outlined ${locationPath.includes('/review') ? 'filled' : ''}`}>smart_toy</span>
-        <div className="flex flex-1 items-center justify-between">
-          <span className={`text-sm ${locationPath.includes('/review') ? 'font-semibold' : 'font-medium'}`}>Revisão IA</span>
-          {reviewCount > 0 && (
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white shadow-sm" aria-label={`${reviewCount} itens pendentes`}>
-              {reviewCount}
-            </span>
-          )}
-        </div>
-      </Link>
+      <div data-tour="sidebar-review">
+        <Link
+          to="/review"
+          onClick={onItemClick}
+          aria-current={locationPath.includes('/review') ? 'page' : undefined}
+          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group relative ${locationPath.includes('/review')
+            ? 'bg-primary text-white shadow-md shadow-primary/20'
+            : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+            }`}
+        >
+          <span className={`material-symbols-outlined ${locationPath.includes('/review') ? 'filled' : ''}`}>smart_toy</span>
+          <div className="flex flex-1 items-center justify-between">
+            <span className={`text-sm ${locationPath.includes('/review') ? 'font-semibold' : 'font-medium'}`}>Revisão IA</span>
+            {reviewCount > 0 && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white shadow-sm" aria-label={`${reviewCount} itens pendentes`}>
+                {reviewCount}
+              </span>
+            )}
+          </div>
+        </Link>
+      </div>
 
       <SidebarLink to="/wallet" icon="wallet" label="Carteira" currentPath={locationPath} onClick={onItemClick} />
       <SidebarLink to="/reports" icon="analytics" label="Relatórios" currentPath={locationPath} onClick={onItemClick} />
 
-      {/* Integrações - Somente Desktop */}
-      <div className="hidden lg:block">
+      {/* Integrações */}
+      <div data-tour="sidebar-integration">
         <SidebarLink to="/integration" icon="hub" label="Integrações" currentPath={locationPath} onClick={onItemClick} />
       </div>
 

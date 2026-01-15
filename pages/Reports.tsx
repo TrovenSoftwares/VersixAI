@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { SkeletonTable } from '../components/Skeleton';
+import Pagination from '../components/Pagination';
 
 const Reports: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -194,16 +195,65 @@ const Reports: React.FC = () => {
         doc.text(value, x + 5, boxY + 18);
       };
 
-      drawBox(margin, 'Total Entradas', fmt(stats.revenue), [21, 128, 61]);
-      drawBox(margin + boxWidth + 5, 'Total Saídas', fmt(stats.expenses), [185, 28, 28]);
-      drawBox(margin + (boxWidth + 5) * 2, 'Resultado Op.', fmt(stats.balance), stats.balance >= 0 ? [21, 128, 61] : [185, 28, 28]);
+      drawBox(margin, 'Total Entradas', fmt(stats.revenue), [16, 185, 129]);
+      drawBox(margin + boxWidth + 5, 'Total Saídas', fmt(stats.expenses), [244, 63, 94]);
+      drawBox(margin + (boxWidth + 5) * 2, 'Resultado Op.', fmt(stats.balance), stats.balance >= 0 ? [14, 165, 233] : [244, 63, 94]);
       drawBox(margin + (boxWidth + 5) * 3, 'Movimentações', stats.totalTransactions.toString());
+
+      // -- CHART SECTION IN PDF --
+      if (chartData.length > 0) {
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(17, 24, 39);
+        doc.text('Análise Visual de Fluxo', margin, 90);
+
+        const chartX = margin;
+        const chartY = 98;
+        const chartH = 40;
+        const chartW = pageWidth - (margin * 2);
+        const barSpacing = chartW / chartData.length;
+        const barW = Math.min(barSpacing * 0.4, 15);
+
+        // Baseline
+        doc.setDrawColor(229, 231, 235);
+        doc.setLineWidth(0.1);
+        doc.line(chartX, chartY + chartH, chartX + chartW, chartY + chartH);
+
+        chartData.forEach((d, i) => {
+          const x = chartX + (i * barSpacing) + (barSpacing / 2);
+
+          // Income Bar
+          const incH = (parseFloat(d.incomeH) / 100) * chartH;
+          doc.setFillColor(14, 165, 233); // Primary Blue
+          doc.rect(x - barW, chartY + chartH - incH, barW, incH, 'F');
+
+          // Expense Bar
+          const expH = (parseFloat(d.expenseH) / 100) * chartH;
+          doc.setFillColor(203, 213, 225); // Light Gray
+          doc.rect(x, chartY + chartH - expH, barW, expH, 'F');
+
+          // Label
+          doc.setFontSize(7);
+          doc.setTextColor(107, 114, 128);
+          doc.text(d.label, x, chartY + chartH + 5, { align: 'center' });
+        });
+
+        // Legend for Chart
+        doc.setFontSize(8);
+        doc.setFillColor(14, 165, 233);
+        doc.rect(margin, chartY + chartH + 12, 3, 3, 'F');
+        doc.text('Entradas', margin + 5, chartY + chartH + 14.5);
+
+        doc.setFillColor(203, 213, 225);
+        doc.rect(margin + 25, chartY + chartH + 12, 3, 3, 'F');
+        doc.text('Saídas', margin + 30, chartY + chartH + 14.5);
+      }
 
       // -- MOVIMENTAÇÕES TABLE --
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(17, 24, 39);
-      doc.text('Movimentações Financeiras', margin, 95);
+      doc.text('Movimentações Financeiras', margin, 155);
 
       const tableData = transactions.map(t => [
         formatDate(t.date),
@@ -215,7 +265,7 @@ const Reports: React.FC = () => {
       ]);
 
       autoTable(doc, {
-        startY: 102,
+        startY: 162,
         head: [['DATA', 'TIPO', 'CATEGORIA', 'DESCRIÇÃO', 'VALOR (R$)', 'STATUS']],
         body: tableData,
         theme: 'grid',
@@ -228,7 +278,7 @@ const Reports: React.FC = () => {
         didDrawCell: (data) => {
           if (data.section === 'body' && data.column.index === 4) {
             const type = transactions[data.row.index].type;
-            doc.setTextColor(type === 'income' ? 21 : 185, type === 'income' ? 128 : 28, type === 'income' ? 61 : 28);
+            doc.setTextColor(type === 'income' ? 16 : 244, type === 'income' ? 185 : 63, type === 'income' ? 129 : 94);
           }
         }
       });
@@ -528,30 +578,13 @@ const Reports: React.FC = () => {
             </div>
 
             {/* Pagination Footer */}
-            <div className="border-t border-gray-200 dark:border-slate-800 bg-gray-50 dark:bg-slate-900/50 px-6 py-4 flex items-center justify-between">
-              <p className="text-sm text-gray-500">
-                <span className="hidden sm:inline">Mostrando </span>
-                <span className="font-bold text-gray-900 dark:text-white">{startIndex + 1}-{Math.min(startIndex + itemsPerPage, transactions.length)}</span> de <span className="font-bold text-gray-900 dark:text-white">{transactions.length}</span>
-                <span className="hidden sm:inline"> resultados</span>
-              </p>
-              <div className="flex items-center gap-2">
-                <button
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage(p => p - 1)}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-100 disabled:opacity-30 transition-colors"
-                >
-                  <span className="material-symbols-outlined text-sm">chevron_left</span>
-                </button>
-                <span className="text-sm font-bold text-primary px-2">{currentPage} / {totalPages || 1}</span>
-                <button
-                  disabled={currentPage === totalPages || totalPages === 0}
-                  onClick={() => setCurrentPage(p => p + 1)}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-100 disabled:opacity-30 transition-colors"
-                >
-                  <span className="material-symbols-outlined text-sm">chevron_right</span>
-                </button>
-              </div>
-            </div>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalResults={transactions.length}
+              itemsPerPage={itemsPerPage}
+              onPageChange={setCurrentPage}
+            />
           </div>
         </>
       ) : (

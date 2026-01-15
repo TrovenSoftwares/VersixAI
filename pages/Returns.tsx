@@ -7,6 +7,7 @@ import ConfirmModal from '../components/ConfirmModal';
 import { toast } from 'react-hot-toast';
 import { WeightIcon } from '../components/BrandedIcons';
 import StatCard from '../components/StatCard';
+import Pagination from '../components/Pagination';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import {

@@ -9,6 +9,7 @@ import { formatPhone } from '../utils/utils';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import { SkeletonTable } from '../components/Skeleton';
+import Pagination from '../components/Pagination';
 import {
     Table,
     TableHeader,

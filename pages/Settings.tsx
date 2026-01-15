@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
 import PageHeader from '../components/PageHeader';
@@ -12,6 +13,7 @@ import Button from '../components/Button';
 import { SkeletonCard, SkeletonTable } from '../components/Skeleton';
 
 const Settings: React.FC = () => {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState('perfil');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -59,7 +61,14 @@ const Settings: React.FC = () => {
   useEffect(() => {
     fetchSettings();
     fetchChangelogs();
-  }, []);
+
+    // Check for tab parameter in URL
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get('tab');
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, [location]);
 
   const fetchSettings = async () => {
     setLoading(true);
@@ -144,7 +153,22 @@ const Settings: React.FC = () => {
         if (error.code === 'PGRST116' || error.message.includes('relation "public.system_changelogs" does not exist')) {
           console.log('Changelogs table not found, using mock data.');
           const mockData = [
-            { id: 1, version: '1.2.0', type: 'new', title: 'Rebranding Flowy', description: 'Transformação completa da identidade visual do sistema de Phyr para Flowy, incluindo logos, ícones, e-mails e exportações.' },
+            {
+              version: '1.2.2',
+              date: '15 de Janeiro de 2026',
+              changes: [
+                '🚀 Novo Dashboard Comparativo com análise de crescimento real vs mês anterior.',
+                '⌨️ Guia de Atalhos integrado (Ctrl + /) para navegação ultra-rápida.',
+                '🎓 Tutorial Interativo (Onboarding) para novos usuários e exploração guiada.',
+                '📊 Exportação de PDF com gráficos de fluxo de caixa para relatórios premium.',
+                '🔍 Busca Global (Ctrl + K) aprimorada com resultados em tempo real do banco de dados.',
+                '✨ Gráfico de despesas interativo com animações suaves e detalhes no hover.'
+              ]
+            },
+            {
+              version: '1.2.1',
+              type: 'new', title: 'Rebranding Flowy', description: 'Transformação completa da identidade visual do sistema de Phyr para Flowy, incluindo logos, ícones, e-mails e exportações.'
+            },
             { id: 2, version: '1.1.0', type: 'improvement', title: 'Responsividade Tablet', description: 'Otimização de grids e menus para tablets, garantindo uma experiência premium em telas intermediárias.' },
             { id: 3, version: '1.1.0', type: 'improvement', title: 'Segurança & DevTools', description: 'Implementação de bloqueios contra inspeção de código e atalhos de desenvolvedor para proteger a propriedade intelectual.' },
             { id: 4, version: '1.0.1', type: 'new', title: 'Revisão Inteligente WhatsApp', description: 'Integração completa com WhatsApp para processamento automático de transações financeiras via IA.' }
@@ -515,7 +539,7 @@ const Settings: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-8 items-center bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
+                <div className="flex flex-col md:flex-row gap-8 items-center bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-100 dark:border-slate-800" data-tour="settings-whatsapp-connection">
                   <div className="flex-1 space-y-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
