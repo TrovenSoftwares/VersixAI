@@ -52,6 +52,8 @@ const Login: React.FC = () => {
         showBackButton={true}
         backLink="/"
         backLabel="Voltar ao Início"
+        ctaLink="/signup"
+        ctaLabel="Não tem conta? Cadastre-se"
       />
 
       {/* Main Content Area */}

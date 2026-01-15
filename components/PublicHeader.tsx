@@ -8,6 +8,8 @@ interface PublicHeaderProps {
     showBackButton?: boolean;
     pageName?: string;
     showHelpBreadcrumb?: boolean;
+    ctaLink?: string;
+    ctaLabel?: string;
 }
 
 const PublicHeader: React.FC<PublicHeaderProps> = ({
@@ -15,7 +17,9 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({
     backLabel = "Voltar ao Início",
     showBackButton = false,
     pageName,
-    showHelpBreadcrumb = true
+    showHelpBreadcrumb = true,
+    ctaLink,
+    ctaLabel
 }) => {
     return (
         <header className="bg-white dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-50 shadow-sm backdrop-blur-md bg-white/80 dark:bg-slate-850/80 transition-all duration-300">
@@ -46,13 +50,13 @@ const PublicHeader: React.FC<PublicHeaderProps> = ({
                         <span className="text-slate-600 dark:text-slate-300">{pageName}</span>
                     </div>
                 )}
-                {backLabel && (
+                {ctaLink && ctaLabel && (
                     <Link
-                        to={backLink}
+                        to={ctaLink}
                         className="text-sm font-bold text-primary hover:text-primary-dark transition-all hover:scale-105 active:scale-95 flex items-center gap-1 group"
                     >
-                        <span className="group-hover:underline">{backLabel}</span>
-                        {!showBackButton && <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>}
+                        <span className="group-hover:underline">{ctaLabel}</span>
+                        <span className="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span>
                     </Link>
                 )}
             </div>

@@ -96,8 +96,10 @@ const Signup: React.FC = () => {
       {/* Header / Nav */}
       <PublicHeader
         showBackButton={true}
-        backLink="/login"
-        backLabel="Voltar ao Login"
+        backLink="/"
+        backLabel="Voltar ao Início"
+        ctaLink="/login"
+        ctaLabel="Já tem conta? Faça login"
       />
 
       {/* Main Content Area */}

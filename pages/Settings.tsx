@@ -143,10 +143,10 @@ const Settings: React.FC = () => {
         if (error.code === 'PGRST116' || error.message.includes('relation "public.system_changelogs" does not exist')) {
           console.log('Changelogs table not found, using mock data.');
           const mockData = [
-            { id: 1, version: '1.0.3', type: 'new', title: 'Landing Page Premium', description: 'Lançamento da nova página inicial do Phyr com design ultra-premium, mockups e foco em IA.' },
-            { id: 2, version: '1.0.3', type: 'improvement', title: 'Headers Fixos', description: 'Os cabeçalhos das telas de Login e Cadastro agora ficam fixos no topo durante a rolagem.' },
-            { id: 3, version: '1.0.2', type: 'improvement', title: 'Padronização Visual', description: 'Unificação de componentes de botão, input e modais em todo o sistema.' },
-            { id: 4, version: '1.0.1', type: 'new', title: 'Revisão Inteligente WhatsApp', description: 'Integração completa com WhatsApp para processamento automático de transações financeiras.' }
+            { id: 1, version: '1.2.0', type: 'new', title: 'Rebranding Flowy', description: 'Transformação completa da identidade visual do sistema de Phyr para Flowy, incluindo logos, ícones, e-mails e exportações.' },
+            { id: 2, version: '1.1.0', type: 'improvement', title: 'Responsividade Tablet', description: 'Otimização de grids e menus para tablets, garantindo uma experiência premium em telas intermediárias.' },
+            { id: 3, version: '1.1.0', type: 'improvement', title: 'Segurança & DevTools', description: 'Implementação de bloqueios contra inspeção de código e atalhos de desenvolvedor para proteger a propriedade intelectual.' },
+            { id: 4, version: '1.0.1', type: 'new', title: 'Revisão Inteligente WhatsApp', description: 'Integração completa com WhatsApp para processamento automático de transações financeiras via IA.' }
           ];
           setChangelogs(mockData);
           if (mockData.length > 0) {
@@ -675,11 +675,11 @@ const Settings: React.FC = () => {
                 </h3>
 
                 <div className="flex flex-col md:flex-row md:items-center gap-6 p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-blue-600 rounded-2xl flex items-center justify-center text-white font-black text-3xl shadow-lg shadow-primary/20">
-                    V
+                  <div className="w-16 h-16 rounded-2xl bg-white dark:bg-slate-800 flex items-center justify-center shadow-lg shadow-primary/20 p-2">
+                    <img src="/favicon.svg" alt="Flowy" className="w-full h-full object-contain" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-bold text-slate-900 dark:text-white text-xl">Phyr ERP</h4>
+                    <h4 className="font-bold text-slate-900 dark:text-white text-xl">Flowy ERP</h4>
                     <div className="flex flex-wrap items-center gap-2 mt-1">
                       <span className="px-2 py-0.5 rounded-lg bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider border border-primary/20">
                         Versão {systemVersion.version}
