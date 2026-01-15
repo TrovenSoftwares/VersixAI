@@ -45,16 +45,8 @@ const PublicFooter: React.FC = () => {
 
                 <div className="pt-12 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-8">
                     <p className="text-slate-400 font-bold text-sm">
-                        © {currentYear} Phyr. Todos os direitos reservados. Desenvolvido por Troven Softwares.
+                        © {currentYear} Flowy. Todos os direitos reservados. Desenvolvido por Troven Softwares.
                     </p>
-                    <div className="flex gap-8">
-                        <a href="#" className="text-slate-400 hover:text-primary transition-all hover:scale-125">
-                            <span className="material-symbols-outlined">public</span>
-                        </a>
-                        <a href="#" className="text-slate-400 hover:text-primary transition-all hover:scale-125">
-                            <span className="material-symbols-outlined">share</span>
-                        </a>
-                    </div>
                 </div>
             </div>
         </footer>
