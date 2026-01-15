@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PageHeader from '../components/PageHeader';
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-hot-toast';
-
+import { SkeletonTable, SkeletonCard } from '../components/Skeleton';
 import ConfirmModal from '../components/ConfirmModal';
 import Modal from '../components/Modal';
 
@@ -353,7 +353,7 @@ const Wallet: React.FC = () => {
 
             <div className="grid gap-4">
               {loading ? (
-                <div className="py-12 text-center text-slate-400 italic">Carregando contas...</div>
+                Array(4).fill(0).map((_, i) => <SkeletonCard key={i} />)
               ) : accounts.length === 0 ? (
                 <div className="py-12 text-center text-slate-400 italic border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl">Nenhuma conta cadastrada.</div>
               ) : (

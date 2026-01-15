@@ -6,6 +6,7 @@ import ConfirmModal from '../components/ConfirmModal';
 import CustomSelect from '../components/CustomSelect';
 import { toast } from 'react-hot-toast';
 import { formatPhone } from '../utils/utils';
+import { SkeletonTable } from '../components/Skeleton';
 
 const Team: React.FC = () => {
   const navigate = useNavigate();
@@ -251,7 +252,11 @@ const Team: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
               {loading ? (
-                <tr><td colSpan={5} className="py-12 text-center text-gray-400 italic">Carregando equipe...</td></tr>
+                <tr>
+                  <td colSpan={5} className="p-0">
+                    <SkeletonTable rows={itemsPerPage} columns={5} className="border-none rounded-none shadow-none" />
+                  </td>
+                </tr>
               ) : paginatedContacts.length === 0 ? (
                 <tr><td colSpan={5} className="py-12 text-center text-gray-400 italic">Nenhum membro encontrado.</td></tr>
               ) : (

@@ -47,28 +47,28 @@ const Modal: React.FC<ModalProps> = ({
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-200"
+                className="absolute inset-0 bg-slate-900/70 backdrop-blur-sm transition-opacity animate-in fade-in duration-300"
                 onClick={onClose}
             />
 
             {/* Modal Content */}
-            <div className={`relative w-full ${sizeClasses[size]} transform flex flex-col max-h-[90vh] rounded-xl bg-white dark:bg-slate-850 shadow-2xl transition-all animate-in zoom-in-95 duration-200`}>
+            <div className={`relative w-full ${sizeClasses[size]} transform flex flex-col max-h-[90vh] rounded-2xl bg-white dark:bg-slate-900 shadow-2xl shadow-black/20 transition-all animate-in zoom-in-95 slide-in-from-bottom-4 duration-300`}>
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-4 flex-shrink-0">
                     <h3 className="text-xl font-bold text-slate-900 dark:text-white">{title}</h3>
                     <button
                         onClick={onClose}
-                        className="rounded-full p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                        className="rounded-xl p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600 dark:hover:text-slate-200 transition-all duration-200 hover:scale-110 active:scale-95"
                     >
-                        <span className="material-symbols-outlined">close</span>
+                        <span className="material-symbols-outlined text-xl">close</span>
                     </button>
                 </div>
 
-                <div className="px-6 py-4 overflow-y-auto custom-scrollbar">
+                <div className="px-6 py-5 overflow-y-auto custom-scrollbar">
                     {children}
                 </div>
 
                 {footer && (
-                    <div className="flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 px-6 py-4 rounded-b-xl flex-shrink-0">
+                    <div className="flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/50 px-6 py-4 rounded-b-2xl flex-shrink-0">
                         {footer}
                     </div>
                 )}
@@ -80,3 +80,4 @@ const Modal: React.FC<ModalProps> = ({
 };
 
 export default Modal;
+

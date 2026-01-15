@@ -22,14 +22,14 @@ const StatCard: React.FC<StatCardProps> = ({
     trendColor
 }) => {
     return (
-        <div className="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-850 border border-gray-200 dark:border-slate-700 shadow-sm group hover:border-primary/30 hover:shadow-md transition-all">
+        <div className="flex flex-col gap-2 rounded-2xl p-6 bg-white dark:bg-slate-850 border border-gray-200 dark:border-slate-700 shadow-sm group hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300 ease-out">
             <div className="flex items-center justify-between">
                 <p className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-wider">
                     {label}
                 </p>
-                <div className={`${iconColor} p-2 rounded-lg flex items-center justify-center`}>
+                <div className={`${iconColor} p-2.5 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                     {typeof icon === 'string' ? (
-                        <span className="material-symbols-outlined text-[24px]">{icon}</span>
+                        <span className="material-symbols-outlined text-[22px]">{icon}</span>
                     ) : (
                         icon
                     )}
@@ -37,7 +37,7 @@ const StatCard: React.FC<StatCardProps> = ({
             </div>
 
             <div className="flex items-end gap-2">
-                <p className={`text-2xl sm:text-3xl font-bold ${valueColor || 'text-slate-900 dark:text-white'}`}>
+                <p className={`text-2xl sm:text-3xl font-bold ${valueColor || 'text-slate-900 dark:text-white'} transition-all duration-300 group-hover:scale-[1.02]`}>
                     {value}
                 </p>
                 {secondaryValue && (
@@ -57,3 +57,4 @@ const StatCard: React.FC<StatCardProps> = ({
 };
 
 export default StatCard;
+

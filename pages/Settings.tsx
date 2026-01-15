@@ -9,6 +9,7 @@ import ConfirmModal from '../components/ConfirmModal';
 import Modal from '../components/Modal';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import { SkeletonCard, SkeletonTable } from '../components/Skeleton';
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState('perfil');
@@ -332,108 +333,117 @@ const Settings: React.FC = () => {
           {/* Profile Section */}
           {activeTab === 'perfil' && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {/* Profile Header Card */}
-              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-primary/10 to-blue-500/10 dark:from-primary/20 dark:to-blue-900/20 -z-0"></div>
+              {loading ? (
+                <div className="space-y-6">
+                  <SkeletonCard />
+                  <SkeletonCard rows={3} />
+                </div>
+              ) : (
+                <>
+                  {/* Profile Header Card */}
+                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-r from-primary/10 to-blue-500/10 dark:from-primary/20 dark:to-blue-900/20 -z-0"></div>
 
-                <div className="relative z-10 group cursor-pointer" onClick={triggerFileInput}>
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleImageUpload}
-                    accept="image/*"
-                    className="hidden"
-                  />
-                  <div className="w-32 h-32 rounded-full ring-4 ring-white dark:ring-slate-800 shadow-xl overflow-hidden bg-slate-100 flex items-center justify-center relative group-hover:ring-primary/50 transition-all duration-500">
-                    {uploadingImage ? (
-                      <span className="material-symbols-outlined animate-spin text-primary text-4xl">sync</span>
-                    ) : profile.avatar_url ? (
-                      <img
-                        src={profile.avatar_url}
-                        alt="Profile"
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    <div className="relative z-10 group cursor-pointer" onClick={triggerFileInput}>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleImageUpload}
+                        accept="image/*"
+                        className="hidden"
                       />
-                    ) : (
-                      <span className="text-4xl font-bold text-slate-300 transition-transform duration-700 group-hover:scale-110">{profile.name.charAt(0)}</span>
-                    )}
+                      <div className="w-32 h-32 rounded-full ring-4 ring-white dark:ring-slate-800 shadow-xl overflow-hidden bg-slate-100 flex items-center justify-center relative group-hover:ring-primary/50 transition-all duration-500">
+                        {uploadingImage ? (
+                          <span className="material-symbols-outlined animate-spin text-primary text-4xl">sync</span>
+                        ) : profile.avatar_url ? (
+                          <img
+                            src={profile.avatar_url}
+                            alt="Profile"
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          />
+                        ) : (
+                          <span className="text-4xl font-bold text-slate-300 transition-transform duration-700 group-hover:scale-110">{profile.name.charAt(0)}</span>
+                        )}
 
-                    <div className="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-[1px]">
-                      <div className="bg-white/90 dark:bg-slate-800/90 p-2 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                        <span className="material-symbols-outlined text-primary text-2xl">photo_camera</span>
+                        <div className="absolute inset-0 bg-primary/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-[1px]">
+                          <div className="bg-white/90 dark:bg-slate-800/90 p-2 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                            <span className="material-symbols-outlined text-primary text-2xl">photo_camera</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-full shadow-lg transform translate-x-1 translate-y-1 group-hover:scale-110 transition-transform">
+                        <span className="material-symbols-outlined text-[18px] block">edit</span>
+                      </div>
+                    </div>
+
+                    <div className="flex-1 text-center md:text-left relative z-10 pt-4 md:pt-0">
+                      <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{profile.name || 'Seu Nome'}</h2>
+                      <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                        <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700">
+                          {profile.role || 'Administrador'}
+                        </span>
+                        <span className="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 text-xs font-bold border border-blue-100 dark:border-blue-800">
+                          {profile.email}
+                        </span>
                       </div>
                     </div>
                   </div>
-                  <div className="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-full shadow-lg transform translate-x-1 translate-y-1 group-hover:scale-110 transition-transform">
-                    <span className="material-symbols-outlined text-[18px] block">edit</span>
+
+                  {/* Form Card */}
+                  <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm">
+                    <div className="flex items-center justify-between mb-8">
+                      <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <span className="material-symbols-outlined text-primary">badge</span>
+                        Informações Básicas
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Input
+                          label="Nome Completo"
+                          value={profile.name}
+                          onChange={e => setProfile({ ...profile, name: e.target.value })}
+                          placeholder="Seu nome completo"
+                          leftIcon={<span className="material-symbols-outlined text-[20px]">person</span>}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Input
+                          label="Cargo / Função"
+                          value={profile.role}
+                          onChange={e => setProfile({ ...profile, role: e.target.value })}
+                          placeholder="Ex: Gerente Financeiro"
+                          leftIcon={<span className="material-symbols-outlined text-[20px]">work</span>}
+                        />
+                      </div>
+
+                      <div className="space-y-2 md:col-span-2">
+                        <Input
+                          label="Telefone / WhatsApp"
+                          value={profile.phone}
+                          onChange={e => setProfile({ ...profile, phone: e.target.value })}
+                          placeholder="+55 (00) 00000-0000"
+                          leftIcon={<span className="material-symbols-outlined text-[20px]">call</span>}
+                          helperText="Usado para notificações de segurança e recuperação de conta."
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                      <Button
+                        onClick={handleSaveProfile}
+                        isLoading={saving}
+                        leftIcon={<span className="material-symbols-outlined text-[20px]">save</span>}
+                        className="px-8"
+                      >
+                        Salvar Alterações
+                      </Button>
+                    </div>
                   </div>
-                </div>
-
-                <div className="flex-1 text-center md:text-left relative z-10 pt-4 md:pt-0">
-                  <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">{profile.name || 'Seu Nome'}</h2>
-                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                    <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700">
-                      {profile.role || 'Administrador'}
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 text-xs font-bold border border-blue-100 dark:border-blue-800">
-                      {profile.email}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Form Card */}
-              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm">
-                <div className="flex items-center justify-between mb-8">
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">badge</span>
-                    Informações Básicas
-                  </h3>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Input
-                      label="Nome Completo"
-                      value={profile.name}
-                      onChange={e => setProfile({ ...profile, name: e.target.value })}
-                      placeholder="Seu nome completo"
-                      leftIcon={<span className="material-symbols-outlined text-[20px]">person</span>}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Input
-                      label="Cargo / Função"
-                      value={profile.role}
-                      onChange={e => setProfile({ ...profile, role: e.target.value })}
-                      placeholder="Ex: Gerente Financeiro"
-                      leftIcon={<span className="material-symbols-outlined text-[20px]">work</span>}
-                    />
-                  </div>
-
-                  <div className="space-y-2 md:col-span-2">
-                    <Input
-                      label="Telefone / WhatsApp"
-                      value={profile.phone}
-                      onChange={e => setProfile({ ...profile, phone: e.target.value })}
-                      placeholder="+55 (00) 00000-0000"
-                      leftIcon={<span className="material-symbols-outlined text-[20px]">call</span>}
-                      helperText="Usado para notificações de segurança e recuperação de conta."
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-end">
-                  <Button
-                    onClick={handleSaveProfile}
-                    isLoading={saving}
-                    leftIcon={<span className="material-symbols-outlined text-[20px]">save</span>}
-                    className="px-8"
-                  >
-                    Salvar Alterações
-                  </Button>
-                </div>
-              </div>
+                </>
+              )}
             </div>
           )}
 

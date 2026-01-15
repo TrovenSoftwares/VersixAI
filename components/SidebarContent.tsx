@@ -52,7 +52,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ locationPath, onItemCli
 
   return (
     <nav className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-1" role="navigation" aria-label="Menu Principal">
-      <SidebarLink to="/" icon="dashboard" label="Dashboard" currentPath={locationPath} onClick={onItemClick} />
+      <SidebarLink to="/dashboard" icon="dashboard" label="Dashboard" currentPath={locationPath} onClick={onItemClick} />
 
       <div className="mt-4 mb-2 px-3">
         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Financeiro</span>

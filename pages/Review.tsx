@@ -7,6 +7,7 @@ import ConfirmModal from '../components/ConfirmModal';
 import CustomSelect from '../components/CustomSelect';
 import PageHeader from '../components/PageHeader';
 import { extractFinancialDataWithAI } from '../lib/groq';
+import { SkeletonCard } from '../components/Skeleton';
 
 // --- Global Type Definitions ---
 type AutoClassification = 'transaction' | 'sale' | 'discard';
@@ -1026,8 +1027,8 @@ const Review: React.FC = () => {
       {/* Content */}
       <div className="flex flex-col gap-4 min-h-[400px]">
         {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Array(4).fill(0).map((_, i) => <SkeletonCard key={i} />)}
           </div>
         ) : paginatedList.length === 0 ? (
           <EmptyState message="Nenhuma mensagem pendente nesta categoria." />

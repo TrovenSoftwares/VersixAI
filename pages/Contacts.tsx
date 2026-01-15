@@ -15,6 +15,7 @@ import StatCard from '../components/StatCard';
 import Tooltip from '../components/Tooltip';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import { SkeletonTable, SkeletonCard } from '../components/Skeleton';
 import {
   Table,
   TableHeader,
@@ -409,7 +410,11 @@ const Contacts: React.FC = () => {
           </TableHeader>
           <TableBody>
             {loading ? (
-              <TableLoadingState colSpan={7} message="Carregando contatos..." />
+              <tr>
+                <td colSpan={7} className="p-0">
+                  <SkeletonTable rows={itemsPerPage} columns={7} className="border-none rounded-none shadow-none" />
+                </td>
+              </tr>
             ) : paginatedContacts.length === 0 ? (
               <TableEmptyState colSpan={7} message="Nenhum contato encontrado." icon="person_off" />
             ) : (

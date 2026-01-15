@@ -41,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ onToggleMobileMenu }) => {
         </button>
         <div className="h-6 sm:h-8 w-px bg-slate-200 dark:bg-slate-700 mx-0.5 sm:mx-1"></div>
         <button
-          onClick={() => navigate('/new-transaction')}
+          onClick={() => navigate('/transactions/new')}
           className="bg-primary hover:bg-primary/90 text-white px-2.5 sm:px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors flex items-center gap-1.5 sm:gap-2"
           aria-label="Criar novo lançamento"
         >

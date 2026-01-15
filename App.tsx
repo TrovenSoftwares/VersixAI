@@ -210,7 +210,7 @@ const AppContent = () => {
               <Route path="/sellers" element={<ProtectedRoute><Sellers /></ProtectedRoute>} />
               <Route path="/sellers/new" element={<ProtectedRoute><NewSeller /></ProtectedRoute>} />
               <Route path="/sellers/edit/:id" element={<ProtectedRoute><NewSeller /></ProtectedRoute>} />
-              <Route path="/new-transaction" element={<ProtectedRoute><NewTransaction /></ProtectedRoute>} />
+              <Route path="/transactions/new" element={<ProtectedRoute><NewTransaction /></ProtectedRoute>} />
               <Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
               <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
 
@@ -260,24 +260,54 @@ const App: React.FC = () => {
     <Router>
       <ScrollToTop />
       <AuthProvider>
-        <Toaster position="top-right" toastOptions={{
-          duration: 4000,
-          style: {
-            background: '#fff',
-            color: '#1e293b',
-            fontWeight: '500',
-            fontSize: '14px',
-            borderRadius: '8px',
-            border: '1px solid #e2e8f0',
-            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-          },
-          success: {
-            iconTheme: {
-              primary: '#266663',
-              secondary: '#fff',
+        <Toaster
+          position="top-right"
+          containerStyle={{
+            top: 80,
+          }}
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: 'var(--toast-bg, #ffffff)',
+              color: 'var(--toast-color, #1e293b)',
+              fontWeight: '600',
+              fontSize: '14px',
+              borderRadius: '16px',
+              border: '1px solid var(--toast-border, #e2e8f0)',
+              boxShadow: '0 10px 40px -10px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+              padding: '14px 18px',
+              maxWidth: '400px',
             },
-          },
-        }} />
+            success: {
+              style: {
+                background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+                border: '1px solid #86efac',
+                color: '#166534',
+              },
+              iconTheme: {
+                primary: '#22c55e',
+                secondary: '#ffffff',
+              },
+            },
+            error: {
+              style: {
+                background: 'linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%)',
+                border: '1px solid #fca5a5',
+                color: '#991b1b',
+              },
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#ffffff',
+              },
+            },
+            loading: {
+              style: {
+                background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+                border: '1px solid #cbd5e1',
+              },
+            },
+          }}
+        />
         <AppContent />
       </AuthProvider>
     </Router>

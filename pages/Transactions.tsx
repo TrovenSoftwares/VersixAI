@@ -13,6 +13,7 @@ import autoTable from 'jspdf-autotable';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { exportToExcel, readExcelFile, downloadExampleTemplate, formatExcelDate } from '../utils/excelUtils';
+import { SkeletonTable } from '../components/Skeleton';
 import { PdfIcon, ExcelIcon, ImportIcon } from '../components/BrandedIcons';
 
 const Transactions: React.FC = () => {
@@ -423,7 +424,7 @@ const Transactions: React.FC = () => {
               <span className="material-symbols-outlined text-[24px]">refresh</span>
             </button>
             <button
-              onClick={() => navigate('/new-transaction')}
+              onClick={() => navigate('/transactions/new')}
               className="flex items-center justify-center gap-2 rounded-lg h-10 px-4 md:px-6 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
             >
               <span className="material-symbols-outlined text-[20px]">add</span>
@@ -547,7 +548,11 @@ const Transactions: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
               {loading ? (
-                <tr><td colSpan={8} className="py-12 text-center text-gray-400 italic">Carregando...</td></tr>
+                <tr>
+                  <td colSpan={8} className="p-0">
+                    <SkeletonTable rows={itemsPerPage} columns={8} className="border-none rounded-none shadow-none" />
+                  </td>
+                </tr>
               ) : paginatedTransactions.length === 0 ? (
                 <tr><td colSpan={8} className="py-12 text-center text-gray-400 italic">Nenhuma transação encontrada.</td></tr>
               ) : (

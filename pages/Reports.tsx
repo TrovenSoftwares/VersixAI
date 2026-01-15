@@ -6,6 +6,7 @@ import { formatDate } from '../utils/utils';
 import { toast } from 'react-hot-toast';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { SkeletonTable } from '../components/Skeleton';
 
 const Reports: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -482,7 +483,11 @@ const Reports: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
                   {loading ? (
-                    <tr><td colSpan={6} className="py-12 text-center text-gray-400 italic">Carregando...</td></tr>
+                    <tr>
+                      <td colSpan={6} className="p-0">
+                        <SkeletonTable rows={itemsPerPage} columns={6} className="border-none rounded-none shadow-none" />
+                      </td>
+                    </tr>
                   ) : paginatedTransactions.length === 0 ? (
                     <tr><td colSpan={6} className="py-12 text-center text-gray-400 italic">Nenhuma transação encontrada.</td></tr>
                   ) : (

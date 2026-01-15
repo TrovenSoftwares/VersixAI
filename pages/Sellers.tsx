@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast';
 import { formatPhone } from '../utils/utils';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import { SkeletonTable } from '../components/Skeleton';
 import {
     Table,
     TableHeader,
@@ -243,7 +244,11 @@ const Sellers: React.FC = () => {
                     </TableHeader>
                     <TableBody>
                         {loading ? (
-                            <TableLoadingState colSpan={7} message="Carregando vendedores..." />
+                            <tr>
+                                <td colSpan={7} className="p-0">
+                                    <SkeletonTable rows={itemsPerPage} columns={7} className="border-none rounded-none shadow-none" />
+                                </td>
+                            </tr>
                         ) : paginatedSellers.length === 0 ? (
                             <TableEmptyState colSpan={7} message="Nenhum vendedor encontrado." icon="person_off" />
                         ) : (

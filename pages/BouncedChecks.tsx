@@ -20,6 +20,7 @@ import {
 } from '../components/Table';
 import Card from '../components/Card';
 import StatCard from '../components/StatCard';
+import { SkeletonTable } from '../components/Skeleton';
 
 interface BouncedCheck {
     id: string;
@@ -185,7 +186,11 @@ const BouncedChecks: React.FC = () => {
                     </TableHeader>
                     <TableBody>
                         {loading ? (
-                            <TableLoadingState colSpan={6} message="Carregando cheques devolvidos..." />
+                            <tr>
+                                <td colSpan={6} className="p-0">
+                                    <SkeletonTable rows={itemsPerPage} columns={6} className="border-none rounded-none shadow-none" />
+                                </td>
+                            </tr>
                         ) : filteredChecks.length === 0 ? (
                             <TableEmptyState colSpan={6} message="Nenhum cheque devolvido encontrado." icon="money_off" />
                         ) : (

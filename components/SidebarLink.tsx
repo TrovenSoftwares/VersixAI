@@ -10,7 +10,7 @@ interface SidebarLinkProps {
 }
 
 const SidebarLink: React.FC<SidebarLinkProps> = ({ to, icon, label, currentPath, onClick }) => {
-    const isActive = currentPath === to;
+    const isActive = currentPath === to || (to !== '/' && currentPath.startsWith(to + '/'));
     return (
         <Link
             to={to}

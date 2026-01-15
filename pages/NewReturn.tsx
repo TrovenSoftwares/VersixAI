@@ -7,6 +7,7 @@ import InputMask from '../components/InputMask';
 import { MASKS, formatCpfCnpj } from '../utils/utils';
 import { toast } from 'react-hot-toast';
 import { WeightIcon } from '../components/BrandedIcons';
+import { SkeletonCard } from '../components/Skeleton';
 
 const NewReturn: React.FC = () => {
     const navigate = useNavigate();
@@ -228,8 +229,11 @@ const NewReturn: React.FC = () => {
 
     if (fetching) {
         return (
-            <div className="flex items-center justify-center h-full text-slate-500">
-                Carregando dados da devolução...
+            <div className="flex-1 p-8">
+                <div className="max-w-[1000px] mx-auto space-y-6">
+                    <SkeletonCard />
+                    <SkeletonCard rows={6} />
+                </div>
             </div>
         );
     }

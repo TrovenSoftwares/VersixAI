@@ -10,6 +10,7 @@ import ConfirmModal from '../components/ConfirmModal';
 import Modal from '../components/Modal';
 import { formatPhoneToJid } from '../utils/utils';
 import Tooltip from '../components/Tooltip';
+import { SkeletonCard, SkeletonTable } from '../components/Skeleton';
 
 const IntegrationConfig: React.FC = () => {
   const navigate = useNavigate();
@@ -1020,7 +1021,11 @@ const IntegrationConfig: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-2">
-                  {monitoredContacts.filter(c =>
+                  {loading ? (
+                    <div className="space-y-2 p-2">
+                      {Array(5).fill(0).map((_, i) => <SkeletonCard key={i} />)}
+                    </div>
+                  ) : monitoredContacts.filter(c =>
                     c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     c.phone.includes(searchTerm)
                   ).length > 0 ? (

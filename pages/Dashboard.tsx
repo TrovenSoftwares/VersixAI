@@ -5,6 +5,7 @@ import StatCard from '../components/StatCard';
 import PageHeader from '../components/PageHeader';
 import { supabase } from '../lib/supabase';
 import { formatDate } from '../utils/utils';
+import { SkeletonCard, SkeletonChart, SkeletonTable } from '../components/Skeleton';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -308,54 +309,65 @@ const Dashboard: React.FC = () => {
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-          <StatCard
-            label="Receita Período"
-            value={loading ? '...' : `R$\u00A0${stats.revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-            trend="0% vs mês anterior"
-            icon="trending_up"
-            iconColor="text-emerald-500 bg-emerald-500/10"
-          />
+          {loading ? (
+            <>
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </>
+          ) : (
+            <>
+              <StatCard
+                label="Receita Período"
+                value={`R$\u00A0${stats.revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                trend="0% vs mês anterior"
+                icon="trending_up"
+                iconColor="text-emerald-500 bg-emerald-500/10"
+              />
 
-          <StatCard
-            label="Despesas Período"
-            value={loading ? '...' : `R$\u00A0${stats.expenses.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-            trend="0% vs mês anterior"
-            icon="trending_down"
-            iconColor="text-red-500 bg-red-500/10"
-            valueColor="text-red-500"
-            trendColor="text-red-500"
-          />
+              <StatCard
+                label="Despesas Período"
+                value={`R$\u00A0${stats.expenses.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                trend="0% vs mês anterior"
+                icon="trending_down"
+                iconColor="text-red-500 bg-red-500/10"
+                valueColor="text-red-500"
+                trendColor="text-red-500"
+              />
 
-          <StatCard
-            label="Saldo Líquido"
-            value={loading ? '...' : `R$\u00A0${stats.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-            trend="Consolidado"
-            icon="account_balance_wallet"
-            iconColor="text-primary bg-primary/10"
-            valueColor={stats.balance >= 0 ? 'text-primary' : 'text-red-500'}
-          />
+              <StatCard
+                label="Saldo Líquido"
+                value={`R$\u00A0${stats.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                trend="Consolidado"
+                icon="account_balance_wallet"
+                iconColor="text-primary bg-primary/10"
+                valueColor={stats.balance >= 0 ? 'text-primary' : 'text-red-500'}
+              />
 
-          <div
-            className="flex flex-col gap-1.5 sm:gap-2 rounded-xl p-4 sm:p-6 bg-slate-950 border border-slate-800 shadow-lg group hover:border-amber-500/50 transition-all cursor-pointer relative overflow-hidden active:scale-95 min-w-0"
-            onClick={() => navigate('/review')}
-          >
-            <div className="flex items-center justify-between relative z-10">
-              <p className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Pendências IA</p>
-              <span className="material-symbols-outlined text-amber-500 bg-amber-500/10 p-1.5 sm:p-2 rounded-lg text-lg sm:text-xl">smart_toy</span>
-            </div>
-            <p className="text-xl sm:text-3xl font-bold tracking-tight text-white relative z-10">
-              {loading ? '...' : `${stats.pendingAi} ${stats.pendingAi === 1 ? 'Item' : 'Itens'}`}
-            </p>
-            <div className="flex items-center gap-1.5 mt-0.5 sm:mt-1 relative z-10">
-              <div className="bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
-                <span className="material-symbols-outlined text-xs filled">warning</span>
-                Atenção
+              <div
+                className="flex flex-col gap-1.5 sm:gap-2 rounded-xl p-4 sm:p-6 bg-slate-950 border border-slate-800 shadow-lg group hover:border-amber-500/50 transition-all cursor-pointer relative overflow-hidden active:scale-95 min-w-0"
+                onClick={() => navigate('/review')}
+              >
+                <div className="flex items-center justify-between relative z-10">
+                  <p className="text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider">Pendências IA</p>
+                  <span className="material-symbols-outlined text-amber-500 bg-amber-500/10 p-1.5 sm:p-2 rounded-lg text-lg sm:text-xl">smart_toy</span>
+                </div>
+                <p className="text-xl sm:text-3xl font-bold tracking-tight text-white relative z-10">
+                  {`${stats.pendingAi} ${stats.pendingAi === 1 ? 'Item' : 'Itens'}`}
+                </p>
+                <div className="flex items-center gap-1.5 mt-0.5 sm:mt-1 relative z-10">
+                  <div className="bg-amber-500/20 text-amber-500 px-1.5 py-0.5 rounded text-[10px] font-bold flex items-center gap-1">
+                    <span className="material-symbols-outlined text-xs filled">warning</span>
+                    Atenção
+                  </div>
+                  <span className="text-slate-500 text-[10px] sm:text-xs">Revisão necessária</span>
+                </div>
+                {/* Background decoration */}
+                <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl"></div>
               </div>
-              <span className="text-slate-500 text-[10px] sm:text-xs">Revisão necessária</span>
-            </div>
-            {/* Background decoration */}
-            <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl"></div>
-          </div>
+            </>
+          )}
         </div>
 
         {/* Main Chart & Sidebar Section */}
@@ -373,30 +385,34 @@ const Dashboard: React.FC = () => {
             </div>
 
             <div className="relative h-64 w-full px-2 sm:px-4">
-              {/* Dynamic Bars */}
-              <div className="absolute inset-x-2 sm:inset-x-4 bottom-6 top-4 flex items-end justify-between">
-                {chartData.map((d, i) => (
-                  <div key={i} className="flex-1 flex items-end justify-center gap-0.5 sm:gap-1 h-full px-0.5 group relative">
-                    {/* Tooltip */}
-                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
-                      {d.label}: In: {d.income.toLocaleString('pt-BR')} | Out: {d.expense.toLocaleString('pt-BR')}
-                    </div>
-                    <div
-                      className={`${filter === 'annual' ? 'w-2 sm:w-3' : 'w-3 sm:w-4'} bg-slate-200 dark:bg-slate-700 rounded-t-sm transition-all duration-500 group-hover:bg-slate-300`}
-                      style={{ height: `${d.expenseH}%` }}
-                    ></div>
-                    <div
-                      className={`${filter === 'annual' ? 'w-2 sm:w-3' : 'w-3 sm:w-4'} bg-primary/80 rounded-t-sm transition-all duration-500 group-hover:bg-primary`}
-                      style={{ height: `${d.incomeH}%` }}
-                    ></div>
+              {loading ? (
+                <SkeletonChart />
+              ) : (
+                <>
+                  <div className="absolute inset-x-2 sm:inset-x-4 bottom-6 top-4 flex items-end justify-between">
+                    {chartData.map((d, i) => (
+                      <div key={i} className="flex-1 flex items-end justify-center gap-0.5 sm:gap-1 h-full px-0.5 group relative">
+                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+                          {d.label}: In: {d.income.toLocaleString('pt-BR')} | Out: {d.expense.toLocaleString('pt-BR')}
+                        </div>
+                        <div
+                          className={`${filter === 'annual' ? 'w-2 sm:w-3' : 'w-3 sm:w-4'} bg-slate-200 dark:bg-slate-700 rounded-t-sm transition-all duration-500 group-hover:bg-slate-300`}
+                          style={{ height: `${d.expenseH}%` }}
+                        ></div>
+                        <div
+                          className={`${filter === 'annual' ? 'w-2 sm:w-3' : 'w-3 sm:w-4'} bg-primary/80 rounded-t-sm transition-all duration-500 group-hover:bg-primary`}
+                          style={{ height: `${d.incomeH}%` }}
+                        ></div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <div className="absolute bottom-0 left-2 sm:left-4 right-2 sm:right-4 flex justify-between text-[10px] text-slate-400">
-                {chartData.map((d, i) => (
-                  <span key={i} className="flex-1 text-center">{d.label}</span>
-                ))}
-              </div>
+                  <div className="absolute bottom-0 left-2 sm:left-4 right-2 sm:right-4 flex justify-between text-[10px] text-slate-400">
+                    {chartData.map((d, i) => (
+                      <span key={i} className="flex-1 text-center">{d.label}</span>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Legend */}
@@ -469,7 +485,9 @@ const Dashboard: React.FC = () => {
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="px-6 py-8 text-center text-slate-400 italic">Carregando transações...</td>
+                    <td colSpan={7} className="p-0">
+                      <SkeletonTable rows={5} columns={7} className="border-none rounded-none shadow-none" />
+                    </td>
                   </tr>
                 ) : recentTransactions.length === 0 ? (
                   <tr>

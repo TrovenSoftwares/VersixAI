@@ -13,6 +13,7 @@ import autoTable from 'jspdf-autotable';
 import { exportToExcel, readExcelFile, downloadExampleTemplate, formatExcelDate } from '../utils/excelUtils';
 import { PdfIcon, ExcelIcon, ImportIcon, WeightIcon } from '../components/BrandedIcons';
 import StatCard from '../components/StatCard';
+import { SkeletonTable } from '../components/Skeleton';
 
 const Sales: React.FC = () => {
   const navigate = useNavigate();
@@ -536,7 +537,11 @@ const Sales: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
               {loading ? (
-                <tr><td colSpan={8} className="py-12 text-center text-gray-400 italic">Carregando vendas...</td></tr>
+                <tr>
+                  <td colSpan={8} className="p-0">
+                    <SkeletonTable rows={itemsPerPage} columns={8} className="border-none rounded-none shadow-none" />
+                  </td>
+                </tr>
               ) : paginatedSales.length === 0 ? (
                 <tr><td colSpan={8} className="py-12 text-center text-gray-400 italic">Nenhuma venda encontrada.</td></tr>
               ) : (

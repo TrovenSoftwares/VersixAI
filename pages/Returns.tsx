@@ -21,6 +21,7 @@ import {
     TablePagination
 } from '../components/Table';
 import Card from '../components/Card';
+import { SkeletonTable } from '../components/Skeleton';
 
 interface Return {
     id: string;
@@ -214,7 +215,11 @@ const Returns: React.FC = () => {
                     </TableHeader>
                     <TableBody>
                         {loading ? (
-                            <TableLoadingState colSpan={7} message="Carregando devoluções..." />
+                            <tr>
+                                <td colSpan={7} className="p-0">
+                                    <SkeletonTable rows={itemsPerPage} columns={7} className="border-none rounded-none shadow-none" />
+                                </td>
+                            </tr>
                         ) : filteredReturns.length === 0 ? (
                             <TableEmptyState colSpan={7} message="Nenhuma devolução encontrada." icon="assignment_return" />
                         ) : (

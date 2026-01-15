@@ -9,6 +9,7 @@ import { formatPhoneToJid } from '../utils/utils';
 import ConfirmModal from '../components/ConfirmModal';
 import CustomSelect from '../components/CustomSelect';
 import Tooltip from '../components/Tooltip';
+import { SkeletonTable } from '../components/Skeleton';
 
 const Integration: React.FC = () => {
   const navigate = useNavigate();
@@ -226,8 +227,8 @@ const Integration: React.FC = () => {
       <div className="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
 
         {loading ? (
-          <div className="flex items-center justify-center p-24">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+          <div className="bg-white dark:bg-slate-850 rounded-xl border border-[#e7edf3] dark:border-slate-800 shadow-sm overflow-hidden">
+            <SkeletonTable rows={5} columns={6} />
           </div>
         ) : !instanceName || instanceName === 'Não configurado' ? (
           <div className="flex flex-col items-center justify-center p-16 text-slate-500 text-center animate-in fade-in slide-in-from-bottom-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm mt-8">

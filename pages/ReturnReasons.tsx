@@ -7,6 +7,7 @@ import Modal from '../components/Modal';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import { toast } from 'react-hot-toast';
+import { SkeletonTable } from '../components/Skeleton';
 
 interface ReturnReason {
     id: string;
@@ -128,9 +129,7 @@ const ReturnReasons: React.FC = () => {
             <div className="flex-1 w-full max-w-[800px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="bg-white dark:bg-slate-850 rounded-xl border border-[#e7edf3] dark:border-slate-800 shadow-sm overflow-hidden">
                     {loading ? (
-                        <div className="flex items-center justify-center p-12">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                        </div>
+                        <SkeletonTable rows={5} columns={2} />
                     ) : reasons.length === 0 ? (
                         <div className="flex flex-col items-center justify-center p-12 text-slate-500 text-center">
                             <span className="material-symbols-outlined text-4xl mb-2">category</span>
