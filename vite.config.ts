@@ -11,14 +11,12 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [react()],
     define: {
-      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      // Force injection of Cloudflare vars
-      'import.meta.env.VITE_SUPABASE_URL': JSON.stringify(process.env.VITE_SUPABASE_URL || env.VITE_SUPABASE_URL),
-      'import.meta.env.VITE_SUPABASE_ANON_KEY': JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY || env.VITE_SUPABASE_ANON_KEY),
-      'import.meta.env.VITE_GROQ_API_KEY': JSON.stringify(process.env.VITE_GROQ_API_KEY || env.VITE_GROQ_API_KEY),
-      'import.meta.env.VITE_CLAUDE_API_KEY': JSON.stringify(process.env.VITE_CLAUDE_API_KEY || env.VITE_CLAUDE_API_KEY),
-      'import.meta.env.VITE_OPENAI_API_KEY': JSON.stringify(process.env.VITE_OPENAI_API_KEY || env.VITE_OPENAI_API_KEY),
+      // Force injection using global constants to avoid import.meta.env conflicts during build
+      '__VITE_SUPABASE_URL__': JSON.stringify(env.VITE_SUPABASE_URL || process.env.VITE_SUPABASE_URL),
+      '__VITE_SUPABASE_ANON_KEY__': JSON.stringify(env.VITE_SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY),
+      '__VITE_GROQ_API_KEY__': JSON.stringify(env.VITE_GROQ_API_KEY || process.env.VITE_GROQ_API_KEY),
+      '__VITE_CLAUDE_API_KEY__': JSON.stringify(env.VITE_CLAUDE_API_KEY || process.env.VITE_CLAUDE_API_KEY),
+      '__VITE_OPENAI_API_KEY__': JSON.stringify(env.VITE_OPENAI_API_KEY || process.env.VITE_OPENAI_API_KEY),
     },
     resolve: {
       alias: {
