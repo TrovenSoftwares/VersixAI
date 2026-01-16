@@ -4,6 +4,14 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
+
+  // Log de diagnóstico para o build do Cloudflare
+  console.log('--- [BUILD DIAGNOSTIC] ---');
+  console.log('Mode:', mode);
+  console.log('VITE_SUPABASE_URL found in env:', !!env.VITE_SUPABASE_URL);
+  console.log('VITE_SUPABASE_URL found in process.env:', !!process.env.VITE_SUPABASE_URL);
+  console.log('--------------------------');
+
   return {
     server: {
       port: 3000,
