@@ -40,7 +40,6 @@ import NewBouncedCheck from './pages/NewBouncedCheck';
 import Returns from './pages/Returns';
 import NewReturn from './pages/NewReturn';
 import ReturnReasons from './pages/ReturnReasons';
-import Landing from './pages/Landing';
 import Documentation from './pages/Documentation';
 import GettingStarted from './pages/help/GettingStarted';
 import FinancialHelp from './pages/help/FinancialHelp';
@@ -117,16 +116,15 @@ const AppContent = () => {
   const { user } = useAuth();
   const isAuthPage = location.pathname === '/login' || location.pathname === '/signup';
 
-  if (location.pathname === '/') {
-    return (
-      <Routes>
-        <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <Landing />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    );
+  const publicRoutes = ['/login', '/signup', '/forgot-password', '/reset-password', '/terms', '/privacy', '/help', '/documentation'];
+  const isPublicHelpRoute = location.pathname.startsWith('/help/');
+  const isHome = location.pathname === '/';
+
+  if (isHome) {
+    return <Navigate to={user ? "/dashboard" : "/login"} replace />;
   }
 
-  if (isAuthPage || location.pathname === '/forgot-password' || location.pathname === '/reset-password' || location.pathname === '/terms' || location.pathname === '/privacy' || location.pathname.startsWith('/help') || location.pathname === '/documentation') {
+  if (isAuthPage || publicRoutes.includes(location.pathname) || isPublicHelpRoute) {
     return (
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />

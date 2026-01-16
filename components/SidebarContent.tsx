@@ -111,6 +111,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ locationPath, onItemCli
 
       <div className="my-2 border-t border-slate-100 dark:border-slate-700" />
 
+      <SidebarLink to="/help" icon="help" label="Central de Ajuda" currentPath={locationPath} onClick={onItemClick} />
       <SidebarLink to="/settings" icon="settings" label="Ajustes" currentPath={locationPath} onClick={onItemClick} />
     </nav>
   );
